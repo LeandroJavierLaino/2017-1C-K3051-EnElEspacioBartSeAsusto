@@ -32,11 +32,10 @@ namespace TGC.Group.Model
         }
 
         //Caja que se muestra en el ejemplo.
-       // private TgcBox Box { get; set; }
+        private TgcBox Box { get; set; }
 
-        //Mesh de TgcLogo.
-        private TgcScene Mesh;// { get; set; }
-        private TgcScene tgcScene;
+        //Escena
+        private TgcScene TgcScene { get; set; }
 
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
@@ -51,6 +50,7 @@ namespace TGC.Group.Model
         {
             //FPS Camara
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(-140f, 40f, -50f), 200f, 200f, Input);
+            var d3dDevice = D3DDevice.Instance.Device;
 
             //Modifier para habilitar o deshabilitar FrustumCulling
             //Modifiers.addBoolean("culling", "Frustum culling", true);
@@ -59,36 +59,35 @@ namespace TGC.Group.Model
             //UserVars.addVar("Meshes renderizadas");
 
             //Cargar escena desde archivo ZIP
-            var loader = new TgcSceneLoader();
+            /*var loader = new TgcSceneLoader();
             tgcScene = loader.loadSceneFromZipFile("4toPiso-TgcScene.xml", MediaDir + "4toPiso\\4toPiso.zip",
-                MediaDir + "4toPiso\\Extract\\");
+                MediaDir + "4toPiso\\Extract\\");*/
 
-            /*
             //Version para cargar escena desde carpeta descomprimida
             TgcSceneLoader loader = new TgcSceneLoader();
-            tgcScene = loader.loadSceneFromFile(
-                this.MediaDir + "4toPiso\\Extract\\4toPiso-TgcScene.xml",
-                this.MediaDir + "4toPiso\\Extract\\");
-            */
+            TgcScene = loader.loadSceneFromFile(
+                this.MediaDir + "lvltest-TgcScene.xml",
+                this.MediaDir + "");
+            
 
             //Device de DirectX para crear primitivas.
-            //var d3dDevice = D3DDevice.Instance.Device;
+            //
 
             //Textura de la carperta Media. Game.Default es un archivo de configuracion (Game.settings) util para poner cosas.
             //Pueden abrir el Game.settings que se ubica dentro de nuestro proyecto para configurar.
-            //var pathTexturaCaja = MediaDir + Game.Default.TexturaCaja;
+            var pathTexturaCaja = MediaDir + Game.Default.TexturaCaja;
 
             //Cargamos una textura, tener en cuenta que cargar una textura significa crear una copia en memoria.
             //Es importante cargar texturas en Init, si se hace en el render loop podemos tener grandes problemas si instanciamos muchas.
-            //var texture = TgcTexture.createTexture(pathTexturaCaja);
+            var texture = TgcTexture.createTexture(pathTexturaCaja);
 
             //Creamos una caja 3D ubicada de dimensiones (5, 10, 5) y la textura como color.
-            //var size = new Vector3(10, 10, 10);
+            var size = new Vector3(10, 10, 10);
             //Construimos una caja según los parámetros, por defecto la misma se crea con centro en el origen y se recomienda así para facilitar las transformaciones.
-            //Box = TgcBox.fromSize(size, texture);
+            Box = TgcBox.fromSize(size, texture);
             //Posición donde quiero que este la caja, es común que se utilicen estructuras internas para las transformaciones.
             //Entonces actualizamos la posición lógica, luego podemos utilizar esto en render para posicionar donde corresponda con transformaciones.
-            //Box.Position = new Vector3(-25, 0, 0);
+            Box.Position = new Vector3(-25, 0, 0);
 
             //Cargo el unico mesh que tiene la escena.
             //Mesh = new TgcSceneLoader().loadSceneFromFile(MediaDir + "4toPiso-TgcScene.xml", MediaDir);//.Meshes[0];
@@ -124,7 +123,7 @@ namespace TGC.Group.Model
             }
 
             //Capturar Input Mouse
-            if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
+            /*if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
             {
                 //Como ejemplo podemos hacer un movimiento simple de la cámara.
                 //En este caso le sumamos un valor en Y
@@ -136,7 +135,7 @@ namespace TGC.Group.Model
                 {
                     Camara.SetCamera(new Vector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
                 }
-            }
+            }*/
         }
 
         /// <summary>
@@ -150,9 +149,9 @@ namespace TGC.Group.Model
             PreRender();
 
             //Dibuja un texto por pantalla
-            DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
+            //DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText(
-                "Con clic izquierdo subimos la camara [Actual]: " + TgcParserUtils.printVector3(Camara.Position), 0, 30,
+                "Use W,A,S,D y el mouse para mover la camara: " + TgcParserUtils.printVector3(Camara.Position), 0, 30,
                 Color.OrangeRed);
 
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
@@ -160,7 +159,7 @@ namespace TGC.Group.Model
             //Box.Transform = Matrix.Scaling(Box.Scale) * Matrix.RotationYawPitchRoll(Box.Rotation.Y, Box.Rotation.X, Box.Rotation.Z) * Matrix.Translation(Box.Position);
             //A modo ejemplo realizamos toda las multiplicaciones, pero aquí solo nos hacia falta la traslación.
             //Finalmente invocamos al render de la caja
-            //Box.render();
+            Box.render();
 
             //Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
             //Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
