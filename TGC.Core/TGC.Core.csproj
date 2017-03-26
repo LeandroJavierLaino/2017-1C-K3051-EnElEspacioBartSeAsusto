@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2B8C77A8-2427-4DA0-A33E-93F877B2D7D9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TGC.Core</RootNamespace>
+    <AssemblyName>TGC.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <DocumentationFile>bin\Debug\TGC.Core.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TGC.Core.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.Direct3D.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2909.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2911.0\Microsoft.DirectX.Direct3DX.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.DirectInput.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DirectX.DirectSound, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.DirectSound.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualC" />
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Text\TgcText2D.cs" />
+    <Compile Include="Camara\TgcCamera.cs" />
+    <Compile Include="Direct3D\D3DDevice.cs" />
+    <Compile Include="Example\TgcExample.cs" />
+    <Compile Include="Fog\TgcFog.cs" />
+    <Compile Include="Geometry\TgcArrow.cs" />
+    <Compile Include="BoundingVolumes\TgcBoundingAxisAlignBox.cs" />
+    <Compile Include="BoundingVolumes\TgcBoundingCylinder.cs" />
+    <Compile Include="BoundingVolumes\TgcBoundingSphere.cs" />
+    <Compile Include="Geometry\TgcBox.cs" />
+    <Compile Include="Collision\TgcCollisionUtils.cs" />
+    <Compile Include="Geometry\TgcConvexPolygon.cs" />
+    <Compile Include="Geometry\TgcConvexPolyhedron.cs" />
+    <Compile Include="Geometry\TgcCylinder.cs" />
+    <Compile Include="Geometry\TgcBoxDebug.cs" />
+    <Compile Include="BoundingVolumes\TgcBoundingElipsoid.cs" />
+    <Compile Include="BoundingVolumes\TgcBoundingCylinderFixedY.cs" />
+    <Compile Include="BoundingVolumes\TgcFrustum.cs" />
+    <Compile Include="Geometry\TgcLine.cs" />
+    <Compile Include="BoundingVolumes\TgcBoundingOrientedBox.cs" />
+    <Compile Include="Geometry\TgcPickingRay.cs" />
+    <Compile Include="Geometry\TgcPlane.cs" />
+    <Compile Include="Geometry\TgcQuad.cs" />
+    <Compile Include="Geometry\TgcRay.cs" />
+    <Compile Include="Geometry\TgcSphere.cs" />
+    <Compile Include="Geometry\TgcTriangle.cs" />
+    <Compile Include="Geometry\TgcTriangleArray.cs" />
+    <Compile Include="HighResolutionTimer.cs" />
+    <Compile Include="Input\TgcD3dInput.cs" />
+    <Compile Include="Interpolation\InterpoladorLineal.cs" />
+    <Compile Include="Interpolation\InterpoladorVaiven.cs" />
+    <Compile Include="Interpolation\Position2dInterpolator.cs" />
+    <Compile Include="Interpolation\Temporizador.cs" />
+    <Compile Include="KeyFrameLoader\OriginalData.cs" />
+    <Compile Include="KeyFrameLoader\TgcKeyFrameAnimation.cs" />
+    <Compile Include="KeyFrameLoader\TgcKeyFrameAnimationData.cs" />
+    <Compile Include="KeyFrameLoader\TgcKeyFrameFrameData.cs" />
+    <Compile Include="KeyFrameLoader\TgcKeyFrameLoader.cs" />
+    <Compile Include="KeyFrameLoader\TgcKeyFrameMesh.cs" />
+    <Compile Include="KeyFrameLoader\TgcKeyFrameMeshData.cs" />
+    <Compile Include="KeyFrameLoader\TgcKeyFrameParser.cs" />
+    <Compile Include="Particle\ColaDeParticulas.cs" />
+    <Compile Include="Particle\Particle.cs" />
+    <Compile Include="Particle\ParticleEmitter.cs" />
+    <Compile Include="Particle\PilaDeParticulas.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingCell.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingCellData.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingConnection.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingData.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingLoader.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingManager.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingParser.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingPortal.cs" />
+    <Compile Include="PortalRendering\TgcPortalRenderingPortalData.cs" />
+    <Compile Include="SceneLoader\IRenderObject.cs" />
+    <Compile Include="SceneLoader\ITransformObject.cs" />
+    <Compile Include="SceneLoader\TgcMaterialData.cs" />
+    <Compile Include="SceneLoader\TgcMesh.cs" />
+    <Compile Include="SceneLoader\TgcMeshData.cs" />
+    <Compile Include="SceneLoader\TgcScene.cs" />
+    <Compile Include="SceneLoader\TgcSceneData.cs" />
+    <Compile Include="SceneLoader\TgcSceneExporter.cs" />
+    <Compile Include="SceneLoader\TgcSceneLoader.cs" />
+    <Compile Include="SceneLoader\TgcSceneParser.cs" />
+    <Compile Include="Shaders\TgcPostProcessingUtils.cs" />
+    <Compile Include="Shaders\TgcScreenQuad.cs" />
+    <Compile Include="Shaders\TgcShaders.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalAnimation.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalAnimationBoneData.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalAnimationBoneFrameData.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalAnimationData.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalAnimationFrame.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalBone.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalBoneAttach.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalBoneData.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalLoader.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalMesh.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalMeshData.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalParser.cs" />
+    <Compile Include="SkeletalAnimation\TgcSkeletalVertexWeight.cs" />
+    <Compile Include="Sound\Tgc3dSound.cs" />
+    <Compile Include="Sound\TgcDirectSound.cs" />
+    <Compile Include="Sound\TgcMp3Player.cs" />
+    <Compile Include="Sound\TgcStaticSound.cs" />
+    <Compile Include="Terrain\TgcSimpleTerrain.cs" />
+    <Compile Include="Terrain\TgcSkyBox.cs" />
+    <Compile Include="Textures\TexturesManager.cs" />
+    <Compile Include="Textures\TexturesPool.cs" />
+    <Compile Include="Textures\TgcTexture.cs" />
+    <Compile Include="TgcAxisLines.cs" />
+    <Compile Include="UserControls\Modifier\TgcBooleanModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcButtonModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcColorModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcEnumModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcFileModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcFloatModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcIntervalModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcIntModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcMeshBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserControls\Modifier\TgcMeshBrowser.Designer.cs">
+      <DependentUpon>TgcMeshBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Modifier\TgcModifierPanel.cs" />
+    <Compile Include="UserControls\Modifier\TgcModifiers.cs" />
+    <Compile Include="UserControls\Modifier\TgcTextureBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserControls\Modifier\TgcTextureBrowser.Designer.cs">
+      <DependentUpon>TgcTextureBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Modifier\TgcTextureModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcVertex2fModifier.cs" />
+    <Compile Include="UserControls\Modifier\TgcVertex3fModifier.cs" />
+    <Compile Include="UserControls\Networking\TgcLanBrowser.cs" />
+    <Compile Include="UserControls\Networking\TgcNetworkingModifier.cs" />
+    <Compile Include="UserControls\Networking\TgcNetworkingModifierClientsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserControls\Networking\TgcNetworkingModifierClientsDialog.Designer.cs">
+      <DependentUpon>TgcNetworkingModifierClientsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Networking\TgcNetworkingModifierControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Networking\TgcNetworkingModifierControl.Designer.cs">
+      <DependentUpon>TgcNetworkingModifierControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Networking\TgcNetworkingModifierServersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserControls\Networking\TgcNetworkingModifierServersDialog.Designer.cs">
+      <DependentUpon>TgcNetworkingModifierServersDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Networking\TgcSocketClient.cs" />
+    <Compile Include="UserControls\Networking\TgcSocketClientInfo.cs" />
+    <Compile Include="UserControls\Networking\TgcSocketMessages.cs" />
+    <Compile Include="UserControls\Networking\TgcSocketServer.cs" />
+    <Compile Include="UserControls\Networking\TgcSocketServerInfo.cs" />
+    <Compile Include="UserControls\TgcUserVars.cs" />
+    <Compile Include="Utils\FastMath.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\TgcParserUtils.cs" />
+    <Compile Include="Utils\TgcVectorUtils.cs" />
+    <Compile Include="Utils\ValidationUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UserControls\Modifier\TgcMeshBrowser.resx">
+      <DependentUpon>TgcMeshBrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Modifier\TgcTextureBrowser.resx">
+      <DependentUpon>TgcTextureBrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Networking\TgcNetworkingModifierClientsDialog.resx">
+      <DependentUpon>TgcNetworkingModifierClientsDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Networking\TgcNetworkingModifierControl.resx">
+      <DependentUpon>TgcNetworkingModifierControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Networking\TgcNetworkingModifierServersDialog.resx">
+      <DependentUpon>TgcNetworkingModifierServersDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

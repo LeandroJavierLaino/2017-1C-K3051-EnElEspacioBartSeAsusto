@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows.Forms;
 using TGC.Core.Direct3D;
+using TGC.Core.Geometry;
 using TGC.Core.Example;
 using TGC.Core.Input;
 using TGC.Core.Shaders;
@@ -96,7 +97,7 @@ namespace TGC.Group.Form
             //Juego a ejecutar, si quisiéramos tener diferentes modelos aquí podemos cambiar la instancia e invocar a otra clase.
             Modelo = new GameModel(currentDirectory + Game.Default.MediaDirectory,
                 currentDirectory + Game.Default.ShadersDirectory);
-
+            
             //Cargar juego.
             ExecuteModel();
         }
