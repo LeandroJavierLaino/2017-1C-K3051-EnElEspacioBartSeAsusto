@@ -1,258 +1,29 @@
-<tgcScene>
-  <name>lvltest</name>
-  <texturesExport enabled="True" dir="Textures" />
-  <lightmapExport enabled="False" dir="LightMaps" />
-  <sceneBoundingBox min="[220,0,130]" max="[490,100,330]" />
-  <materials count="1">
-    <m name="Standardmaterial" type="Standardmaterial">
-      <ambient>[0,0,0,0]</ambient>
-      <diffuse>[0,0,0,0]</diffuse>
-      <specular>[0,0,0,0]</specular>
-      <opacity>1</opacity>
-      <alphaBlendEnable>False</alphaBlendEnable>
-      <bitmap uvTiling="[1,1]" uvOffset="[1,1]">tierra.jpg</bitmap>
-    </m>
-  </materials>
-  <meshes count="16">
-    <mesh name="Room-1-Roof-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[220,100,130]" max="[390,100,200]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">220 100 130 390 100 130 390 100 200 220 100 200 </vertices>
-      <normals count="12">0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-1-Floor-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[220,0,130]" max="[390,0,200]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">220 0 130 390 0 130 390 0 200 220 0 200 </vertices>
-      <normals count="12">0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-1-West-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[220,0,130]" max="[220,100,200]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">220 0 130 220 0 200 220 100 200 220 100 130 </vertices>
-      <normals count="12">-1 0 0 -1 0 0 -1 0 0 -1 0 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-1-North-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[220,0,130]" max="[390,100,130]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">220 0 130 390 0 130 390 100 130 220 100 130 </vertices>
-      <normals count="12">0 0 1 0 0 1 0 0 1 0 0 1 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-1-South-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[220,0,200]" max="[390,100,200]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">220 0 200 390 0 200 390 100 200 220 100 200 </vertices>
-      <normals count="12">0 0 1 0 0 1 0 0 1 0 0 1 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-2-Roof-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[390,100,130]" max="[490,100,330]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">390 100 130 490 100 130 490 100 330 390 100 330 </vertices>
-      <normals count="12">0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-2-Floor-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[390,0,130]" max="[490,0,330]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">390 0 130 490 0 130 490 0 330 390 0 330 </vertices>
-      <normals count="12">0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-2-East-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[490,0,130]" max="[490,100,330]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">490 0 130 490 0 330 490 100 330 490 100 130 </vertices>
-      <normals count="12">-1 0 0 -1 0 0 -1 0 0 -1 0 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-2-West-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[390,0,200]" max="[390,100,220]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">390 0 200 390 0 220 390 100 220 390 100 200 </vertices>
-      <normals count="12">-1 0 0 -1 0 0 -1 0 0 -1 0 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-2-North-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[390,0,130]" max="[490,100,130]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">390 0 130 490 0 130 490 100 130 390 100 130 </vertices>
-      <normals count="12">0 0 1 0 0 1 0 0 1 0 0 1 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-2-South-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[390,0,330]" max="[490,100,330]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">390 0 330 490 0 330 490 100 330 390 100 330 </vertices>
-      <normals count="12">0 0 1 0 0 1 0 0 1 0 0 1 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-4-Roof-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[270,100,220]" max="[390,100,330]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">270 100 220 390 100 220 390 100 330 270 100 330 </vertices>
-      <normals count="12">0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-4-Floor-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[270,0,220]" max="[390,0,330]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">270 0 220 390 0 220 390 0 330 270 0 330 </vertices>
-      <normals count="12">0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-4-West-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[270,0,220]" max="[270,100,330]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">270 0 220 270 0 330 270 100 330 270 100 220 </vertices>
-      <normals count="12">-1 0 0 -1 0 0 -1 0 0 -1 0 0 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-4-North-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[270,0,220]" max="[390,100,220]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">270 0 220 390 0 220 390 100 220 270 100 220 </vertices>
-      <normals count="12">0 0 1 0 0 1 0 0 1 0 0 1 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-    <mesh name="Room-4-South-0" layer="" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[270,0,330]" max="[390,100,330]" />
-      <coordinatesIdx count="6">0 1 2 0 2 3 </coordinatesIdx>
-      <textCoordsIdx count="6">0 1 2 0 2 3 </textCoordsIdx>
-      <colorsIdx count="6">0 0 0 0 0 0 </colorsIdx>
-      <matIds count="1">0 </matIds>
-      <textCoordsLightMapIdx count="0">
-      </textCoordsLightMapIdx>
-      <vertices count="12">270 0 330 390 0 330 390 100 330 270 100 330 </vertices>
-      <normals count="12">0 0 1 0 0 1 0 0 1 0 0 1 </normals>
-      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
-      <colors count="3">255 255 255 </colors>
-      <texCoordsLightMap count="0">
-      </texCoordsLightMap>
-    </mesh>
-  </meshes>
-</tgcScene>
+<roomsEditor-Map>
+  <mapSettings width="1000" height="1000" scaleX="1" scaleY="1" scaleZ="1" />
+  <rooms count="3">
+    <room name="Room-1" x="70" y="160" width="410" length="60" height="100" floorLevel="0">
+      <wall name="Roof" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-4" x="220" y="150" width="110" length="10" height="100" floorLevel="0">
+      <wall name="Roof" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="tierra.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-5" x="160" y="10" width="230" length="140" height="100" floorLevel="0">
+      <wall name="Roof" textureName="Lisas.bmp" autoAdjustUv="False" uTile="8,2" vTile="5" />
+      <wall name="Floor" textureName="baldosaFacultad.jpg" autoAdjustUv="False" uTile="8,2" vTile="5" />
+      <wall name="East" textureName="paredMuyRugosa.jpg" autoAdjustUv="False" uTile="1,4" vTile="1" />
+      <wall name="West" textureName="paredMuyRugosa.jpg" autoAdjustUv="False" uTile="1,4" vTile="1" />
+      <wall name="North" textureName="paredMuyRugosa.jpg" autoAdjustUv="False" uTile="2,3" vTile="1" />
+      <wall name="South" textureName="paredMuyRugosa.jpg" autoAdjustUv="False" uTile="2,3" vTile="1" />
+    </room>
+  </rooms>
+</roomsEditor-Map>

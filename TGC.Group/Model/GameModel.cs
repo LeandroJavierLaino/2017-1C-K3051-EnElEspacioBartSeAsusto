@@ -4,6 +4,7 @@ using System.Drawing;
 using TGC.Core.Direct3D;
 using TGC.Core.Example;
 using TGC.Core.Geometry;
+using TGC.Core.Camara;
 using TGC.Core.Input;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
@@ -49,26 +50,20 @@ namespace TGC.Group.Model
         public override void Init()
         {
             //FPS Camara
-            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(-140f, 40f, -50f), 200f, 200f, Input);
+            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(-140f, 40f, -50f), 100f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
-            //Modifier para habilitar o deshabilitar FrustumCulling
-            //Modifiers.addBoolean("culling", "Frustum culling", true);
-
-            //UserVar para contar la cantidad de meshes que se renderizan
-            //UserVars.addVar("Meshes renderizadas");
-
             //Cargar escena desde archivo ZIP
-            /*var loader = new TgcSceneLoader();
-            tgcScene = loader.loadSceneFromZipFile("4toPiso-TgcScene.xml", MediaDir + "4toPiso\\4toPiso.zip",
-                MediaDir + "4toPiso\\Extract\\");*/
+            var loader = new TgcSceneLoader();
+            TgcScene = loader.loadSceneFromZipFile("4toPiso-TgcScene.xml", MediaDir + "4toPiso\\4toPiso.zip",
+                MediaDir + "4toPiso\\Extract\\");
 
             //Version para cargar escena desde carpeta descomprimida
-            TgcSceneLoader loader = new TgcSceneLoader();
+            /*TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(
                 this.MediaDir + "lvltest-TgcScene.xml",
                 this.MediaDir + "");
-            
+            */
 
             //Device de DirectX para crear primitivas.
             //
@@ -89,22 +84,6 @@ namespace TGC.Group.Model
             //Entonces actualizamos la posición lógica, luego podemos utilizar esto en render para posicionar donde corresponda con transformaciones.
             Box.Position = new Vector3(-25, 0, 0);
 
-            //Cargo el unico mesh que tiene la escena.
-            //Mesh = new TgcSceneLoader().loadSceneFromFile(MediaDir + "4toPiso-TgcScene.xml", MediaDir);//.Meshes[0];
-            //Defino una escala en el modelo logico del mesh que es muy grande.
-            //Mesh.Scale = new Vector3(0.5f, 0.5f, 0.5f);
-
-            //Suelen utilizarse objetos que manejan el comportamiento de la camara.
-            //Lo que en realidad necesitamos gráficamente es una matriz de View.
-            //El framework maneja una cámara estática, pero debe ser inicializada.
-            //Posición de la camara.
-            //var cameraPosition = new Vector3(0, 0, 125);
-            //Quiero que la camara mire hacia el origen (0,0,0).
-            //var lookAt = Vector3.Empty;
-            //Configuro donde esta la posicion de la camara y hacia donde mira.
-            //Camara.SetCamera(cameraPosition, lookAt);
-            //Internamente el framework construye la matriz de view con estos dos vectores.
-            //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas.
         }
 
         /// <summary>
@@ -121,20 +100,11 @@ namespace TGC.Group.Model
             {
                 BoundingBox = !BoundingBox;
             }
-
+           
             //Capturar Input Mouse
             /*if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
             {
-                //Como ejemplo podemos hacer un movimiento simple de la cámara.
-                //En este caso le sumamos un valor en Y
-                Camara.SetCamera(Camara.Position + new Vector3(0, 10f, 0), Camara.LookAt);
-                //Ver ejemplos de cámara para otras operaciones posibles.
-
-                //Si superamos cierto Y volvemos a la posición original.
-                if (Camara.Position.Y > 300f)
-                {
-                    Camara.SetCamera(new Vector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
-                }
+                Con click podriamos prender una linterna por ejemplo
             }*/
         }
 
@@ -151,28 +121,20 @@ namespace TGC.Group.Model
             //Dibuja un texto por pantalla
             //DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText(
-                "Use W,A,S,D y el mouse para mover la camara: " + TgcParserUtils.printVector3(Camara.Position), 0, 30,
-                Color.OrangeRed);
+                "Use W,A,S,D y el mouse para mover la camara: " + TgcParserUtils.printVector3(Camara.Position) + TgcParserUtils.printVector3(Camara.LookAt), 0, 30, Color.OrangeRed);
 
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
             //Debemos recordar el orden en cual debemos multiplicar las matrices, en caso de tener modelos jerárquicos, tenemos control total.
             //Box.Transform = Matrix.Scaling(Box.Scale) * Matrix.RotationYawPitchRoll(Box.Rotation.Y, Box.Rotation.X, Box.Rotation.Z) * Matrix.Translation(Box.Position);
             //A modo ejemplo realizamos toda las multiplicaciones, pero aquí solo nos hacia falta la traslación.
             //Finalmente invocamos al render de la caja
-            Box.render();
+            //Box.render();
 
             //Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
             //Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
             //Mesh.UpdateMeshTransform();
             //Render del mesh
-            //Mesh.render();
-
-            //Render de BoundingBox, muy útil para debug de colisiones.
-            //if (BoundingBox)
-            //{
-            //    Box.BoundingBox.render();
-             //   Mesh.BoundingBox.render();
-            //}
+            TgcScene.renderAll();
 
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();

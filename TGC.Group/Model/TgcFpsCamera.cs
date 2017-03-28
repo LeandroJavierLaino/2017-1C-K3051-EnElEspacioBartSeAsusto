@@ -90,7 +90,7 @@ namespace TGC.Examples.Camara
         public float RotationSpeed { get; set; }
 
         public float JumpSpeed { get; set; }
-
+        
         /// <summary>
         ///     Cuando se elimina esto hay que desbloquear la camera.
         /// </summary>
@@ -124,6 +124,18 @@ namespace TGC.Examples.Camara
             if (Input.keyDown(Key.A))
             {
                 moveVector += new Vector3(1, 0, 0) * MovementSpeed;
+            }
+
+            //Run
+            if (Input.keyDown(Key.LeftShift))
+            {
+                MovementSpeed = 200f;
+            }
+
+            //Walk Normal
+            if (Input.keyUp(Key.LeftShift))
+            {
+                MovementSpeed = 100f;
             }
 
             //Jump
