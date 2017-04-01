@@ -156,7 +156,7 @@ namespace TGC.Examples.Camara
             }
 
             //Solo rotar si se esta aprentando el boton izq del mouse
-            if (lockCam || Input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
+            if (!lockCam /*|| Input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT)*/)
             {
                 leftrightRot -= -Input.XposRelative * RotationSpeed;
                 updownRot -= Input.YposRelative * RotationSpeed;
