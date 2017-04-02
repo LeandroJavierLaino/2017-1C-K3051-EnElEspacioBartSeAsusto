@@ -33,9 +33,8 @@ namespace TGC.Group.Model
         }
 
         //Caja que se muestra en el ejemplo.
+        //usar TgcBox como ejemplo para cargar cualquier caja que queramos.
         private TgcBox Box { get; set; }
-
-        private TgcPlane TgcPlane { get; set; }
 
         //Escena
         private TgcScene TgcScene { get; set; }
@@ -51,21 +50,14 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Init()
         {
-            //FPS Camara
+            //FPS Camara Modo Dios 
+            //TODO: diseñar camara con colisiones y física.
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(0f, 0f, 0f), 100f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
-            //Cargar escena desde archivo ZIP
-            var loader = new TgcSceneLoader();
-            TgcScene = loader.loadSceneFromZipFile("4toPiso-TgcScene.xml", MediaDir + "4toPiso\\4toPiso.zip",
-                MediaDir + "4toPiso\\Extract\\");
-
             //Version para cargar escena desde carpeta descomprimida
-            /*TgcSceneLoader loader = new TgcSceneLoader();
-            TgcScene = loader.loadSceneFromFile(
-                this.MediaDir + "lvltest-TgcScene.xml",
-                this.MediaDir + "");
-            */
+            TgcSceneLoader loader = new TgcSceneLoader();
+            TgcScene = loader.loadSceneFromFile(this.MediaDir + "Level1-TgcScene.xml", this.MediaDir + "\\");
 
             //Device de DirectX para crear primitivas.
             //
@@ -86,10 +78,6 @@ namespace TGC.Group.Model
             //Entonces actualizamos la posición lógica, luego podemos utilizar esto en render para posicionar donde corresponda con transformaciones.
             Box.Position = new Vector3(-25, 0, 0);
 
-            var texturaPiso = TgcTexture.createTexture(MediaDir + "ccreteflr016a.jpg");
-
-            TgcPlane = new TgcPlane(new Vector3(0f, 0f, 0f), new Vector3(100f, 100f, 100f), TgcPlane.Orientations.XZplane, texture, 1f, 1f);
-
         }
 
         /// <summary>
@@ -105,14 +93,7 @@ namespace TGC.Group.Model
             if (Input.keyPressed(Key.F))
             {
                 BoundingBox = !BoundingBox;
-            }
-           
-            //Capturar Input Mouse
-            /*if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
-            {
-                Con click podriamos prender una linterna por ejemplo
-            }*/
-          
+            }      
         }
 
         /// <summary>
@@ -126,10 +107,8 @@ namespace TGC.Group.Model
             PreRender();
 
             //Dibuja un texto por pantalla
-            //DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
-            DrawText.drawText(
-                "Use W,A,S,D y el mouse para mover la camara: " + TgcParserUtils.printVector3(Camara.Position) + TgcParserUtils.printVector3(Camara.LookAt) + "\n", 0, 30, Color.OrangeRed);
-            DrawText.drawText("Plano esta en: \n" + TgcPlane.Position, 0, 30, Color.Black);
+            DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir verticalmente, Control para bajar verticalmente y el mouse para mover la camara: " + TgcParserUtils.printVector3(Camara.Position) + TgcParserUtils.printVector3(Camara.LookAt) + "\n", 0, 30, Color.OrangeRed);
+            
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
             //Debemos recordar el orden en cual debemos multiplicar las matrices, en caso de tener modelos jerárquicos, tenemos control total.
             //Box.Transform = Matrix.Scaling(Box.Scale) * Matrix.RotationYawPitchRoll(Box.Rotation.Y, Box.Rotation.X, Box.Rotation.Z) * Matrix.Translation(Box.Position);
@@ -140,9 +119,9 @@ namespace TGC.Group.Model
             //Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
             //Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
             //Mesh.UpdateMeshTransform();
-            //Render del mesh
-            //TgcScene.renderAll();
-            TgcPlane.render();
+            //Render de una escena
+            TgcScene.renderAll();
+            
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
         }
@@ -154,10 +133,8 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Dispose()
         {
-            //Dispose de la caja.
-            //Box.dispose();
-            //Dispose del mesh.
-          //  Mesh.dispose();
+            //Dispose de una escena.
+            TgcScene.disposeAll();
         }
     }
 }
