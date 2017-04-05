@@ -9,6 +9,7 @@ using TGC.Core.Input;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using TGC.Core.Utils;
+using System.Collections.Generic;
 
 namespace TGC.Group.Model
 {
@@ -39,6 +40,22 @@ namespace TGC.Group.Model
         //Escena
         private TgcScene TgcScene { get; set; }
 
+        private TgcMesh PuertaModelo { get; set; }
+
+        private TgcMesh Puerta1 { get; set; }
+        private TgcMesh Puerta2 { get; set; }
+        private TgcMesh Puerta3 { get; set; }
+        private TgcMesh Puerta4 { get; set; }
+        private TgcMesh Puerta5 { get; set; }
+        private TgcMesh Puerta6 { get; set; }
+        private TgcMesh Puerta7 { get; set; }
+        private TgcMesh Puerta8 { get; set; }
+        private TgcMesh Puerta9 { get; set; }
+        private TgcMesh Puerta10 { get; set; }
+        private TgcMesh Puerta11 { get; set; }
+        private TgcMesh Puerta12 { get; set; }
+        private TgcMesh Puerta13 { get; set; }
+        private TgcMesh Puerta14 { get; set; }
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
 
@@ -61,7 +78,71 @@ namespace TGC.Group.Model
 
             //Device de DirectX para crear primitivas.
             //
+            PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
 
+            
+            Puerta1 = PuertaModelo.createMeshInstance("Puerta1");
+            Puerta1.AutoTransformEnable = true;
+            Puerta1.move(89f, 31.5f, 275f);
+
+            Puerta2 = PuertaModelo.createMeshInstance("Puerta2");
+            Puerta2.AutoTransformEnable = true;
+            Puerta2.move(439f, 32f, 203f);
+
+            Puerta3 = PuertaModelo.createMeshInstance("Puerta3");
+            Puerta3.AutoTransformEnable = true;
+            Puerta3.move(201f, 32f, 1570f);
+            Puerta3.rotateY(FastMath.PI_HALF);
+
+            Puerta4 = PuertaModelo.createMeshInstance("Puerta4");
+            Puerta4.AutoTransformEnable = true;
+            Puerta4.move(452f, 32f, 1221f);
+            Puerta4.rotateY(FastMath.PI_HALF);
+
+            Puerta5 = PuertaModelo.createMeshInstance("Puerta5");
+            Puerta5.AutoTransformEnable = true;
+            Puerta5.move(459f, 32f, 1675f);
+
+            Puerta6 = PuertaModelo.createMeshInstance("Puerta6");
+            Puerta6.AutoTransformEnable = true;
+            Puerta6.move(734f, 32f, 1570f);
+            Puerta6.rotateY(FastMath.PI_HALF);
+
+            Puerta7 = PuertaModelo.createMeshInstance("Puerta7");
+            Puerta7.AutoTransformEnable = true;
+            Puerta7.move(915f, 32f, 751f);
+            Puerta7.rotateY(FastMath.PI_HALF);
+
+            Puerta8 = PuertaModelo.createMeshInstance("Puerta8");
+            Puerta8.AutoTransformEnable = true;
+            Puerta8.move(695f, 32f, 600f);
+            Puerta8.rotateY(FastMath.PI_HALF);
+
+            Puerta9 = PuertaModelo.createMeshInstance("Puerta9");
+            Puerta9.AutoTransformEnable = true;
+            Puerta9.move(469f, 32f, 921f);
+
+            Puerta10 = PuertaModelo.createMeshInstance("Puerta10");
+            Puerta10.AutoTransformEnable = true;
+            Puerta10.move(695f, 32f, 912f);
+            Puerta10.rotateY(FastMath.PI_HALF);
+
+            Puerta11 = PuertaModelo.createMeshInstance("Puerta11");
+            Puerta11.AutoTransformEnable = true;
+            Puerta11.move(399f, 32f, 724f);
+
+            Puerta12 = PuertaModelo.createMeshInstance("Puerta12");
+            Puerta12.AutoTransformEnable = true;
+            Puerta12.move(454f, 32f, 331f);
+            Puerta12.rotateY(FastMath.PI_HALF);
+
+            Puerta13 = PuertaModelo.createMeshInstance("Puerta13");
+            Puerta13.AutoTransformEnable = true;
+            Puerta13.move(399f, 32f, 1292f);
+
+            Puerta14 = PuertaModelo.createMeshInstance("Puerta14");
+            Puerta14.AutoTransformEnable = true;
+            Puerta14.move(89f, 32f, 922f);
             //Textura de la carperta Media. Game.Default es un archivo de configuracion (Game.settings) util para poner cosas.
             //Pueden abrir el Game.settings que se ubica dentro de nuestro proyecto para configurar.
             var pathTexturaCaja = MediaDir + Game.Default.TexturaCaja;
@@ -108,7 +189,7 @@ namespace TGC.Group.Model
 
             //Dibuja un texto por pantalla
             DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir verticalmente, Control para bajar verticalmente y el mouse para mover la camara: " + TgcParserUtils.printVector3(Camara.Position) + TgcParserUtils.printVector3(Camara.LookAt) + "\n", 0, 30, Color.OrangeRed);
-            
+
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
             //Debemos recordar el orden en cual debemos multiplicar las matrices, en caso de tener modelos jerárquicos, tenemos control total.
             //Box.Transform = Matrix.Scaling(Box.Scale) * Matrix.RotationYawPitchRoll(Box.Rotation.Y, Box.Rotation.X, Box.Rotation.Z) * Matrix.Translation(Box.Position);
@@ -121,7 +202,21 @@ namespace TGC.Group.Model
             //Mesh.UpdateMeshTransform();
             //Render de una escena
             TgcScene.renderAll();
-            
+
+            Puerta1.render();
+            Puerta2.render();
+            Puerta3.render();
+            Puerta4.render();
+            Puerta5.render();
+            Puerta6.render();
+            Puerta7.render();
+            Puerta8.render();
+            Puerta9.render();
+            Puerta10.render();
+            Puerta11.render();
+            Puerta12.render();
+            Puerta13.render();
+            Puerta14.render();
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
         }
@@ -134,6 +229,21 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             //Dispose de una escena.
+            //PuertaModelo.dispose();
+            Puerta1.dispose();
+            Puerta2.dispose();
+            Puerta3.dispose();
+            Puerta4.dispose();
+            Puerta5.dispose();
+            Puerta6.dispose();
+            Puerta7.dispose();
+            Puerta8.dispose();
+            Puerta9.dispose();
+            Puerta10.dispose();
+            Puerta11.dispose();
+            Puerta12.dispose();
+            Puerta13.dispose();
+            Puerta14.dispose();
             TgcScene.disposeAll();
         }
     }
