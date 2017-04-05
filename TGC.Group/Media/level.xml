@@ -68,16 +68,16 @@
     <room name="Room-17" x="390" y="430" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-18" x="80" y="270" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
@@ -114,12 +114,12 @@
       <wall name="South" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-24" x="450" y="280" width="10" length="60" height="100" floorLevel="0">
-      <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Roof" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-25" x="80" y="730" width="370" length="190" height="100" floorLevel="0">
       <wall name="Roof" textureName="TexturesCom_MetalFloorsBare0026_1_seamless_S_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
@@ -132,16 +132,16 @@
     <room name="Room-26" x="390" y="720" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-28" x="80" y="920" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
@@ -156,8 +156,8 @@
     <room name="Room-44" x="460" y="920" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
@@ -170,28 +170,28 @@
       <wall name="South" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-46" x="690" y="860" width="10" length="60" height="100" floorLevel="0">
-      <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Roof" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-47" x="690" y="550" width="10" length="60" height="100" floorLevel="0">
-      <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Roof" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-48" x="910" y="700" width="10" length="60" height="100" floorLevel="0">
-      <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Roof" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-49" x="230" y="990" width="60" length="310" height="100" floorLevel="0">
       <wall name="Roof" textureName="TexturesCom_MetalFloorsBare0026_1_seamless_S_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
@@ -252,26 +252,26 @@
     <room name="Room-65" x="450" y="1670" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-66" x="200" y="1520" width="10" length="60" height="100" floorLevel="0">
-      <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Roof" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-68" x="730" y="1520" width="10" length="60" height="100" floorLevel="0">
-      <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Roof" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-75" x="290" y="1000" width="230" length="60" height="100" floorLevel="0">
       <wall name="Roof" textureName="TexturesCom_MetalFloorsBare0026_1_seamless_S_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
@@ -308,24 +308,24 @@
     <room name="Room-83" x="390" y="1290" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-84" x="450" y="1170" width="10" length="60" height="100" floorLevel="0">
-      <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Roof" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-87" x="430" y="200" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
@@ -353,7 +353,7 @@
       <wall name="North" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="5" vTile="1" />
     </room>
-    <room name="Room-91" x="990" y="210" width="180" length="180" height="100" floorLevel="0">
+    <room name="Room-91" x="990" y="210" width="260" length="140" height="100" floorLevel="0">
       <wall name="Roof" textureName="TexturesCom_MetalFloorsBare0026_1_seamless_S_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="ccreteflr016a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="East" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
@@ -362,14 +362,14 @@
       <wall name="South" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
     <room name="Room-92" x="980" y="210" width="10" length="60" height="100" floorLevel="0">
-      <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Roof" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
-    <room name="Room-93" x="40" y="1000" width="180" length="180" height="100" floorLevel="0">
+    <room name="Room-93" x="20" y="1030" width="180" length="260" height="100" floorLevel="0">
       <wall name="Roof" textureName="TexturesCom_MetalFloorsBare0026_1_seamless_S_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="ccreteflr016a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="East" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
@@ -377,11 +377,11 @@
       <wall name="North" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metalWall01_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
-    <room name="Room-94" x="220" y="1000" width="10" length="60" height="100" floorLevel="0">
+    <room name="Room-94" x="140" y="1290" width="60" length="10" height="100" floorLevel="0">
       <wall name="Roof" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="Floor" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="East" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
-      <wall name="West" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="metaltrack001aVert_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="North" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
       <wall name="South" textureName="metaltrack001a_COLOR.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
     </room>
