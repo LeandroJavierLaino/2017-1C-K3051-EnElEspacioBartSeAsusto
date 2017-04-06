@@ -1,0 +1,347 @@
+<tgcScene>
+  <name>stairs</name>
+  <texturesExport enabled="True" dir="Textures" />
+  <lightmapExport enabled="False" dir="LightMaps" />
+  <sceneBoundingBox min="[-41,0,-81]" max="[100,101,100]" />
+  <materials count="2">
+    <m name="Multimaterial" type="Multimaterial">
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+    </m>
+    <m name="Multimaterial" type="Multimaterial">
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+      </subM>
+    </m>
+  </materials>
+  <meshes count="3">
+    <mesh name="Room-1-Roof-0" layer="Default" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[-41,51,0]" max="[19,101,100]" />
+      <coordinatesIdx count="180">0 1 2 0 2 3 4 5 6 4 6 7 5 6 2 5 2 1 4 7 3 4 3 0 4 5 1 4 1 0 7 6 2 7 2 3 8 9 10 8 10 11 3 2 12 3 12 13 2 12 10 2 10 9 3 13 11 3 11 8 3 2 9 3 9 8 13 12 10 13 10 11 14 15 16 14 16 17 11 10 18 11 18 19 10 18 16 10 16 15 11 19 17 11 17 14 11 10 15 11 15 14 19 18 16 19 16 17 20 21 22 20 22 23 17 16 24 17 24 25 16 24 22 16 22 21 17 25 23 17 23 20 17 16 21 17 21 20 25 24 22 25 22 23 26 27 28 26 28 29 23 22 30 23 30 31 22 30 28 22 28 27 23 31 29 23 29 26 23 22 27 23 27 26 31 30 28 31 28 29 </coordinatesIdx>
+      <textCoordsIdx count="180">0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 </textCoordsIdx>
+      <colorsIdx count="180">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="60">0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12 13 13 14 14 15 15 16 16 17 17 18 18 19 19 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27 28 28 29 29 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="96">39 61 20 39 61 80 19 61 80 19 61 20 39 51 20 39 51 80 19 51 80 19 51 20 19 71 20 19 71 80 -1 71 80 -1 71 20 -1 61 80 -1 61 20 -1 81 20 -1 81 80 -21 81 80 -21 81 20 -21 71 80 -21 71 20 -21 91 20 -21 91 80 -41 91 80 -41 91 20 -41 81 80 -41 81 20 -41 101 20 -41 101 80 -61 101 80 -61 101 20 -61 91 80 -61 91 20 </vertices>
+      <normals count="96">0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
+      <texCoords count="24">2.2 1 0.4 1 0.4 0 2.2 0 1.8 1 0 1 0 0 1.8 0 0.2 1 0.2 0 0.8 1 0.8 0 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+    </mesh>
+    <mesh name="Room-1-Roof-0" layer="Default" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[40,0,-81]" max="[100,50,19]" />
+      <coordinatesIdx count="180">0 1 2 0 2 3 4 5 6 4 6 7 5 6 2 5 2 1 4 7 3 4 3 0 4 5 1 4 1 0 7 6 2 7 2 3 8 9 10 8 10 11 3 2 12 3 12 13 2 12 10 2 10 9 3 13 11 3 11 8 3 2 9 3 9 8 13 12 10 13 10 11 14 15 16 14 16 17 11 10 18 11 18 19 10 18 16 10 16 15 11 19 17 11 17 14 11 10 15 11 15 14 19 18 16 19 16 17 20 21 22 20 22 23 17 16 24 17 24 25 16 24 22 16 22 21 17 25 23 17 23 20 17 16 21 17 21 20 25 24 22 25 22 23 26 27 28 26 28 29 23 22 30 23 30 31 22 30 28 22 28 27 23 31 29 23 29 26 23 22 27 23 27 26 31 30 28 31 28 29 </coordinatesIdx>
+      <textCoordsIdx count="180">0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 </textCoordsIdx>
+      <colorsIdx count="180">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="60">0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12 13 13 14 14 15 15 16 16 17 17 18 18 19 19 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27 28 28 29 29 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="96">40 10 -81 100 10 -81 100 10 -61 40 10 -61 40 0 -81 100 0 -81 100 0 -61 40 0 -61 40 20 -61 100 20 -61 100 20 -41 40 20 -41 100 10 -41 40 10 -41 40 30 -41 100 30 -41 100 30 -21 40 30 -21 100 20 -21 40 20 -21 40 40 -21 100 40 -21 100 40 -1 40 40 -1 100 30 -1 40 30 -1 40 50 -1 100 50 -1 100 50 19 40 50 19 100 40 19 40 40 19 </vertices>
+      <normals count="96">0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
+      <texCoords count="24">2.2 1 0.4 1 0.4 0 2.2 0 1.8 1 0 1 0 0 1.8 0 0.2 1 0.2 0 0.8 1 0.8 0 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+    </mesh>
+    <mesh name="Room-1-Roof-0" layer="Default" type="Original" matId="1" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[38.81,42,20]" max="[97.19,52,80]" />
+      <coordinatesIdx count="36">0 1 2 0 2 3 4 5 6 4 6 7 5 6 2 5 2 1 4 7 3 4 3 0 4 5 1 4 1 0 7 6 2 7 2 3 </coordinatesIdx>
+      <textCoordsIdx count="36">0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 </textCoordsIdx>
+      <colorsIdx count="36">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="12">0 0 1 1 2 2 3 3 4 4 5 5 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="24">38.81 52 20 97.19 52 20 97.19 52 80 38.81 52 80 38.81 42 20 97.19 42 20 97.19 42 80 38.81 42 80 </vertices>
+      <normals count="24">0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
+      <texCoords count="24">2.2 1 0.4 1 0.4 0 2.2 0 1.8 1 0 1 0 0 1.8 0 0.2 1 0.2 0 0.8 1 0.8 0 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+    </mesh>
+  </meshes>
+</tgcScene>
