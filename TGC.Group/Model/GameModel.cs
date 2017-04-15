@@ -76,7 +76,6 @@ namespace TGC.Group.Model
         private bool glowStick = true;
         private bool lighter = false;
         private bool flashlight = false;
-        private Vector3 lightDirection = new Vector3();
 
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
@@ -318,7 +317,6 @@ namespace TGC.Group.Model
                 this.flashlight = true;
                 lightMesh.Color = Color.WhiteSmoke;
             }
-            
         }
 
         /// <summary>
@@ -331,13 +329,9 @@ namespace TGC.Group.Model
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
 
-            if ( this.glowStick || this.lighter )
+            if (this.glowStick || this.lighter || this.flashlight)
             {
                 Shader = TgcShaders.Instance.TgcMeshPointLightShader;
-            }
-            if ( this.flashlight )
-            {
-                Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
             }
 
             foreach (var mesh in TgcScene.Meshes)
@@ -345,9 +339,6 @@ namespace TGC.Group.Model
                 mesh.Effect = Shader;
                 mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(mesh.RenderType);
             }
-
-            lightMesh.Position = Camara.Position;
-            lightDirection = Camara.Position;
 
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
@@ -358,16 +349,13 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    //mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(lightDir));
-                    mesh.Effect.SetValue("lightIntensity", 20f);
-                    mesh.Effect.SetValue("lightAttenuation", 2f);
-                    //mesh.Effect.SetValue("spotLightAngleCos", 39f);
-                    //mesh.Effect.SetValue("spotLightExponent", 7f);
+                    mesh.Effect.SetValue("lightIntensity", 100f);
+                    mesh.Effect.SetValue("lightAttenuation", 5f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
@@ -377,11 +365,8 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    //mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(lightDir));
                     mesh.Effect.SetValue("lightIntensity", 35f);
                     mesh.Effect.SetValue("lightAttenuation", 1f);
-                    //mesh.Effect.SetValue("spotLightAngleCos", 39f);
-                    //mesh.Effect.SetValue("spotLightExponent", 7f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
@@ -392,21 +377,24 @@ namespace TGC.Group.Model
                 }
                 if (flashlight)
                 {
-                    
+                    float x;
+                    float y;
+                    float z;
+                    x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    lightMesh.Position = new Vector3(x, y, z);
                     //Cargar variables shader de la luz
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(lightMesh.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array((Camara.LookAt - Camara.Position));
-                    mesh.Effect.SetValue("lightIntensity", 2f);
-                    mesh.Effect.SetValue("lightAttenuation", 150f);
-                    mesh.Effect.SetValue("spotLightAngleCos", 150f);
-                    mesh.Effect.SetValue("spotLightExponent", 150f);
+                    mesh.Effect.SetValue("lightIntensity", 45f);
+                    mesh.Effect.SetValue("lightAttenuation", 1.5f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 10f);
                 }
@@ -416,8 +404,12 @@ namespace TGC.Group.Model
             }
 
             //Dibuja un texto por pantalla
-            DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir verticalmente, Control para bajar verticalmente y el mouse para mover la camara: " + TgcParserUtils.printVector3(Camara.Position) + TgcParserUtils.printVector3(Camara.LookAt) + "\n", 0, 30, Color.OrangeRed);
-
+            DrawText.drawText("Usa W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n " 
+                + "Position : " + TgcParserUtils.printVector3(Camara.Position) + "\n"
+                + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n" 
+                + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) +"\n"
+                + " Si queres cambiar entre las distintas luces usa F,G o H ", 0, 30, Color.OrangeRed);
+            
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
             //Debemos recordar el orden en cual debemos multiplicar las matrices, en caso de tener modelos jerárquicos, tenemos control total.
             //Box.Transform = Matrix.Scaling(Box.Scale) * Matrix.RotationYawPitchRoll(Box.Rotation.Y, Box.Rotation.X, Box.Rotation.Z) * Matrix.Translation(Box.Position);
@@ -490,6 +482,7 @@ namespace TGC.Group.Model
             Puerta13.dispose();
             Puerta14.dispose();
             TgcScene.disposeAll();
+            lightMesh.dispose();
             Shader.Dispose();
         }
     }
