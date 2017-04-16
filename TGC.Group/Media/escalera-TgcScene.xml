@@ -10,7 +10,7 @@
       <specular>[0,0,0,0]</specular>
       <opacity>1</opacity>
       <alphaBlendEnable>False</alphaBlendEnable>
-      <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalFloorsBare0026_1_seamless_S.jpg</bitmap>
+      <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_FloorsVarious0054_1_seamless_S_COLOR.jpg</bitmap>
     </m>
     <m name="Standardmaterial" type="Standardmaterial">
       <ambient>[0,0,0,0]</ambient>

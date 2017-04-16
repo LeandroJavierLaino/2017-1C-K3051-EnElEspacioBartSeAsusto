@@ -11,7 +11,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Metal1_1c.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalBare0104_1_S.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -19,7 +19,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Metal4_1.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaldoor046a_COLOR.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -27,7 +27,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Metal4_1.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaldoor046a_COLOR.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -35,7 +35,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Metal1_1c.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalBare0104_1_S.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -43,7 +43,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">floor1_3.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalBare0104_1_S.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -51,7 +51,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Metal1_1c.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalBare0104_1_S.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -59,7 +59,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Metal1_1c.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalBare0104_1_S.jpg</bitmap>
       </subM>
     </m>
   </materials>
