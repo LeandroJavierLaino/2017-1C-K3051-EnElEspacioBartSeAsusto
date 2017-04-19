@@ -330,7 +330,7 @@ namespace TGC.Group.Model
         {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
-
+            
             if (this.glowStick || this.lighter || this.flashlight)
             {
                 Shader = TgcShaders.Instance.TgcMeshPointLightShader;
@@ -339,7 +339,7 @@ namespace TGC.Group.Model
             {
                 Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
             }*/
-
+            
             foreach (var mesh in TgcScene.Meshes)
             {
                 mesh.Effect = Shader;
@@ -386,7 +386,38 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
                 if (flashlight)
-                {
+                {/*
+                    float x;
+                    float y;
+                    float z;
+                    x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    lightMesh.Position = new Vector3(x, y, z);
+                    float a;
+                    float b;
+                    float c;
+                    a = (float)140.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    b = (float)140.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    c = (float)140.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    var direccion = new Vector3(a,b,c);
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(lightMesh.Position));
+                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(direccion));
+                    mesh.Effect.SetValue("lightIntensity", 45f);
+                    mesh.Effect.SetValue("lightAttenuation", 1.5f);
+                    mesh.Effect.SetValue("spotLightAngleCos", 0.68f);
+                    mesh.Effect.SetValue("spotLightExponent", 7f);
+
+                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularExp", 29f);
+                    */
+                    
                     float x;
                     float y;
                     float z;
@@ -398,11 +429,8 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(lightMesh.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    //mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(lightDir));
                     mesh.Effect.SetValue("lightIntensity", 45f);
                     mesh.Effect.SetValue("lightAttenuation", 1.5f);
-                    //mesh.Effect.SetValue("spotLightAngleCos", 39f);
-                    //mesh.Effect.SetValue("spotLightExponent", 7f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
@@ -410,6 +438,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 10f);
+                
                 }
 
                 //Renderizar modelo
