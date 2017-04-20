@@ -277,7 +277,7 @@ namespace TGC.Group.Model
 
             //Luz??
 
-            lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10));
+            lightMesh = TgcBox.fromSize(new Vector3(5, 5, 5));
 
             //Pongo al mesh en posicion, activo e AutoTransform
             lightMesh.AutoTransformEnable = true;
@@ -299,6 +299,7 @@ namespace TGC.Group.Model
   
             if (Input.keyPressed(Key.F))
             {
+                lightMesh.Color = Color.GreenYellow;
                 this.glowStick = true;
                 this.lighter = false;
                 this.flashlight = false;
@@ -316,9 +317,7 @@ namespace TGC.Group.Model
                 this.lighter = false;
                 this.flashlight = true;
                 lightMesh.Color = Color.WhiteSmoke;
-            }
-
-            
+            }    
         }
 
         /// <summary>
@@ -339,26 +338,25 @@ namespace TGC.Group.Model
             {
                 Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
             }*/
-            
+
             foreach (var mesh in TgcScene.Meshes)
             {
                 mesh.Effect = Shader;
                 mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(mesh.RenderType);
             }
-
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
             {
                 if (glowStick)
                 {
+                    lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    //mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(lightDir));
                     mesh.Effect.SetValue("lightIntensity", 20f);
                     mesh.Effect.SetValue("lightAttenuation", 2f);
-
+                    
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
@@ -368,15 +366,13 @@ namespace TGC.Group.Model
                 }
                 if (lighter)
                 {
+                    lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    //mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(lightDir));
                     mesh.Effect.SetValue("lightIntensity", 35f);
                     mesh.Effect.SetValue("lightAttenuation", 1f);
-                    //mesh.Effect.SetValue("spotLightAngleCos", 39f);
-                    //mesh.Effect.SetValue("spotLightExponent", 7f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
@@ -417,13 +413,30 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 29f);
                     */
-                    
                     float x;
                     float y;
                     float z;
+
+                    /* Posible calculo de colision entre la luz y los meshes para calcular la proximidad
+                    if (mesh.Position.X - lightMesh.Position.X < 0 || mesh.Position.Y - lightMesh.Position.Y < 0 || mesh.Position.Z - lightMesh.Position.Z > 0)
+                    {
+                        
+                        x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                        y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                        z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    }
+                    else
+                    {
+                     
+                        x = (float)(mesh.Position.X -lightMesh.Position.X) * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                        y = (float)(mesh.Position.Y - lightMesh.Position.Y) * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                        z = (float)(mesh.Position.Z - lightMesh.Position.Z) * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    }*/
+
                     x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
                     y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
                     z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+
                     lightMesh.Position = new Vector3(x, y, z);
                     //Cargar variables shader de la luz
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
@@ -438,7 +451,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 10f);
-                
+
                 }
 
                 //Renderizar modelo
@@ -494,6 +507,7 @@ namespace TGC.Group.Model
             Puerta26.render();
             Puerta27.render();
             Puerta28.render();
+            lightMesh.render();
             
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
