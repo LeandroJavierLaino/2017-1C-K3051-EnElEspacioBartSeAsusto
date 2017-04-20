@@ -507,7 +507,7 @@ namespace TGC.Group.Model
             Puerta26.render();
             Puerta27.render();
             Puerta28.render();
-            lightMesh.render();
+            //lightMesh.render();
             
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
