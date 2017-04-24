@@ -44,6 +44,8 @@ namespace TGC.Group.Model
         private TgcScene TgcScene { get; set; }
 
         private TgcMesh PuertaModelo { get; set; }
+        private TgcMesh MonstruoModelo { get; set; }
+
 
         private TgcMesh Puerta1 { get; set; }
         private TgcMesh Puerta2 { get; set; }
@@ -73,9 +75,16 @@ namespace TGC.Group.Model
         private TgcMesh Puerta26 { get; set; }
         private TgcMesh Puerta27 { get; set; }
         private TgcMesh Puerta28 { get; set; }
+
+        private TgcMesh Monstruo { get; set; }
+
         private bool glowStick = true;
         private bool lighter = false;
         private bool flashlight = false;
+
+        //Variables del Monstruo
+        private bool monstruoActivo = false;
+        private const float monstruoVelocidad = 50f;
 
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
@@ -104,7 +113,7 @@ namespace TGC.Group.Model
             //Device de DirectX para crear primitivas.
             //
             PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
-
+            MonstruoModelo = loader.loadSceneFromFile(this.MediaDir + "\\Monstruo-TgcScene.xml").Meshes[0];
             
             Puerta1 = PuertaModelo.createMeshInstance("Puerta1");
             Puerta1.AutoTransformEnable = true;
@@ -259,6 +268,10 @@ namespace TGC.Group.Model
             Puerta28.AutoTransformEnable = true;
             Puerta28.move(89f, 142f, 922f);
             TgcScene.Meshes.Add(Puerta28);
+
+            Monstruo = MonstruoModelo.createMeshInstance("Monstruo");
+            Monstruo.move(0f, 0f, 0f);
+            TgcScene.Meshes.Add(Monstruo);
             //Textura de la carperta Media. Game.Default es un archivo de configuracion (Game.settings) util para poner cosas.
             //Pueden abrir el Game.settings que se ubica dentro de nuestro proyecto para configurar.
             var pathTexturaCaja = MediaDir + Game.Default.TexturaCaja;
@@ -317,7 +330,22 @@ namespace TGC.Group.Model
                 this.lighter = false;
                 this.flashlight = true;
                 lightMesh.Color = Color.WhiteSmoke;
-            }    
+            }
+
+            //Para activar o desactivar al monstruo
+            if (Input.keyPressed(Key.M)) {
+                this.monstruoActivo = !this.monstruoActivo;
+
+            }
+            //Logica del monstruo
+            if (this.monstruoActivo) {
+                var targetDirection = Vector3.Normalize(Camara.Position - Monstruo.Position);
+                var monstruoMovement = targetDirection * monstruoVelocidad * ElapsedTime;
+                Monstruo.move(monstruoMovement);
+                var targetAngleH = FastMath.Atan2(targetDirection.X, targetDirection.Z);
+                var targetAngleV = FastMath.Asin(targetDirection.Y);
+                Monstruo.Rotation = new Vector3(targetAngleV,targetAngleH+FastMath.PI,0);
+            }
         }
 
         /// <summary>
@@ -329,7 +357,7 @@ namespace TGC.Group.Model
         {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
-            
+
             if (this.glowStick || this.lighter || this.flashlight)
             {
                 Shader = TgcShaders.Instance.TgcMeshPointLightShader;
@@ -347,6 +375,8 @@ namespace TGC.Group.Model
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
             {
+                //se actualiza el transform del mesh
+                mesh.UpdateMeshTransform();
                 if (glowStick)
                 {
                     lightMesh.Position = Camara.Position;
@@ -462,8 +492,10 @@ namespace TGC.Group.Model
             DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n " 
                 + "Position : " + TgcParserUtils.printVector3(Camara.Position) + "\n"
                 + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n" 
-                + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position), 0, 30, Color.OrangeRed);
-            
+                + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
+                + " Monster Rotation : " + TgcParserUtils.printVector3(Monstruo.Rotation)
+            , 0, 30, Color.OrangeRed);
+
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
             //Debemos recordar el orden en cual debemos multiplicar las matrices, en caso de tener modelos jerárquicos, tenemos control total.
             //Box.Transform = Matrix.Scaling(Box.Scale) * Matrix.RotationYawPitchRoll(Box.Rotation.Y, Box.Rotation.X, Box.Rotation.Z) * Matrix.Translation(Box.Position);
@@ -536,6 +568,7 @@ namespace TGC.Group.Model
             Puerta12.dispose();
             Puerta13.dispose();
             Puerta14.dispose();
+            Monstruo.dispose();
             TgcScene.disposeAll();
             Shader.Dispose();
         }
