@@ -113,7 +113,9 @@ namespace TGC.Group.Model
             //Device de DirectX para crear primitivas.
             //
             PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
+
             MonstruoModelo = loader.loadSceneFromFile(this.MediaDir + "\\Monstruo-TgcScene.xml").Meshes[0];
+
             
             Puerta1 = PuertaModelo.createMeshInstance("Puerta1");
             Puerta1.AutoTransformEnable = true;
@@ -416,9 +418,9 @@ namespace TGC.Group.Model
                     float x;
                     float y;
                     float z;
-                    x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    x = (float)30 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)30 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)30 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                     lightMesh.Position = new Vector3(x, y, z);
                     float a;
                     float b;
@@ -426,47 +428,56 @@ namespace TGC.Group.Model
                     a = (float)140.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
                     b = (float)140.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
                     c = (float)140.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-                    var direccion = new Vector3(a,b,c);
+                    var direccion = new Vector3(a, b, c);
+                    direccion.Normalize();
+                    var posLuz = lightMesh.Position;
+                    
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(lightMesh.Position));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(posLuz));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(direccion));
-                    mesh.Effect.SetValue("lightIntensity", 45f);
-                    mesh.Effect.SetValue("lightAttenuation", 1.5f);
-                    mesh.Effect.SetValue("spotLightAngleCos", 0.68f);
-                    mesh.Effect.SetValue("spotLightExponent", 7f);
+                    mesh.Effect.SetValue("lightIntensity", 450f);
+                    mesh.Effect.SetValue("lightAttenuation", 8f);
+                    mesh.Effect.SetValue("spotLightAngleCos", 0.03f);
+                    mesh.Effect.SetValue("spotLightExponent", 0.5f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialSpecularExp", 29f);
-                    */
+                    mesh.Effect.SetValue("materialSpecularExp", 29f);*/
+                    
                     float x;
                     float y;
                     float z;
-
-                    /* Posible calculo de colision entre la luz y los meshes para calcular la proximidad
-                    if (mesh.Position.X - lightMesh.Position.X < 0 || mesh.Position.Y - lightMesh.Position.Y < 0 || mesh.Position.Z - lightMesh.Position.Z > 0)
+                    /*
+                    //Posible calculo de colision entre la luz y los meshes para calcular la proximidad
+                    if (mesh.Position.X - lightMesh.Position.X < 5 || mesh.Position.Y - lightMesh.Position.Y < 5 || mesh.Position.Z - lightMesh.Position.Z < 5)
                     {
+                        x = (float)(mesh.Position.X - lightMesh.Position.X) * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                        y = (float)(mesh.Position.Y - lightMesh.Position.Y) * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                        z = (float)(mesh.Position.Z - lightMesh.Position.Z) * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                         
-                        x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                        y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                        z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                     }
                     else
                     {
-                     
-                        x = (float)(mesh.Position.X -lightMesh.Position.X) * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                        y = (float)(mesh.Position.Y - lightMesh.Position.Y) * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                        z = (float)(mesh.Position.Z - lightMesh.Position.Z) * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-                    }*/
+                        if(mesh.Position.X - lightMesh.Position.X >= 5 || mesh.Position.Y - lightMesh.Position.Y >= 5 || mesh.Position.Z - lightMesh.Position.Z >= 5) {
 
+                            x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                            y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                            z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                        }
+                        x = (float)140 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                        y = (float)140 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                        z = (float)140 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+
+                    }*/
+                    
                     x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
                     y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
                     z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-
+                    
                     lightMesh.Position = new Vector3(x, y, z);
                     //Cargar variables shader de la luz
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
@@ -481,7 +492,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 10f);
-
+                    
                 }
 
                 //Renderizar modelo
