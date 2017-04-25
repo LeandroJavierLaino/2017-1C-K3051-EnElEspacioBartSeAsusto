@@ -13,6 +13,7 @@ using TGC.Core.Utils;
 using System.Collections.Generic;
 using TGC.Core.UserControls.Modifier;
 using TGC.Core.Shaders;
+using TGC.Core.BoundingVolumes;
 
 namespace TGC.Group.Model
 {
@@ -91,7 +92,10 @@ namespace TGC.Group.Model
         
         private Microsoft.DirectX.Direct3D.Effect Shader { get; set; }
         private TgcBox lightMesh;
-         
+        private TgcBox playerPos;
+        private TgcBoundingSphere boundingSphereCamara;
+ 
+
 
         /// <summary>
         ///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo.
@@ -109,14 +113,15 @@ namespace TGC.Group.Model
             //Version para cargar escena desde carpeta descomprimida
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
-            
+
             //Device de DirectX para crear primitivas.
             //
             PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
 
             MonstruoModelo = loader.loadSceneFromFile(this.MediaDir + "\\Monstruo-TgcScene.xml").Meshes[0];
-
-            
+            //=========================================================================================
+            //Ojo con el add de meshes a la escena ya que los agrega y no son elementos independientes.
+            //=========================================================================================
             Puerta1 = PuertaModelo.createMeshInstance("Puerta1");
             Puerta1.AutoTransformEnable = true;
             Puerta1.move(89f, 31.5f, 275f);
@@ -290,7 +295,7 @@ namespace TGC.Group.Model
             //Entonces actualizamos la posición lógica, luego podemos utilizar esto en render para posicionar donde corresponda con transformaciones.
             Box.Position = new Vector3(-25, 0, 0);
 
-            //Luz??
+            //Luz?? Sep, si uno hace en el render un lightMesh.render(), te va a mostrar donde se posiciona la luz en el espacio.
 
             lightMesh = TgcBox.fromSize(new Vector3(5, 5, 5));
 
@@ -298,9 +303,12 @@ namespace TGC.Group.Model
             lightMesh.AutoTransformEnable = true;
             lightMesh.Position = new Vector3(463, 51, 83);
             lightMesh.Color = Color.GreenYellow;
-                      
-        }
 
+            boundingSphereCamara = new TgcBoundingSphere(new Vector3(463, Camara.Position.Y + 15, 83), 15);
+            playerPos = TgcBox.fromSize(new Vector3(5, 5, 5));
+            lightMesh.Position = new Vector3(463, 51, 83);
+           
+        }
         /// <summary>
         ///     Se llama en cada frame.
         ///     Se debe escribir toda la lógica de computo del modelo, así como también verificar entradas del usuario y reacciones
@@ -348,6 +356,8 @@ namespace TGC.Group.Model
                 var targetAngleV = FastMath.Asin(targetDirection.Y);
                 Monstruo.Rotation = new Vector3(targetAngleV,targetAngleH+FastMath.PI,0);
             }
+
+            
         }
 
         /// <summary>
@@ -360,15 +370,18 @@ namespace TGC.Group.Model
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
 
-            if (this.glowStick || this.lighter || this.flashlight)
+            if (this.glowStick || this.lighter)
             {
                 Shader = TgcShaders.Instance.TgcMeshPointLightShader;
-            }/*
-            if ( this.flashlight )
+            }
+            if (this.flashlight)
             {
                 Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
-            }*/
-
+            }
+            playerPos.Position = Camara.Position;
+            boundingSphereCamara.moveCenter(new Vector3(playerPos.Position.X + 0, playerPos.Position.Y - 15, playerPos.Position.Z + 0));
+            //sphereCamara.Position = new Vector3(Camara.Position.X + 0,Camara.Position.Y-15,Camara.Position.Z + 0);
+            
             foreach (var mesh in TgcScene.Meshes)
             {
                 mesh.Effect = Shader;
@@ -388,7 +401,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("lightIntensity", 20f);
                     mesh.Effect.SetValue("lightAttenuation", 2f);
-                    
+
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
@@ -414,97 +427,52 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
                 if (flashlight)
-                {/*
+                {
                     float x;
                     float y;
                     float z;
-                    x = (float)30 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)30 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)30 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    x = (float)80.5 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)80.5 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)80.5 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                     lightMesh.Position = new Vector3(x, y, z);
                     float a;
                     float b;
                     float c;
-                    a = (float)140.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    b = (float)140.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    c = (float)140.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    a = (float)3000.01 * (Camara.LookAt - Camara.Position).X + Camara.Position.X;
+                    b = (float)3000.01 * (Camara.LookAt - Camara.Position).Y + Camara.Position.Y;
+                    c = (float)3000.01 * (Camara.LookAt - Camara.Position).Z + Camara.Position.Z;
                     var direccion = new Vector3(a, b, c);
                     direccion.Normalize();
                     var posLuz = lightMesh.Position;
-                    
+
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(posLuz));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(direccion));
-                    mesh.Effect.SetValue("lightIntensity", 450f);
-                    mesh.Effect.SetValue("lightAttenuation", 8f);
-                    mesh.Effect.SetValue("spotLightAngleCos", 0.03f);
-                    mesh.Effect.SetValue("spotLightExponent", 0.5f);
+                    mesh.Effect.SetValue("lightIntensity", 350f);
+                    mesh.Effect.SetValue("lightAttenuation", 5f);
+                    mesh.Effect.SetValue("spotLightAngleCos", 0.65f);
+                    mesh.Effect.SetValue("spotLightExponent", 10f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialSpecularExp", 29f);*/
-                    
-                    float x;
-                    float y;
-                    float z;
-                    /*
-                    //Posible calculo de colision entre la luz y los meshes para calcular la proximidad
-                    if (mesh.Position.X - lightMesh.Position.X < 5 || mesh.Position.Y - lightMesh.Position.Y < 5 || mesh.Position.Z - lightMesh.Position.Z < 5)
-                    {
-                        x = (float)(mesh.Position.X - lightMesh.Position.X) * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                        y = (float)(mesh.Position.Y - lightMesh.Position.Y) * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                        z = (float)(mesh.Position.Z - lightMesh.Position.Z) * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-                        
-                    }
-                    else
-                    {
-                        if(mesh.Position.X - lightMesh.Position.X >= 5 || mesh.Position.Y - lightMesh.Position.Y >= 5 || mesh.Position.Z - lightMesh.Position.Z >= 5) {
-
-                            x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                            y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                            z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-                        }
-                        x = (float)140 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                        y = (float)140 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                        z = (float)140 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-
-                    }*/
-                    
-                    x = (float)133.05 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)133.05 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)133.05 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-                    
-                    lightMesh.Position = new Vector3(x, y, z);
-                    //Cargar variables shader de la luz
-                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(lightMesh.Position));
-                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("lightIntensity", 45f);
-                    mesh.Effect.SetValue("lightAttenuation", 1.5f);
-
-                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
-                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
-                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialSpecularExp", 10f);
-                    
+                    mesh.Effect.SetValue("materialSpecularExp", 29f);
                 }
-
+                
                 //Renderizar modelo
                 mesh.render();
             }
 
             //Dibuja un texto por pantalla
-            DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n " 
+            DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n "
                 + "Position : " + TgcParserUtils.printVector3(Camara.Position) + "\n"
-                + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n" 
+                + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n"
                 + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
-                + " Monster Rotation : " + TgcParserUtils.printVector3(Monstruo.Rotation)
+                + " Monster Rotation : " + TgcParserUtils.printVector3(Monstruo.Rotation) + "\n"
+                + " Boundin Sphere Bottom : " + TgcParserUtils.printVector3(boundingSphereCamara.Position)
             , 0, 30, Color.OrangeRed);
 
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
@@ -519,8 +487,6 @@ namespace TGC.Group.Model
             //Mesh.UpdateMeshTransform();
             //Render de una escena
             //TgcScene.renderAll();
-
-            //lightMesh.render();
 
             Puerta1.render();
             Puerta2.render();
@@ -551,6 +517,8 @@ namespace TGC.Group.Model
             Puerta27.render();
             Puerta28.render();
             //lightMesh.render();
+            //Es revelde se va para donde quiere y no obedece :/ and IDKW!
+            boundingSphereCamara.render();
             
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
