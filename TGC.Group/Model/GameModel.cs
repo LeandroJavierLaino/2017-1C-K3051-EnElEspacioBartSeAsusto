@@ -13,6 +13,8 @@ using TGC.Core.Utils;
 using System.Collections.Generic;
 using TGC.Core.UserControls.Modifier;
 using TGC.Core.Shaders;
+using TGC.Core.Collision;
+using TGC.Examples.Collision.SphereCollision;
 
 namespace TGC.Group.Model
 {
@@ -35,6 +37,10 @@ namespace TGC.Group.Model
             Name = Game.Default.Name;
             Description = Game.Default.Description;
         }
+
+
+        private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionables = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
+
 
         //Caja que se muestra en el ejemplo.
         //usar TgcBox como ejemplo para cargar cualquier caja que queramos.
@@ -77,14 +83,18 @@ namespace TGC.Group.Model
         private TgcMesh Puerta28 { get; set; }
 
         private TgcMesh Monstruo { get; set; }
+        private SphereCollisionManager collisionManager;
 
         private bool glowStick = true;
         private bool lighter = false;
         private bool flashlight = false;
 
         //Variables del Monstruo
+        private Core.BoundingVolumes.TgcBoundingSphere monstruoSphere { get; set; }
         private bool monstruoActivo = false;
-        private const float monstruoVelocidad = 50f;
+        //si esta variable es true persigue al jugador
+        private bool monstruoEnojado = false;
+        private const float monstruoVelocidad = 90f;
 
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
@@ -103,7 +113,7 @@ namespace TGC.Group.Model
         {
             //FPS Camara Modo Dios 
             //TODO: diseñar camara con colisiones y física.
-            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 51, 83), 100f, 100f, Input);
+            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 51, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
             //Version para cargar escena desde carpeta descomprimida
@@ -272,7 +282,13 @@ namespace TGC.Group.Model
             TgcScene.Meshes.Add(Puerta28);
 
             Monstruo = MonstruoModelo.createMeshInstance("Monstruo");
-            Monstruo.move(0f, 0f, 0f);
+            Monstruo.move(463, 30, 83);
+            monstruoSphere = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(Monstruo);
+            objetosColisionables.Clear();
+            foreach (var mesh in TgcScene.Meshes)
+            {
+                objetosColisionables.Add(mesh.BoundingBox);
+            }
             TgcScene.Meshes.Add(Monstruo);
             //Textura de la carperta Media. Game.Default es un archivo de configuracion (Game.settings) util para poner cosas.
             //Pueden abrir el Game.settings que se ubica dentro de nuestro proyecto para configurar.
@@ -298,7 +314,10 @@ namespace TGC.Group.Model
             lightMesh.AutoTransformEnable = true;
             lightMesh.Position = new Vector3(463, 51, 83);
             lightMesh.Color = Color.GreenYellow;
-                      
+
+            collisionManager = new SphereCollisionManager();
+
+
         }
 
         /// <summary>
@@ -336,17 +355,67 @@ namespace TGC.Group.Model
 
             //Para activar o desactivar al monstruo
             if (Input.keyPressed(Key.M)) {
-                this.monstruoActivo = !this.monstruoActivo;
+                monstruoActivo = !monstruoActivo;
 
             }
             //Logica del monstruo
-            if (this.monstruoActivo) {
-                var targetDirection = Vector3.Normalize(Camara.Position - Monstruo.Position);
+            if (monstruoActivo) {
+                var targetDistance = Camara.Position - Monstruo.Position;
+
+                targetDistance.Y = 0f;//El monstruo solo se mueve en el plano XZ
+
+                var targetDirection = Vector3.Normalize(targetDistance);
                 var monstruoMovement = targetDirection * monstruoVelocidad * ElapsedTime;
-                Monstruo.move(monstruoMovement);
+
                 var targetAngleH = FastMath.Atan2(targetDirection.X, targetDirection.Z);
                 var targetAngleV = FastMath.Asin(targetDirection.Y);
-                Monstruo.Rotation = new Vector3(targetAngleV,targetAngleH+FastMath.PI,0);
+                var originalRot = Monstruo.Rotation;
+                
+                var originalPos = Monstruo.Position;
+
+                Monstruo.Rotation = new Vector3(targetAngleV, targetAngleH + FastMath.PI, 0);
+                var trueMov = collisionManager.moveCharacter(monstruoSphere, monstruoMovement,objetosColisionables);
+                Monstruo.move(trueMov);
+                /*
+                Monstruo.move(monstruoMovement);
+                //Chequear si el objeto principal en su nueva posición choca con alguno de los objetos de la escena.
+                //Si es así, entonces volvemos a la posición original.
+                //Cada TgcMesh tiene un objeto llamado BoundingBox. El BoundingBox es una caja 3D que representa al objeto
+                //de forma simplificada (sin tener en cuenta toda la complejidad interna del modelo).
+                //Este BoundingBox se utiliza para chequear si dos objetos colisionan entre sí.
+                //El framework posee la clase TgcCollisionUtils con muchos algoritmos de colisión de distintos tipos de objetos.
+                //Por ejemplo chequear si dos cajas colisionan entre sí, o dos esferas, o esfera con caja, etc.
+                var collisionFound = false;
+
+                //chequeo de Colision mocho del monstruo
+                foreach (var mesh in this.TgcScene.Meshes)
+                {
+                    if (mesh.Equals(Monstruo)) continue;
+                    //Los dos BoundingBox que vamos a testear
+                    var mainMeshBoundingBox = Monstruo.BoundingBox;
+                    var sceneMeshBoundingBox = mesh.BoundingBox;
+
+                    //Ejecutar algoritmo de detección de colisiones
+                    var collisionResult = TgcCollisionUtils.classifyBoxBox(mainMeshBoundingBox, sceneMeshBoundingBox);
+
+                    //Hubo colisión con un objeto. Guardar resultado y abortar loop.
+                    if (collisionResult != TgcCollisionUtils.BoxBoxResult.Afuera)
+                    {
+                        collisionFound = true;
+                        break;
+                    }
+                }
+
+                //Si hubo alguna colisión, entonces restaurar la posición original del mesh
+                if (collisionFound)
+                {
+                    Monstruo.Position = originalPos;
+                    Monstruo.Rotation = originalRot;
+                }
+                */
+
+
+                
             }
         }
 
@@ -379,6 +448,7 @@ namespace TGC.Group.Model
             {
                 //se actualiza el transform del mesh
                 mesh.UpdateMeshTransform();
+                
                 if (glowStick)
                 {
                     lightMesh.Position = Camara.Position;

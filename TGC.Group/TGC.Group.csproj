@@ -86,6 +86,7 @@
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
     <Compile Include="Model\GameModel.cs" />
+    <Compile Include="Model\SphereCollisionManager.cs" />
     <Compile Include="Model\TgcFpsCamera.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
