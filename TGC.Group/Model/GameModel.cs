@@ -86,9 +86,9 @@ namespace TGC.Group.Model
         private TgcMesh Monstruo { get; set; }
         private SphereCollisionManager collisionManager;
 
-        private bool glowStick = true;
-        private bool lighter = false;
-        private bool flashlight = false;
+        //private bool glowStick = true;
+        //private bool lighter = false;
+        //private bool flashlight = false;
 
         //Variables del Monstruo
         private Core.BoundingVolumes.TgcBoundingSphere monstruoSphere { get; set; }
@@ -104,8 +104,12 @@ namespace TGC.Group.Model
         private TgcBox lightMesh;
         private TgcBox playerPos;
         private TgcBoundingSphere boundingSphereCamara;
- 
 
+        private Linterna glowstick;
+        private Linterna lighter;
+        private Linterna flashlight;
+
+        private float timer = 0;
 
         /// <summary>
         ///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo.
@@ -322,12 +326,21 @@ namespace TGC.Group.Model
 
             collisionManager = new SphereCollisionManager();
 
-
-
             boundingSphereCamara = new TgcBoundingSphere(new Vector3(463, Camara.Position.Y + 15, 83), 15);
             playerPos = TgcBox.fromSize(new Vector3(5, 5, 5));
             lightMesh.Position = new Vector3(463, 51, 83);
-           
+
+            glowstick = new Linterna();
+            glowstick.setSelect(true);
+            glowstick.setEnergia(3);//en el caso del glowstick la energia representa el numero de glowsticks que tiene el jugador
+
+            lighter = new Linterna();
+            lighter.setSelect(false);
+            lighter.setEnergia(100);
+
+            flashlight = new Linterna();
+            flashlight.setSelect(false);
+            flashlight.setEnergia(100);
         }
         /// <summary>
         ///     Se llama en cada frame.
@@ -343,29 +356,54 @@ namespace TGC.Group.Model
             if (Input.keyPressed(Key.F))
             {
                 lightMesh.Color = Color.GreenYellow;
-                this.glowStick = true;
-                this.lighter = false;
-                this.flashlight = false;
+                this.glowstick.setSelect(true);
+                this.lighter.setSelect(false);
+                this.flashlight.setSelect(false);
+                timer = 0;
             }
             if (Input.keyPressed(Key.G))
             {
-                this.glowStick = false;
-                this.lighter = true;
-                this.flashlight = false;
+                this.glowstick.setSelect(false);
+                this.lighter.setSelect(true);
+                this.flashlight.setSelect(false);
                 lightMesh.Color = Color.Yellow;
+                timer = 0;
             }
             if (Input.keyPressed(Key.H))
             {
-                this.glowStick = false;
-                this.lighter = false;
-                this.flashlight = true;
+                this.glowstick.setSelect(false);
+                this.lighter.setSelect(false);
+                this.flashlight.setSelect(true);
                 lightMesh.Color = Color.WhiteSmoke;
+                timer = 0;
             }
+
+            //para el glowstick cada 60 seg deberiamos perder 1 barra.
+            if (glowstick.getSelect() && timer % 60 == 0)
+            {
+                glowstick.perderEnergia(1);
+            }
+            if (lighter.getSelect())
+            {
+                if (timer % 1 == 0)
+                {
+                    lighter.perderEnergia(0.83f);
+                    timer = 0;
+                }
+            }
+            if (flashlight.getSelect())
+            {
+                if (timer % 1 == 0)
+                {
+                    flashlight.perderEnergia(0.41f);
+                    timer = 0;
+                }
+            }
+
 
             //Para activar o desactivar al monstruo
             if (Input.keyPressed(Key.M)) {
                 monstruoActivo = !monstruoActivo;
-
             }
 
             if (Input.keyDown(Key.W)||Input.keyDown(Key.D)||Input.keyDown(Key.S)||Input.keyDown(Key.A)||Input.keyDown(Key.Space)||Input.keyDown(Key.LeftControl))
@@ -431,9 +469,7 @@ namespace TGC.Group.Model
 
 
                 
-            }
-
-            
+            } 
         }
 
         /// <summary>
@@ -445,12 +481,12 @@ namespace TGC.Group.Model
         {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
-
-            if (this.glowStick || this.lighter)
+            timer += ElapsedTime;
+            if (this.glowstick.getSelect() || this.lighter.getSelect())
             {
                 Shader = TgcShaders.Instance.TgcMeshPointLightShader;
             }
-            if (this.flashlight)
+            if (this.flashlight.getSelect())
             {
                 Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
             }
@@ -469,7 +505,7 @@ namespace TGC.Group.Model
                 //se actualiza el transform del mesh
                 mesh.UpdateMeshTransform();
                 
-                if (glowStick)
+                if (glowstick.getSelect())
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -486,7 +522,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
-                if (lighter)
+                if (lighter.getSelect())
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -503,11 +539,13 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
-                if (flashlight)
+                if (flashlight.getSelect())
                 {
                     float x;
                     float y;
                     float z;
+                    //Si no colisiona contra algo es esto
+                    // lamda * director + coordenada en eje
                     x = (float)80.5 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
                     y = (float)80.5 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
                     z = (float)80.5 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
@@ -550,7 +588,12 @@ namespace TGC.Group.Model
                 + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n"
                 + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
                 + " Monster Rotation : " + TgcParserUtils.printVector3(Monstruo.Rotation) + "\n"
-                + " Boundin Sphere Bottom : " + TgcParserUtils.printVector3(boundingSphereCamara.Position)
+                + " Boundin Sphere Bottom : " + TgcParserUtils.printVector3(boundingSphereCamara.Position) + "\n"
+                + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
+                + " Lighter Energy : " + lighter.getEnergia() + "\n"
+                + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
+                + " Time: " + timer + "\n"
+                + " M para Monstruo D:"
             , 0, 30, Color.OrangeRed);
 
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
@@ -596,6 +639,7 @@ namespace TGC.Group.Model
             Puerta28.render();
             //lightMesh.render();
             //Es revelde se va para donde quiere y no obedece :/ and IDKW!
+            //JAAAAA le gane xD
             boundingSphereCamara.render();
             
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
