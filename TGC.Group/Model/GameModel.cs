@@ -367,6 +367,12 @@ namespace TGC.Group.Model
                 monstruoActivo = !monstruoActivo;
 
             }
+
+            if (Input.keyDown(Key.W)||Input.keyDown(Key.D)||Input.keyDown(Key.S)||Input.keyDown(Key.A)||Input.keyDown(Key.Space)||Input.keyDown(Key.LeftControl))
+            {
+                boundingSphereCamara.setCenter(new Vector3(Camara.Position.X, Camara.Position.Y-33, Camara.Position.Z));                 
+            }
+
             //Logica del monstruo
             if (monstruoActivo) {
                 var targetDistance = Camara.Position - Monstruo.Position;
@@ -449,7 +455,7 @@ namespace TGC.Group.Model
                 Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
             }
             playerPos.Position = Camara.Position;
-            boundingSphereCamara.moveCenter(new Vector3(playerPos.Position.X + 0, playerPos.Position.Y - 15, playerPos.Position.Z + 0));
+            //boundingSphereCamara.moveCenter(new Vector3(playerPos.Position.X + 0, playerPos.Position.Y - 15, playerPos.Position.Z + 0));
             //sphereCamara.Position = new Vector3(Camara.Position.X + 0,Camara.Position.Y-15,Camara.Position.Z + 0);
             
             foreach (var mesh in TgcScene.Meshes)
@@ -535,6 +541,7 @@ namespace TGC.Group.Model
                 
                 //Renderizar modelo
                 mesh.render();
+                mesh.BoundingBox.render();
             }
 
             //Dibuja un texto por pantalla
