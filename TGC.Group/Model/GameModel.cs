@@ -93,8 +93,8 @@ namespace TGC.Group.Model
         //Variables del Monstruo
         private Core.BoundingVolumes.TgcBoundingSphere monstruoSphere { get; set; }
         private bool monstruoActivo = false;
-        //si esta variable es true persigue al jugador
-        private bool monstruoEnojado = false;
+        //si esta variable es true choca con las paredes
+        private bool monstruoSolido = true;
         private const float monstruoVelocidad = 90f;
 
         //Boleano para ver si dibujamos el boundingbox
@@ -150,12 +150,14 @@ namespace TGC.Group.Model
             Puerta3.AutoTransformEnable = true;
             Puerta3.move(201f, 32f, 1570f);
             Puerta3.rotateY(FastMath.PI_HALF);
+            Puerta3.createBoundingBox();
             TgcScene.Meshes.Add(Puerta3);
 
             Puerta4 = PuertaModelo.createMeshInstance("Puerta4");
             Puerta4.AutoTransformEnable = true;
             Puerta4.move(452f, 32f, 1221f);
             Puerta4.rotateY(FastMath.PI_HALF);
+            Puerta4.createBoundingBox();
             TgcScene.Meshes.Add(Puerta4);
 
             Puerta5 = PuertaModelo.createMeshInstance("Puerta5");
@@ -167,18 +169,21 @@ namespace TGC.Group.Model
             Puerta6.AutoTransformEnable = true;
             Puerta6.move(734f, 32f, 1570f);
             Puerta6.rotateY(FastMath.PI_HALF);
+            Puerta6.createBoundingBox();
             TgcScene.Meshes.Add(Puerta6);
 
             Puerta7 = PuertaModelo.createMeshInstance("Puerta7");
             Puerta7.AutoTransformEnable = true;
             Puerta7.move(915f, 32f, 751f);
             Puerta7.rotateY(FastMath.PI_HALF);
+            Puerta7.createBoundingBox();
             TgcScene.Meshes.Add(Puerta7);
 
             Puerta8 = PuertaModelo.createMeshInstance("Puerta8");
             Puerta8.AutoTransformEnable = true;
             Puerta8.move(695f, 32f, 600f);
             Puerta8.rotateY(FastMath.PI_HALF);
+            Puerta8.createBoundingBox();
             TgcScene.Meshes.Add(Puerta8);
 
             Puerta9 = PuertaModelo.createMeshInstance("Puerta9");
@@ -190,6 +195,7 @@ namespace TGC.Group.Model
             Puerta10.AutoTransformEnable = true;
             Puerta10.move(695f, 32f, 912f);
             Puerta10.rotateY(FastMath.PI_HALF);
+            Puerta10.createBoundingBox();
             TgcScene.Meshes.Add(Puerta10);
 
             Puerta11 = PuertaModelo.createMeshInstance("Puerta11");
@@ -201,6 +207,7 @@ namespace TGC.Group.Model
             Puerta12.AutoTransformEnable = true;
             Puerta12.move(454f, 32f, 331f);
             Puerta12.rotateY(FastMath.PI_HALF);
+            Puerta12.createBoundingBox();
             TgcScene.Meshes.Add(Puerta12);
 
             Puerta13 = PuertaModelo.createMeshInstance("Puerta13");
@@ -227,12 +234,14 @@ namespace TGC.Group.Model
             Puerta17.AutoTransformEnable = true;
             Puerta17.move(201f, 142f, 1570f);
             Puerta17.rotateY(FastMath.PI_HALF);
+            Puerta17.createBoundingBox();
             TgcScene.Meshes.Add(Puerta17);
 
             Puerta18 = PuertaModelo.createMeshInstance("Puerta4");
             Puerta18.AutoTransformEnable = true;
             Puerta18.move(452f, 142f, 1221f);
             Puerta18.rotateY(FastMath.PI_HALF);
+            Puerta18.createBoundingBox();
             TgcScene.Meshes.Add(Puerta18);
 
             Puerta19 = PuertaModelo.createMeshInstance("Puerta5");
@@ -244,29 +253,34 @@ namespace TGC.Group.Model
             Puerta20.AutoTransformEnable = true;
             Puerta20.move(734f, 142f, 1570f);
             Puerta20.rotateY(FastMath.PI_HALF);
+            Puerta20.createBoundingBox();
             TgcScene.Meshes.Add(Puerta20);
 
             Puerta21 = PuertaModelo.createMeshInstance("Puerta7");
             Puerta21.AutoTransformEnable = true;
             Puerta21.move(915f, 142f, 751f);
             Puerta21.rotateY(FastMath.PI_HALF);
+            Puerta21.createBoundingBox();
             TgcScene.Meshes.Add(Puerta21);
 
             Puerta22 = PuertaModelo.createMeshInstance("Puerta8");
             Puerta22.AutoTransformEnable = true;
             Puerta22.move(695f, 142f, 600f);
             Puerta22.rotateY(FastMath.PI_HALF);
+            Puerta22.createBoundingBox();
             TgcScene.Meshes.Add(Puerta22);
 
             Puerta23 = PuertaModelo.createMeshInstance("Puerta9");
             Puerta23.AutoTransformEnable = true;
             Puerta23.move(469f, 142f, 921f);
+            Puerta23.createBoundingBox();
             TgcScene.Meshes.Add(Puerta23);
 
             Puerta24 = PuertaModelo.createMeshInstance("Puerta10");
             Puerta24.AutoTransformEnable = true;
             Puerta24.move(695f, 142f, 912f);
             Puerta24.rotateY(FastMath.PI_HALF);
+            Puerta24.createBoundingBox();
             TgcScene.Meshes.Add(Puerta24);
 
             Puerta25 = PuertaModelo.createMeshInstance("Puerta11");
@@ -278,6 +292,7 @@ namespace TGC.Group.Model
             Puerta26.AutoTransformEnable = true;
             Puerta26.move(454f, 142f, 331f);
             Puerta26.rotateY(FastMath.PI_HALF);
+            Puerta26.createBoundingBox();
             TgcScene.Meshes.Add(Puerta26);
 
             Puerta27 = PuertaModelo.createMeshInstance("Puerta13");
@@ -293,6 +308,7 @@ namespace TGC.Group.Model
             Monstruo = MonstruoModelo.createMeshInstance("Monstruo");
             Monstruo.move(463, 30, 83);
             monstruoSphere = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(Monstruo);
+            monstruoSphere.setCenter(Monstruo.Position);
             objetosColisionables.Clear();
             foreach (var mesh in TgcScene.Meshes)
             {
@@ -406,6 +422,13 @@ namespace TGC.Group.Model
                 monstruoActivo = !monstruoActivo;
             }
 
+            //Para activar o desactivar colisiones del monstruo
+            if (Input.keyPressed(Key.N))
+            {
+                monstruoSolido = !monstruoSolido;
+            }
+
+
             if (Input.keyDown(Key.W)||Input.keyDown(Key.D)||Input.keyDown(Key.S)||Input.keyDown(Key.A)||Input.keyDown(Key.Space)||Input.keyDown(Key.LeftControl))
             {
                 boundingSphereCamara.setCenter(new Vector3(Camara.Position.X, Camara.Position.Y-33, Camara.Position.Z));                 
@@ -427,8 +450,12 @@ namespace TGC.Group.Model
                 var originalPos = Monstruo.Position;
 
                 Monstruo.Rotation = new Vector3(targetAngleV, targetAngleH + FastMath.PI, 0);
-                var trueMov = collisionManager.moveCharacter(monstruoSphere, monstruoMovement,objetosColisionables);
-                Monstruo.move(trueMov);
+                if (monstruoSolido)
+                {
+                    monstruoMovement = collisionManager.moveCharacter(monstruoSphere, monstruoMovement, objetosColisionables);
+                }
+                else monstruoSphere.moveCenter(monstruoMovement);
+                Monstruo.move(monstruoMovement);
                 /*
                 Monstruo.move(monstruoMovement);
                 //Chequear si el objeto principal en su nueva posición choca con alguno de los objetos de la escena.
@@ -468,7 +495,7 @@ namespace TGC.Group.Model
                 */
 
 
-                
+
             } 
         }
 
@@ -580,20 +607,23 @@ namespace TGC.Group.Model
                 //Renderizar modelo
                 mesh.render();
                 mesh.BoundingBox.render();
-            }
+               
 
+            }
+            monstruoSphere.render();
             //Dibuja un texto por pantalla
             DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n "
                 + "Position : " + TgcParserUtils.printVector3(Camara.Position) + "\n"
                 + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n"
                 + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
-                + " Monster Rotation : " + TgcParserUtils.printVector3(Monstruo.Rotation) + "\n"
+                + " Monster Position : " + TgcParserUtils.printVector3(Monstruo.Position) + "\n"
                 + " Boundin Sphere Bottom : " + TgcParserUtils.printVector3(boundingSphereCamara.Position) + "\n"
                 + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
                 + " Lighter Energy : " + lighter.getEnergia() + "\n"
                 + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
                 + " Time: " + timer + "\n"
-                + " M para Monstruo D:"
+                + " M para Monstruo D:" + "\n"
+                + " N para activar/desactivar colisiones del Monstruo"
             , 0, 30, Color.OrangeRed);
 
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
