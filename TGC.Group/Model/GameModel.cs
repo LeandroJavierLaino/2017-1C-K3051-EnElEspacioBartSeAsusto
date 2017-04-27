@@ -83,20 +83,13 @@ namespace TGC.Group.Model
         private TgcMesh Puerta27 { get; set; }
         private TgcMesh Puerta28 { get; set; }
 
-        private TgcMesh Monstruo { get; set; }
+        private Monstruo monstruo { get; set; }
         private SphereCollisionManager collisionManager;
-
         //private bool glowStick = true;
         //private bool lighter = false;
         //private bool flashlight = false;
 
-        //Variables del Monstruo
-        private Core.BoundingVolumes.TgcBoundingSphere monstruoSphere { get; set; }
-        private bool monstruoActivo = false;
-        //si esta variable es true choca con las paredes
-        private bool monstruoSolido = true;
-        private const float monstruoVelocidad = 90f;
-
+        
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
         
@@ -305,16 +298,18 @@ namespace TGC.Group.Model
             Puerta28.move(89f, 142f, 922f);
             TgcScene.Meshes.Add(Puerta28);
 
-            Monstruo = MonstruoModelo.createMeshInstance("Monstruo");
-            Monstruo.move(463, 30, 83);
-            monstruoSphere = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(Monstruo);
-            monstruoSphere.setCenter(Monstruo.Position);
+
+            var monsterTriggers = new List<TgcBoundingSphere>();
+            var monsterSpawnPoints = new List<Vector3>();
+            monstruo = new Monstruo();
+            monstruo.init(MonstruoModelo.createMeshInstance("Monstruo"),new Vector3(463, 30, 83), monsterTriggers, monsterSpawnPoints);
+
             objetosColisionables.Clear();
             foreach (var mesh in TgcScene.Meshes)
             {
                 objetosColisionables.Add(mesh.BoundingBox);
             }
-            TgcScene.Meshes.Add(Monstruo);
+            TgcScene.Meshes.Add(monstruo.mesh);
             //Textura de la carperta Media. Game.Default es un archivo de configuracion (Game.settings) util para poner cosas.
             //Pueden abrir el Game.settings que se ubica dentro de nuestro proyecto para configurar.
             var pathTexturaCaja = MediaDir + Game.Default.TexturaCaja;
@@ -419,15 +414,15 @@ namespace TGC.Group.Model
 
             //Para activar o desactivar al monstruo
             if (Input.keyPressed(Key.M)) {
-                monstruoActivo = !monstruoActivo;
+                monstruo.Activo = !monstruo.Activo;
             }
 
             //Para activar o desactivar colisiones del monstruo
             if (Input.keyPressed(Key.N))
             {
-                monstruoSolido = !monstruoSolido;
+                monstruo.Colisiones = !monstruo.Colisiones;
             }
-
+            
 
             if (Input.keyDown(Key.W)||Input.keyDown(Key.D)||Input.keyDown(Key.S)||Input.keyDown(Key.A)||Input.keyDown(Key.Space)||Input.keyDown(Key.LeftControl))
             {
@@ -435,68 +430,8 @@ namespace TGC.Group.Model
             }
 
             //Logica del monstruo
-            if (monstruoActivo) {
-                var targetDistance = Camara.Position - Monstruo.Position;
+            monstruo.update(Camara.Position, objetosColisionables, ElapsedTime);
 
-                targetDistance.Y = 0f;//El monstruo solo se mueve en el plano XZ
-
-                var targetDirection = Vector3.Normalize(targetDistance);
-                var monstruoMovement = targetDirection * monstruoVelocidad * ElapsedTime;
-
-                var targetAngleH = FastMath.Atan2(targetDirection.X, targetDirection.Z);
-                var targetAngleV = FastMath.Asin(targetDirection.Y);
-                var originalRot = Monstruo.Rotation;
-                
-                var originalPos = Monstruo.Position;
-
-                Monstruo.Rotation = new Vector3(targetAngleV, targetAngleH + FastMath.PI, 0);
-                if (monstruoSolido)
-                {
-                    monstruoMovement = collisionManager.moveCharacter(monstruoSphere, monstruoMovement, objetosColisionables);
-                }
-                else monstruoSphere.moveCenter(monstruoMovement);
-                Monstruo.move(monstruoMovement);
-                /*
-                Monstruo.move(monstruoMovement);
-                //Chequear si el objeto principal en su nueva posición choca con alguno de los objetos de la escena.
-                //Si es así, entonces volvemos a la posición original.
-                //Cada TgcMesh tiene un objeto llamado BoundingBox. El BoundingBox es una caja 3D que representa al objeto
-                //de forma simplificada (sin tener en cuenta toda la complejidad interna del modelo).
-                //Este BoundingBox se utiliza para chequear si dos objetos colisionan entre sí.
-                //El framework posee la clase TgcCollisionUtils con muchos algoritmos de colisión de distintos tipos de objetos.
-                //Por ejemplo chequear si dos cajas colisionan entre sí, o dos esferas, o esfera con caja, etc.
-                var collisionFound = false;
-
-                //chequeo de Colision mocho del monstruo
-                foreach (var mesh in this.TgcScene.Meshes)
-                {
-                    if (mesh.Equals(Monstruo)) continue;
-                    //Los dos BoundingBox que vamos a testear
-                    var mainMeshBoundingBox = Monstruo.BoundingBox;
-                    var sceneMeshBoundingBox = mesh.BoundingBox;
-
-                    //Ejecutar algoritmo de detección de colisiones
-                    var collisionResult = TgcCollisionUtils.classifyBoxBox(mainMeshBoundingBox, sceneMeshBoundingBox);
-
-                    //Hubo colisión con un objeto. Guardar resultado y abortar loop.
-                    if (collisionResult != TgcCollisionUtils.BoxBoxResult.Afuera)
-                    {
-                        collisionFound = true;
-                        break;
-                    }
-                }
-
-                //Si hubo alguna colisión, entonces restaurar la posición original del mesh
-                if (collisionFound)
-                {
-                    Monstruo.Position = originalPos;
-                    Monstruo.Rotation = originalRot;
-                }
-                */
-
-
-
-            } 
         }
 
         /// <summary>
@@ -610,13 +545,13 @@ namespace TGC.Group.Model
                
 
             }
-            monstruoSphere.render();
+            monstruo.render();
             //Dibuja un texto por pantalla
             DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n "
                 + "Position : " + TgcParserUtils.printVector3(Camara.Position) + "\n"
                 + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n"
                 + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
-                + " Monster Position : " + TgcParserUtils.printVector3(Monstruo.Position) + "\n"
+                + " Monster Position : " + TgcParserUtils.printVector3(monstruo.Position) + "\n"
                 + " Boundin Sphere Bottom : " + TgcParserUtils.printVector3(boundingSphereCamara.Position) + "\n"
                 + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
                 + " Lighter Energy : " + lighter.getEnergia() + "\n"
@@ -699,7 +634,7 @@ namespace TGC.Group.Model
             Puerta12.dispose();
             Puerta13.dispose();
             Puerta14.dispose();
-            Monstruo.dispose();
+            monstruo.mesh.dispose();
             TgcScene.disposeAll();
             Shader.Dispose();
         }

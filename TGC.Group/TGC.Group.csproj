@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="Model\Linterna.cs" />
     <Compile Include="Model\GameModel.cs" />
+    <Compile Include="Model\Monstruo.cs" />
     <Compile Include="Model\SphereCollisionManager.cs" />
     <Compile Include="Model\TgcFpsCamera.cs" />
     <Compile Include="Program.cs" />
