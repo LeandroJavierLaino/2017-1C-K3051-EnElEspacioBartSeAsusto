@@ -1,0 +1,75 @@
+<tgcScene>
+  <name>pantalla</name>
+  <texturesExport enabled="True" dir="Textures" />
+  <lightmapExport enabled="False" dir="LightMaps" />
+  <sceneBoundingBox min="[180,0,90]" max="[190,40,160]" />
+  <materials count="1">
+    <m name="Multimaterial" type="Multimaterial">
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">ladoPantalla.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">ladoPantalla.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">ladoPantalla.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Pantalla.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">ladoPantalla.jpg</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">ladoPantalla.jpg</bitmap>
+      </subM>
+    </m>
+  </materials>
+  <meshes count="1">
+    <mesh name="Pantalla" layer="Default" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[180,0,90]" max="[190,40,160]" />
+      <coordinatesIdx count="36">0 1 2 0 2 3 4 5 6 4 6 7 5 6 2 5 2 1 4 7 3 4 3 0 4 5 1 4 1 0 7 6 2 7 2 3 </coordinatesIdx>
+      <textCoordsIdx count="36">0 1 2 0 2 3 0 1 2 0 2 3 4 1 2 4 2 5 0 1 2 0 2 3 0 1 2 0 2 3 0 1 2 0 2 3 </textCoordsIdx>
+      <colorsIdx count="36">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="12">0 0 1 1 2 2 3 3 4 4 5 5 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="24">180 40 90 190 40 90 190 40 160 180 40 160 180 0 90 190 0 90 190 0 160 180 0 160 </vertices>
+      <normals count="24">0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
+      <texCoords count="12">1 1 0 1 0 0 1 0 3 1 3 0 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+    </mesh>
+  </meshes>
+</tgcScene>

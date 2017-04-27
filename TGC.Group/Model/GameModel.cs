@@ -39,9 +39,7 @@ namespace TGC.Group.Model
             Description = Game.Default.Description;
         }
 
-
         private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionables = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
-
 
         //Caja que se muestra en el ejemplo.
         //usar TgcBox como ejemplo para cargar cualquier caja que queramos.
@@ -52,7 +50,6 @@ namespace TGC.Group.Model
 
         private TgcMesh PuertaModelo { get; set; }
         private TgcMesh MonstruoModelo { get; set; }
-
 
         private TgcMesh Puerta1 { get; set; }
         private TgcMesh Puerta2 { get; set; }
@@ -85,18 +82,19 @@ namespace TGC.Group.Model
 
         private Monstruo monstruo { get; set; }
         private SphereCollisionManager collisionManager;
+
         //private bool glowStick = true;
         //private bool lighter = false;
         //private bool flashlight = false;
 
         
+
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
         
         private Microsoft.DirectX.Direct3D.Effect Shader { get; set; }
         private TgcBox lightMesh;
         private TgcBox playerPos;
-        private TgcBoundingSphere boundingSphereCamara;
 
         private Linterna glowstick;
         private Linterna lighter;
@@ -126,9 +124,13 @@ namespace TGC.Group.Model
             PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
 
             MonstruoModelo = loader.loadSceneFromFile(this.MediaDir + "\\Monstruo-TgcScene.xml").Meshes[0];
+
             //=========================================================================================
-            //Ojo con el add de meshes a la escena ya que los agrega y no son elementos independientes.
+            // Ojo con el add de meshes a la escena ya que los agrega y no son elementos independientes.
+            // Hay que ver como reaccionan, para la entrega habria comentar las puertas, para que se
+            // vea como el enemigo persigue al jugador
             //=========================================================================================
+
             Puerta1 = PuertaModelo.createMeshInstance("Puerta1");
             Puerta1.AutoTransformEnable = true;
             Puerta1.move(89f, 31.5f, 275f);
@@ -337,7 +339,6 @@ namespace TGC.Group.Model
 
             collisionManager = new SphereCollisionManager();
 
-            boundingSphereCamara = new TgcBoundingSphere(new Vector3(463, Camara.Position.Y + 15, 83), 15);
             playerPos = TgcBox.fromSize(new Vector3(5, 5, 5));
             lightMesh.Position = new Vector3(463, 51, 83);
 
@@ -388,25 +389,29 @@ namespace TGC.Group.Model
                 lightMesh.Color = Color.WhiteSmoke;
                 timer = 0;
             }
-
+            //Logica de seleccion de luces
             //para el glowstick cada 60 seg deberiamos perder 1 barra.
-            if (glowstick.getSelect() && timer % 60 == 0)
+            if (glowstick.getSelect())
             {
-                glowstick.perderEnergia(1);
+                if (System.Math.Truncate(timer)/60 == 1 && glowstick.getEnergia()>0)
+                {
+                    glowstick.perderEnergia(1);
+                    timer = 0;
+                }
             }
             if (lighter.getSelect())
             {
-                if (timer % 1 == 0)
+                if (System.Math.Truncate(timer) % 1 == 0 && lighter.getEnergia()>0)
                 {
-                    lighter.perderEnergia(0.83f);
+                    lighter.perderEnergia(0.083f);
                     timer = 0;
                 }
             }
             if (flashlight.getSelect())
             {
-                if (timer % 1 == 0)
+                if (System.Math.Truncate(timer) % 1 == 0 &&flashlight.getEnergia()>0)
                 {
-                    flashlight.perderEnergia(0.41f);
+                    flashlight.perderEnergia(0.041f);
                     timer = 0;
                 }
             }
@@ -424,11 +429,7 @@ namespace TGC.Group.Model
             }
             
 
-            if (Input.keyDown(Key.W)||Input.keyDown(Key.D)||Input.keyDown(Key.S)||Input.keyDown(Key.A)||Input.keyDown(Key.Space)||Input.keyDown(Key.LeftControl))
-            {
-                boundingSphereCamara.setCenter(new Vector3(Camara.Position.X, Camara.Position.Y-33, Camara.Position.Z));                 
-            }
-
+            
             //Logica del monstruo
             monstruo.update(Camara.Position, objetosColisionables, ElapsedTime);
 
@@ -444,6 +445,7 @@ namespace TGC.Group.Model
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
             timer += ElapsedTime;
+
             if (this.glowstick.getSelect() || this.lighter.getSelect())
             {
                 Shader = TgcShaders.Instance.TgcMeshPointLightShader;
@@ -452,6 +454,12 @@ namespace TGC.Group.Model
             {
                 Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
             }
+
+            if (glowstick.getEnergia() == 0 && System.Math.Truncate(lighter.getEnergia()) == 0 && System.Math.Truncate(flashlight.getEnergia()) == 0)
+            {
+                //TODO: Poner un Shader que distorsione todo D:
+            }
+
             playerPos.Position = Camara.Position;
             //boundingSphereCamara.moveCenter(new Vector3(playerPos.Position.X + 0, playerPos.Position.Y - 15, playerPos.Position.Z + 0));
             //sphereCamara.Position = new Vector3(Camara.Position.X + 0,Camara.Position.Y-15,Camara.Position.Z + 0);
@@ -466,8 +474,9 @@ namespace TGC.Group.Model
             {
                 //se actualiza el transform del mesh
                 mesh.UpdateMeshTransform();
-                
-                if (glowstick.getSelect())
+
+                //Logica de luces dependiendo de la seleccion y la energia de las mismas
+                if (glowstick.getSelect() && glowstick.getEnergia() != 0)
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -484,7 +493,24 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
-                if (lighter.getSelect())
+                if (glowstick.getSelect() && glowstick.getEnergia() == 0)
+                {
+                    lightMesh.Position = Camara.Position;
+                    //Cargar variables shader de la luz
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("lightIntensity", 5f);
+                    mesh.Effect.SetValue("lightAttenuation", 2f);
+
+                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gainsboro));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularExp", 20f);
+                }
+                if (lighter.getSelect() && lighter.getEnergia() > 20)
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -501,7 +527,63 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
-                if (flashlight.getSelect())
+                if (lighter.getSelect() && lighter.getEnergia() <= 20 && lighter.getEnergia() > 0)
+                {
+                    if (System.Math.Truncate(lighter.getEnergia()) % 2 == 0)
+                    {
+                        lightMesh.Color = Color.Orange;
+                        lightMesh.Position = Camara.Position;
+                        //Cargar variables shader de la luz
+                        mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
+                        mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                        mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                        mesh.Effect.SetValue("lightIntensity", 25f);
+                        mesh.Effect.SetValue("lightAttenuation", 1f);
+
+                        //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                        mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                        mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
+                        mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                        mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                        mesh.Effect.SetValue("materialSpecularExp", 20f);
+                    }
+                    if (System.Math.Truncate(lighter.getEnergia()) % 2 == 1)
+                    {
+                        lightMesh.Color = Color.OrangeRed;
+                        lightMesh.Position = Camara.Position;
+                        //Cargar variables shader de la luz
+                        mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
+                        mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                        mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                        mesh.Effect.SetValue("lightIntensity", 45f);
+                        mesh.Effect.SetValue("lightAttenuation", 1f);
+
+                        //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                        mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                        mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
+                        mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                        mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                        mesh.Effect.SetValue("materialSpecularExp", 20f);
+                    }
+                }
+                if (lighter.getSelect() && lighter.getEnergia() == 0)
+                {
+                    lightMesh.Position = Camara.Position;
+                    //Cargar variables shader de la luz
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("lightIntensity", 2f);
+                    mesh.Effect.SetValue("lightAttenuation", 1f);
+
+                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularExp", 20f);
+                }
+                if (flashlight.getSelect() && flashlight.getEnergia() > 10)
                 {
                     float x;
                     float y;
@@ -538,11 +620,88 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 29f);
                 }
-                
+                if (flashlight.getSelect() && flashlight.getEnergia() <= 10 && flashlight.getEnergia() > 0)
+                {
+                    float x;
+                    float y;
+                    float z;
+                    //Si no colisiona contra algo es esto
+                    // lamda * director + coordenada en eje
+                    x = (float)80.5 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)80.5 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)80.5 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    lightMesh.Position = new Vector3(x, y, z);
+                    float a;
+                    float b;
+                    float c;
+                    a = (float)3000.01 * (Camara.LookAt - Camara.Position).X + Camara.Position.X;
+                    b = (float)3000.01 * (Camara.LookAt - Camara.Position).Y + Camara.Position.Y;
+                    c = (float)3000.01 * (Camara.LookAt - Camara.Position).Z + Camara.Position.Z;
+                    var direccion = new Vector3(a, b, c);
+                    direccion.Normalize();
+                    var posLuz = lightMesh.Position;
+
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(posLuz));
+                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(direccion));
+                    mesh.Effect.SetValue("lightIntensity", 150f);
+                    mesh.Effect.SetValue("lightAttenuation", 5f);
+                    mesh.Effect.SetValue("spotLightAngleCos", 0.65f);
+                    mesh.Effect.SetValue("spotLightExponent", 10f);
+
+                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularExp", 29f);
+                }
+                if (flashlight.getSelect() && System.Math.Truncate(flashlight.getEnergia()) == 0)
+                {
+                    float x;
+                    float y;
+                    float z;
+                    //Si no colisiona contra algo es esto
+                    // lamda * director + coordenada en eje
+                    x = (float)80.5 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)80.5 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)80.5 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    lightMesh.Position = new Vector3(x, y, z);
+                    float a;
+                    float b;
+                    float c;
+                    a = (float)3000.01 * (Camara.LookAt - Camara.Position).X + Camara.Position.X;
+                    b = (float)3000.01 * (Camara.LookAt - Camara.Position).Y + Camara.Position.Y;
+                    c = (float)3000.01 * (Camara.LookAt - Camara.Position).Z + Camara.Position.Z;
+                    var direccion = new Vector3(a, b, c);
+                    direccion.Normalize();
+                    var posLuz = lightMesh.Position;
+
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(posLuz));
+                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(direccion));
+                    mesh.Effect.SetValue("lightIntensity", 50f);
+                    mesh.Effect.SetValue("lightAttenuation", 5f);
+                    mesh.Effect.SetValue("spotLightAngleCos", 0.65f);
+                    mesh.Effect.SetValue("spotLightExponent", 10f);
+
+                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularExp", 29f);
+                }
+                if (glowstick.getEnergia() == 0 && System.Math.Truncate(lighter.getEnergia()) == 0 && System.Math.Truncate(flashlight.getEnergia()) == 0)
+                {
+                    //TODO: poner las propiedades del shader que genera distorsiones D:
+                }
+
                 //Renderizar modelo
                 mesh.render();
                 mesh.BoundingBox.render();
-               
 
             }
             monstruo.render();
@@ -552,7 +711,6 @@ namespace TGC.Group.Model
                 + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n"
                 + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
                 + " Monster Position : " + TgcParserUtils.printVector3(monstruo.Position) + "\n"
-                + " Boundin Sphere Bottom : " + TgcParserUtils.printVector3(boundingSphereCamara.Position) + "\n"
                 + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
                 + " Lighter Energy : " + lighter.getEnergia() + "\n"
                 + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
@@ -603,9 +761,6 @@ namespace TGC.Group.Model
             Puerta27.render();
             Puerta28.render();
             //lightMesh.render();
-            //Es revelde se va para donde quiere y no obedece :/ and IDKW!
-            //JAAAAA le gane xD
-            boundingSphereCamara.render();
             
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
