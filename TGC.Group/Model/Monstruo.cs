@@ -38,13 +38,21 @@ namespace TGC.Group.Model
         //Si la camara colisiona con un trigger el monstruo aparece en el spawnpoint de igual indice
         private List<Core.BoundingVolumes.TgcBoundingSphere> triggers = new List<TgcBoundingSphere>();
         private List<Vector3> spawnPoints = new List<Vector3>();
+        private int lastTrigger = -1;
         void checkTriggers(Vector3 cameraPos) {
 
             //chequeamos cada trigger
             for (int i = 0; i < triggers.Count; i++) {
                 //si el trigger contiene la posicion de la camara
-                if (Core.Collision.TgcCollisionUtils.testPointSphere(triggers[i], cameraPos)){
+                if (i != lastTrigger && Core.Collision.TgcCollisionUtils.testPointSphere(triggers[i], cameraPos)){
+                    //se mueve al monstruo a la zona de spawn
                     this.mesh.Position = spawnPoints[i];
+                    //Se actualiza el ultimo trigger activado
+                    if(lastTrigger >= 0)triggers[lastTrigger].setRenderColor(System.Drawing.Color.Yellow);
+                    lastTrigger = i;
+                    triggers[i].setRenderColor(System.Drawing.Color.Red);
+                    //Se activa al monstruo
+                    activo = true;
                     break;
                 }
             
@@ -70,6 +78,7 @@ namespace TGC.Group.Model
                 mesh.render();
                 sphere.render();
                 mesh.BoundingBox.render();
+                foreach (var trigger in triggers) { trigger.render(); }
             }
         }
 
@@ -87,10 +96,11 @@ namespace TGC.Group.Model
 
         public void update(Vector3 targetPos, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float ElapsedTime) {
 
-            if (!activo) return;
+
+
             checkTriggers(targetPos);
 
-
+            if (!activo) return;
             var targetDistance = targetPos - Position;
             
             //El monstruo solo se mueve en el plano XZ

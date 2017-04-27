@@ -130,7 +130,7 @@ namespace TGC.Group.Model
             // Hay que ver como reaccionan, para la entrega habria comentar las puertas, para que se
             // vea como el enemigo persigue al jugador
             //=========================================================================================
-
+            
             Puerta1 = PuertaModelo.createMeshInstance("Puerta1");
             Puerta1.AutoTransformEnable = true;
             Puerta1.move(89f, 31.5f, 275f);
@@ -299,12 +299,46 @@ namespace TGC.Group.Model
             Puerta28.AutoTransformEnable = true;
             Puerta28.move(89f, 142f, 922f);
             TgcScene.Meshes.Add(Puerta28);
+            
 
 
+            //Se declaran y definen las zonas que al ser ingresadas activan al monstruo
             var monsterTriggers = new List<TgcBoundingSphere>();
             var monsterSpawnPoints = new List<Vector3>();
+            
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(442f, 40f, 251f), 50f));
+            monsterSpawnPoints.Add(new Vector3(942f, 30f, 250f));
+
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(420f, 40f, 691f), 50f));
+            monsterSpawnPoints.Add(new Vector3(70f, 30f, 690f));
+
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(644f, 40f, 412f), 50f));
+            monsterSpawnPoints.Add(new Vector3(944f, 30f, 406f));
+
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(923f, 40f, 731f), 50f));
+            monsterSpawnPoints.Add(new Vector3(570f, 30f, 743f));
+
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(770f, 40f, 1722f), 50f));
+            monsterSpawnPoints.Add(new Vector3(766f, 30f, 1335f));
+
+            //2do piso igual al primero
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(442f, 40f + 110f+ 110f, 251f), 50f));
+            monsterSpawnPoints.Add(new Vector3(942f, 30f + 110f, 250f));
+
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(420f, 40f + 110f, 691f), 50f));
+            monsterSpawnPoints.Add(new Vector3(70f, 30f + 110f, 690f));
+
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(644f, 40f + 110f, 412f), 50f));
+            monsterSpawnPoints.Add(new Vector3(944f, 30f + 110f, 406f));
+
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(923f, 40f + 110f, 731f), 50f));
+            monsterSpawnPoints.Add(new Vector3(570f, 30f + 110f, 743f));
+
+            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(770f, 40f + 110f, 1722f), 50f));
+            monsterSpawnPoints.Add(new Vector3(766f, 30f + 110f, 1335f));
+
             monstruo = new Monstruo();
-            monstruo.init(MonstruoModelo.createMeshInstance("Monstruo"),new Vector3(463, 30, 83), monsterTriggers, monsterSpawnPoints);
+            monstruo.init(MonstruoModelo.createMeshInstance("Monstruo"),new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints);
 
             objetosColisionables.Clear();
             foreach (var mesh in TgcScene.Meshes)
@@ -731,7 +765,7 @@ namespace TGC.Group.Model
             //Mesh.UpdateMeshTransform();
             //Render de una escena
             //TgcScene.renderAll();
-
+            
             Puerta1.render();
             Puerta2.render();
             Puerta3.render();
@@ -775,6 +809,7 @@ namespace TGC.Group.Model
         {
             //Dispose de una escena.
             //PuertaModelo.dispose();
+            
             Puerta1.dispose();
             Puerta2.dispose();
             Puerta3.dispose();
@@ -789,6 +824,7 @@ namespace TGC.Group.Model
             Puerta12.dispose();
             Puerta13.dispose();
             Puerta14.dispose();
+            
             monstruo.mesh.dispose();
             TgcScene.disposeAll();
             Shader.Dispose();
