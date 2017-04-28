@@ -130,7 +130,7 @@ namespace TGC.Group.Model
             // Hay que ver como reaccionan, para la entrega habria comentar las puertas, para que se
             // vea como el enemigo persigue al jugador
             //=========================================================================================
-            
+            /*
             Puerta1 = PuertaModelo.createMeshInstance("Puerta1");
             Puerta1.AutoTransformEnable = true;
             Puerta1.move(89f, 31.5f, 275f);
@@ -299,7 +299,7 @@ namespace TGC.Group.Model
             Puerta28.AutoTransformEnable = true;
             Puerta28.move(89f, 142f, 922f);
             TgcScene.Meshes.Add(Puerta28);
-            
+            */
 
 
             //Se declaran y definen las zonas que al ser ingresadas activan al monstruo
@@ -527,7 +527,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
-                if (glowstick.getSelect() && glowstick.getEnergia() == 0)
+                if (glowstick.getSelect() &&  glowstick.getEnergia() == 0)
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -600,7 +600,7 @@ namespace TGC.Group.Model
                         mesh.Effect.SetValue("materialSpecularExp", 20f);
                     }
                 }
-                if (lighter.getSelect() && lighter.getEnergia() == 0)
+                if (lighter.getSelect() && System.Math.Truncate(lighter.getEnergia()) == 0)
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -766,6 +766,7 @@ namespace TGC.Group.Model
             //Render de una escena
             //TgcScene.renderAll();
             
+            /*
             Puerta1.render();
             Puerta2.render();
             Puerta3.render();
@@ -794,6 +795,7 @@ namespace TGC.Group.Model
             Puerta26.render();
             Puerta27.render();
             Puerta28.render();
+            */
             //lightMesh.render();
             
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
@@ -809,7 +811,7 @@ namespace TGC.Group.Model
         {
             //Dispose de una escena.
             //PuertaModelo.dispose();
-            
+            /*
             Puerta1.dispose();
             Puerta2.dispose();
             Puerta3.dispose();
@@ -824,7 +826,7 @@ namespace TGC.Group.Model
             Puerta12.dispose();
             Puerta13.dispose();
             Puerta14.dispose();
-            
+            */
             monstruo.mesh.dispose();
             TgcScene.disposeAll();
             Shader.Dispose();
