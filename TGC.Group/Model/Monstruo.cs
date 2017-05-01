@@ -91,12 +91,9 @@ namespace TGC.Group.Model
             this.triggers = triggers;
             this.spawnPoints = spawnPoints;
             collisionManager = new SphereCollisionManager();
-
         }
 
         public void update(Vector3 targetPos, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float ElapsedTime) {
-
-
 
             checkTriggers(targetPos);
 

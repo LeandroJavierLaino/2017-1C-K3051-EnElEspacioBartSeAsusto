@@ -16,6 +16,7 @@ using TGC.Core.Shaders;
 using TGC.Core.Collision;
 using TGC.Examples.Collision.SphereCollision;
 using TGC.Core.BoundingVolumes;
+using TGC.Group.Model;
 
 namespace TGC.Group.Model
 {
@@ -82,12 +83,6 @@ namespace TGC.Group.Model
 
         private Monstruo monstruo { get; set; }
         private SphereCollisionManager collisionManager;
-
-        //private bool glowStick = true;
-        //private bool lighter = false;
-        //private bool flashlight = false;
-
-        
 
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
@@ -450,7 +445,6 @@ namespace TGC.Group.Model
                 }
             }
 
-
             //Para activar o desactivar al monstruo
             if (Input.keyPressed(Key.M)) {
                 monstruo.Activo = !monstruo.Activo;
@@ -462,11 +456,11 @@ namespace TGC.Group.Model
                 monstruo.Colisiones = !monstruo.Colisiones;
             }
             
-
-            
             //Logica del monstruo
             monstruo.update(Camara.Position, objetosColisionables, ElapsedTime);
 
+            var camarita =(TGC.Examples.Camara.TgcFpsCamera)Camara;
+            camarita.UpdateCamera(ElapsedTime, objetosColisionables);
         }
 
         /// <summary>
@@ -495,8 +489,6 @@ namespace TGC.Group.Model
             }
 
             playerPos.Position = Camara.Position;
-            //boundingSphereCamara.moveCenter(new Vector3(playerPos.Position.X + 0, playerPos.Position.Y - 15, playerPos.Position.Z + 0));
-            //sphereCamara.Position = new Vector3(Camara.Position.X + 0,Camara.Position.Y-15,Camara.Position.Z + 0);
             
             foreach (var mesh in TgcScene.Meshes)
             {
@@ -565,7 +557,6 @@ namespace TGC.Group.Model
                 {
                     if (System.Math.Truncate(lighter.getEnergia()) % 2 == 0)
                     {
-                        lightMesh.Color = Color.Orange;
                         lightMesh.Position = Camara.Position;
                         //Cargar variables shader de la luz
                         mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
@@ -583,13 +574,12 @@ namespace TGC.Group.Model
                     }
                     if (System.Math.Truncate(lighter.getEnergia()) % 2 == 1)
                     {
-                        lightMesh.Color = Color.OrangeRed;
                         lightMesh.Position = Camara.Position;
                         //Cargar variables shader de la luz
                         mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                         mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                         mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                        mesh.Effect.SetValue("lightIntensity", 45f);
+                        mesh.Effect.SetValue("lightIntensity", 15f);
                         mesh.Effect.SetValue("lightAttenuation", 1f);
 
                         //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
@@ -765,7 +755,7 @@ namespace TGC.Group.Model
             //Mesh.UpdateMeshTransform();
             //Render de una escena
             //TgcScene.renderAll();
-            
+
             /*
             Puerta1.render();
             Puerta2.render();
@@ -797,7 +787,9 @@ namespace TGC.Group.Model
             Puerta28.render();
             */
             //lightMesh.render();
-            
+            TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            camarita.render();
+
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
         }
