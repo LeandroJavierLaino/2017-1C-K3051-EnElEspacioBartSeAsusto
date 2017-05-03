@@ -336,6 +336,7 @@ namespace TGC.Group.Model
             monstruo.init(MonstruoModelo.createMeshInstance("Monstruo"),new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints);
 
             objetosColisionables.Clear();
+
             foreach (var mesh in TgcScene.Meshes)
             {
                 objetosColisionables.Add(mesh.BoundingBox);
@@ -382,6 +383,7 @@ namespace TGC.Group.Model
             flashlight = new Linterna();
             flashlight.setSelect(false);
             flashlight.setEnergia(100);
+
         }
         /// <summary>
         ///     Se llama en cada frame.
@@ -390,10 +392,9 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Update()
         {
-            PreUpdate();
-
+            PreUpdate();       
             //Switch entre glowstick(F), encendedor(G) y linterna(H)
-  
+
             if (Input.keyPressed(Key.F))
             {
                 lightMesh.Color = Color.GreenYellow;
@@ -459,7 +460,7 @@ namespace TGC.Group.Model
             //Logica del monstruo
             monstruo.update(Camara.Position, objetosColisionables, ElapsedTime);
 
-            var camarita =(TGC.Examples.Camara.TgcFpsCamera)Camara;
+            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.UpdateCamera(ElapsedTime, objetosColisionables);
         }
 
@@ -473,6 +474,8 @@ namespace TGC.Group.Model
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
             timer += ElapsedTime;
+
+            
 
             if (this.glowstick.getSelect() || this.lighter.getSelect())
             {
@@ -498,6 +501,7 @@ namespace TGC.Group.Model
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
             {
+                
                 //se actualiza el transform del mesh
                 mesh.UpdateMeshTransform();
 
@@ -740,7 +744,8 @@ namespace TGC.Group.Model
                 + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
                 + " Time: " + timer + "\n"
                 + " M para Monstruo D:" + "\n"
-                + " N para activar/desactivar colisiones del Monstruo"
+                + " N para activar/desactivar colisiones del Monstruo \n"
+                + " L activa colisiones de la camara"
             , 0, 30, Color.OrangeRed);
 
             //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.

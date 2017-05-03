@@ -34,13 +34,15 @@ namespace TGC.Examples.Camara
         private bool lockCam;
         private Vector3 positionEye;
 
+        private bool collitionActive = true;
+
         private float gravity; 
 
         //Manager de colisiones
         private SphereCollisionManager collisionManager;
 
         //Esfera para detectar colisiones 
-        private Core.BoundingVolumes.TgcBoundingSphere sphere { get; set; }
+        public Core.BoundingVolumes.TgcBoundingSphere sphere { get; set; }
 
         public TgcFpsCamera(TgcD3dInput input)
         {
@@ -74,7 +76,7 @@ namespace TGC.Examples.Camara
             sphere = new Core.BoundingVolumes.TgcBoundingSphere(new Vector3(x,y,z),15f);
             lockCam = true;
             collisionManager = new Collision.SphereCollision.SphereCollisionManager();
-            collisionManager.SlideFactor = 0.001f;
+            collisionManager.SlideFactor = 15f;
             gravity = -10f;
         }
 
@@ -122,52 +124,103 @@ namespace TGC.Examples.Camara
         {
             var moveVector = new Vector3(0, 0, 0);
 
-            float x = positionEye.X;
-            float y = positionEye.Y;
-            float z = positionEye.Z;
-            var lastPos = new Vector3(x,y,z);
-            sphere.setCenter(new Vector3(x, y, z));
+            float x = Position.X;
+            float y = Position.Y;
+            float z = Position.Z;
+            var lastPos = new Vector3((float)System.Math.Truncate( x), (float)System.Math.Truncate(y), (float)System.Math.Truncate(z));
+            Vector3 lastLookAt = LookAt;
+            Vector3 lastUpVector = UpVector;
+            sphere.setValues(new Vector3(x, y - 35f, z), 15f);
 
             //Forward
             if (Input.keyDown(Key.W))
             {
                 Vector3 targetDistance = new Vector3(0,0,0);
-                targetDistance += new Vector3(0, 0, -1) * MovementSpeed - sphere.Position;
-                targetDistance.Normalize();
+                Vector3 newPosition = new Vector3(0, 0, 0);
                 targetDistance += new Vector3(0, 0, -1) * MovementSpeed;
-                sphere.setCenter(new Vector3(x, y , z));
-                moveVector += collisionManager.moveCharacter(sphere, targetDistance, obstaculos);
+                targetDistance.Normalize();  
+                sphere.setValues(new Vector3(x, y - 35f , z),15f);
+                if (collitionActive)
+                {
+                    newPosition = collisionManager.moveCharacter(sphere, targetDistance, obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                }
+                else
+                {
+                    moveVector += new Vector3(0, 0, -1) * MovementSpeed;
+                }
+
+                
             }
 
             //Backward
             if (Input.keyDown(Key.S))
             {
-                moveVector += new Vector3(0, 0, 1) * MovementSpeed;
+                Vector3 targetDistance = new Vector3(0, 0, 0);
+                Vector3 newPosition = new Vector3(0, 0, 0);
+                targetDistance += new Vector3(0, 0, 1) * MovementSpeed;
+                targetDistance.Normalize();
+                sphere.setValues(new Vector3(x, y - 35f, z), 15f);
+                if (collitionActive)
+                {
+                    newPosition = collisionManager.moveCharacter(sphere, targetDistance, obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                }
+                else
+                {
+                    moveVector += new Vector3(0, 0, 1) * MovementSpeed;
+                }
             }
 
             //Strafe right
             if (Input.keyDown(Key.D))
             {
-                moveVector += new Vector3(-1, 0, 0) * MovementSpeed;
+                Vector3 targetDistance = new Vector3(0, 0, 0);
+                Vector3 newPosition = new Vector3(0, 0, 0);
+                targetDistance += new Vector3(-1, 0, 0) * MovementSpeed;
+                targetDistance.Normalize();
+                sphere.setValues(new Vector3(x, y - 35f, z), 15f);
+                if (collitionActive)
+                {
+                    newPosition = collisionManager.moveCharacter(sphere, targetDistance, obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                }
+                else
+                {
+                    moveVector += new Vector3(-1, 0, 0) * MovementSpeed;
+                }
             }
 
             //Strafe left
             if (Input.keyDown(Key.A))
             {
-                moveVector += new Vector3(1, 0, 0) * MovementSpeed;
+                Vector3 targetDistance = new Vector3(0, 0, 0);
+                Vector3 newPosition = new Vector3(0, 0, 0);
+                targetDistance += new Vector3(1, 0, 0) * MovementSpeed;
+                targetDistance.Normalize();
+                sphere.setValues(new Vector3(x, y - 35f, z), 15f);
+                if (collitionActive)
+                {
+                    newPosition = collisionManager.moveCharacter(sphere, targetDistance, obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                }
+                else
+                {
+                    moveVector += new Vector3(1, 0, 0) * MovementSpeed;
+                }
             }
 
             //Jump
             if (Input.keyDown(Key.Space))
             {
-                moveVector += (new Vector3(0, 1, 0) * JumpSpeed) ;
+                moveVector += (new Vector3(0, 1, 0) * JumpSpeed) + new Vector3(0, gravity, 0) * elapsedTime * elapsedTime;
             }/*
             else
             {
                 //La condicion real seria si no esta colisionando con el suelo hacer esto
-                if (System.Math.Truncate( Position.Y) >= 0)
+                if (System.Math.Truncate( Position.Y + 50) >= 0)
                 {
-                    moveVector += new Vector3(0, gravity, 0);
+                    moveVector += new Vector3(0, gravity, 0) * elapsedTime * elapsedTime;
                 }
             }*/
 
@@ -179,7 +232,8 @@ namespace TGC.Examples.Camara
 
             if (Input.keyPressed(Key.L) || Input.keyPressed(Key.Escape))
             {
-                LockCam = !lockCam;
+                collitionActive = !collitionActive;
+                //LockCam = !lockCam;
             }
 
             if (Input.keyDown(Key.LeftShift))
@@ -215,7 +269,19 @@ namespace TGC.Examples.Camara
             var cameraOriginalUpVector = DEFAULT_UP_VECTOR;
             var cameraRotatedUpVector = Vector3.TransformNormal(cameraOriginalUpVector, cameraRotation);
 
-            base.SetCamera(positionEye, cameraFinalTarget);/*, cameraRotatedUpVector);*/
+            base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector);
+
+            foreach (var mesh in obstaculos)
+            {
+                //valida si hay colision entre la camara y algun mesh del escenario    
+                if (Core.Collision.TgcCollisionUtils.testSphereAABB(sphere, mesh))
+                {   
+                    //TODO armar toda la jerarquia de colisiones.
+                    lastPos.Y += 1;
+                    SetCamera(lastPos, cameraFinalTarget, cameraRotatedUpVector);
+                    break;
+                }
+            }
         }
 
         /// <summary>
