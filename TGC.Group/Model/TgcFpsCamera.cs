@@ -78,6 +78,7 @@ namespace TGC.Examples.Camara
             collisionManagerCamara = new Collision.SphereCollision.SphereCollisionManager();
             collisionManagerCamara.SlideFactor = 15f;
             gravity = -10f;
+            
         }
 
         public TgcFpsCamera(Vector3 positionEye, float moveSpeed, float jumpSpeed, float rotationSpeed,
@@ -143,9 +144,10 @@ namespace TGC.Examples.Camara
                 sphereCamara.setCenter(new Vector3(x, y - 35f, z));
                 if (collitionActive)
                 {
-                    //   newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    //  moveVector += newPosition * MovementSpeed;
-                    moveVector += new Vector3(0, 0, -1) * MovementSpeed;
+                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                    newPosition = bounce(newPosition,obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                    //moveVector += new Vector3(0, 0, -1) * MovementSpeed;
                 }
                 else
                 {
@@ -163,9 +165,9 @@ namespace TGC.Examples.Camara
                 sphereCamara.setCenter(new Vector3(x, y - 35f, z));
                 if (collitionActive)
                 {
-                    //newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    //moveVector += newPosition * MovementSpeed;
-                    moveVector += new Vector3(0, 0, 1) * MovementSpeed;
+                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                    //moveVector += new Vector3(0, 0, 1) * MovementSpeed;
                 }
                 else
                 {
@@ -183,9 +185,9 @@ namespace TGC.Examples.Camara
                 sphereCamara.setCenter(new Vector3(x, y - 35f, z));
                 if (collitionActive)
                 {
-                    //   newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    //  moveVector += newPosition * MovementSpeed;
-                    moveVector += new Vector3(-1, 0, 0) * MovementSpeed;
+                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                    //moveVector += new Vector3(-1, 0, 0) * MovementSpeed;
                 }
                 else
                 {
@@ -203,9 +205,9 @@ namespace TGC.Examples.Camara
                 sphereCamara.setCenter(new Vector3(x, y - 35f, z));
                 if (collitionActive)
                 {
-                    //newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    //moveVector += newPosition * MovementSpeed;
-                    moveVector += new Vector3(1, 0, 0) * MovementSpeed;
+                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                    //moveVector += new Vector3(1, 0, 0) * MovementSpeed;
                 }
                 else
                 {
@@ -272,72 +274,7 @@ namespace TGC.Examples.Camara
             var cameraOriginalUpVector = DEFAULT_UP_VECTOR;
             var cameraRotatedUpVector = Vector3.TransformNormal(cameraOriginalUpVector, cameraRotation);
 
-            if (collitionActive)
-            {
-                bool isColliding = false;
-
-                foreach (var mesh in obstaculos)
-                {
-                    //valida si hay colision entre la camara y algun mesh del escenario    
-                    if (Core.Collision.TgcCollisionUtils.testSphereAABB(sphereCamara, mesh))
-                    {
-                        isColliding = !isColliding;
-
-                        //TODO armar toda la jerarquia de colisiones.
-                        Vector3 puntoDeColision = Core.Collision.TgcCollisionUtils.closestPointAABB(sphereCamara.Center, mesh);
-                        //en X
-
-                        if (puntoDeColision.X > sphereCamara.Position.X)
-                        {
-                            lastPositionSphere.X -= sphereCamara.Radius - (FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)));
-                        }
-
-                        if (puntoDeColision.X < sphereCamara.Position.X)
-                        {
-                            lastPositionSphere.X += sphereCamara.Radius - (FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)));
-
-                        }
-
-                        //en Y
-                        if (puntoDeColision.Y > sphereCamara.Position.Y)
-                        {
-                            lastPositionSphere.Y -= sphereCamara.Radius - (FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X-sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)));
-                        }
-
-                        if (puntoDeColision.Y < sphereCamara.Position.Y)
-                        {
-                            lastPositionSphere.Y += sphereCamara.Radius - (FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)));
-
-                        }
-
-                        //en Z
-
-                        if (puntoDeColision.Z > sphereCamara.Position.Z)
-                        {
-                            lastPositionSphere.Z -= sphereCamara.Radius - (FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)));
-
-                        }
-
-                        if (puntoDeColision.Z < sphereCamara.Position.Z)
-                        {
-                            lastPositionSphere.Z += sphereCamara.Radius - (FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)));
-
-                        }
-                        
-                        break;
-                    }
-                }
-                if (isColliding)
-                {
-                    sphereCamara.setCenter(new Vector3(lastPositionSphere.X, lastPositionSphere.Y, lastPositionSphere.Z));
-                    base.SetCamera(new Vector3(lastPositionSphere.X, lastPositionSphere.Y + 35f, lastPositionSphere.Z), cameraFinalTarget, cameraRotatedUpVector);
-                }
-                else
-                {
-                    base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector);
-                }
-            }
-            
+            base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector);
         }
 
         /// <summary>
@@ -353,6 +290,60 @@ namespace TGC.Examples.Camara
         public void render()
         {
             sphereCamara.render();
+        }
+
+        public Vector3 bounce(Vector3 unaPosicion, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos)
+        {
+            foreach (var mesh in obstaculos)
+            {
+                //valida si hay colision entre la camara y algun mesh del escenario    
+                if (Core.Collision.TgcCollisionUtils.testSphereAABB(sphereCamara, mesh))
+                {
+                    //isColliding = !isColliding;
+
+                    //TODO armar toda la jerarquia de colisiones.
+                    Vector3 puntoDeColision = Core.Collision.TgcCollisionUtils.closestPointAABB(sphereCamara.Center, mesh);
+                    //en X
+
+                    if (puntoDeColision.X > sphereCamara.Position.X)
+                    {
+                        unaPosicion.X -= (float)(sphereCamara.Radius - System.Math.Truncate((FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)))));
+                    }
+
+                    if (puntoDeColision.X < sphereCamara.Position.X)
+                    {
+                        unaPosicion.X += (float)(sphereCamara.Radius - System.Math.Truncate((FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)))));
+                    }
+
+                    //en Y
+                    if (puntoDeColision.Y > sphereCamara.Position.Y)
+                    {
+                        unaPosicion.Y -= (float)(sphereCamara.Radius - System.Math.Truncate((FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)))));
+                    }
+
+                    if (puntoDeColision.Y < sphereCamara.Position.Y)
+                    {
+                        unaPosicion.Y += (float)(sphereCamara.Radius - System.Math.Truncate((FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)))));
+                    }
+
+                    //en Z
+
+                    if (puntoDeColision.Z > sphereCamara.Position.Z)
+                    {
+                        unaPosicion.Z -= (float)(sphereCamara.Radius - System.Math.Truncate((FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)))));
+
+                    }
+
+                    if (puntoDeColision.Z < sphereCamara.Position.Z)
+                    {
+                        unaPosicion.Z += (float)(sphereCamara.Radius - System.Math.Truncate((FastMath.Sqrt(FastMath.Pow2(puntoDeColision.X - sphereCamara.Position.X) + FastMath.Pow2(puntoDeColision.Y - sphereCamara.Position.Y) + FastMath.Pow2(puntoDeColision.Z - sphereCamara.Position.Z)))));
+
+                    }
+
+                    break;
+                }
+            }
+            return unaPosicion;
         }
     }
 }
