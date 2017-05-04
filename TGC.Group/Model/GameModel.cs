@@ -734,11 +734,13 @@ namespace TGC.Group.Model
             }
             monstruo.render();
             //Dibuja un texto por pantalla
+            TGC.Examples.Camara.TgcFpsCamera camaraPrint = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n "
                 + "Position : " + TgcParserUtils.printVector3(Camara.Position) + "\n"
                 + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n"
                 + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
                 + " Monster Position : " + TgcParserUtils.printVector3(monstruo.Position) + "\n"
+                + " Camera Bounding Sphere : " + TgcParserUtils.printVector3(camaraPrint.sphereCamara.Position) + "\n"
                 + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
                 + " Lighter Energy : " + lighter.getEnergia() + "\n"
                 + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
