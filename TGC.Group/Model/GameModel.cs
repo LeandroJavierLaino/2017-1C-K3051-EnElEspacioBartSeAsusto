@@ -795,7 +795,7 @@ namespace TGC.Group.Model
             */
             //lightMesh.render();
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.render();
+            camarita.render(ElapsedTime);
 
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
