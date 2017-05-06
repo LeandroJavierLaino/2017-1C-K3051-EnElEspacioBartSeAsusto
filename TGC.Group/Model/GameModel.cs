@@ -97,6 +97,7 @@ namespace TGC.Group.Model
 
         private float timer = 0;
 
+        #region Init
         /// <summary>
         ///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo.
         ///     Escribir aquí todo el código de inicialización: cargar modelos, texturas, estructuras de optimización, todo
@@ -107,15 +108,22 @@ namespace TGC.Group.Model
         {
             //FPS Camara Modo Dios 
             //TODO: diseñar camara con colisiones y física.
-            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 51, 83), 125f, 100f, Input);
+            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 50, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
             //Version para cargar escena desde carpeta descomprimida
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
+            
+            //Computamos las normales
+            foreach(var mesh in TgcScene.Meshes)
+            {
+                //TODO hay que reordenar normales
+                mesh.D3dMesh.ComputeNormals();
+            }
+
 
             //Device de DirectX para crear primitivas.
-            //
             PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
 
             MonstruoModelo = loader.loadSceneFromFile(this.MediaDir + "\\Monstruo-TgcScene.xml").Meshes[0];
@@ -385,6 +393,9 @@ namespace TGC.Group.Model
             flashlight.setEnergia(100);
 
         }
+        #endregion
+
+        #region Update
         /// <summary>
         ///     Se llama en cada frame.
         ///     Se debe escribir toda la lógica de computo del modelo, así como también verificar entradas del usuario y reacciones
@@ -392,9 +403,10 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Update()
         {
-            PreUpdate();       
-            //Switch entre glowstick(F), encendedor(G) y linterna(H)
+            PreUpdate();
 
+            #region Logica Luces
+            //Switch entre glowstick(F), encendedor(G) y linterna(H)
             if (Input.keyPressed(Key.F))
             {
                 lightMesh.Color = Color.GreenYellow;
@@ -445,7 +457,9 @@ namespace TGC.Group.Model
                     timer = 0;
                 }
             }
+#endregion
 
+            #region Logica Monstruo
             //Para activar o desactivar al monstruo
             if (Input.keyPressed(Key.M)) {
                 monstruo.Activo = !monstruo.Activo;
@@ -459,10 +473,12 @@ namespace TGC.Group.Model
             
             //Logica del monstruo
             monstruo.update(Camara.Position, objetosColisionables, ElapsedTime);
+#endregion
 
             var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.UpdateCamera(ElapsedTime, objetosColisionables);
         }
+#endregion
 
         /// <summary>
         ///     Se llama cada vez que hay que refrescar la pantalla.
@@ -498,6 +514,7 @@ namespace TGC.Group.Model
                 mesh.Effect = Shader;
                 mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(mesh.RenderType);
             }
+
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
             {
@@ -554,7 +571,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
                 if (lighter.getSelect() && lighter.getEnergia() <= 20 && lighter.getEnergia() > 0)
@@ -795,7 +812,7 @@ namespace TGC.Group.Model
             */
             //lightMesh.render();
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.render(ElapsedTime);
+            camarita.render(ElapsedTime,objetosColisionables);
 
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
