@@ -1,0 +1,44 @@
+<tgcScene>
+  <name>boton</name>
+  <texturesExport enabled="True" dir="Textures" />
+  <lightmapExport enabled="False" dir="LightMaps" />
+  <sceneBoundingBox min="[-3.0128,11.8905,-0.9251]" max="[6.9686,31.7143,4.0078]" />
+  <materials count="1">
+    <m name="Multimaterial" type="Multimaterial">
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Lisas.bmp</bitmap>
+      </subM>
+      <subM name="Standardmaterial" type="Standardmaterial">
+        <ambient>[0,0,0,0]</ambient>
+        <diffuse>[0,0,0,0]</diffuse>
+        <specular>[0,0,0,0]</specular>
+        <opacity>1</opacity>
+        <alphaBlendEnable>False</alphaBlendEnable>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_MetalBare0104_1_S.jpg</bitmap>
+      </subM>
+    </m>
+  </materials>
+  <meshes count="1">
+    <mesh name="Box_3" layer="Default" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[-3.0128,11.8905,-0.9251]" max="[6.9686,31.7143,4.0078]" />
+      <coordinatesIdx count="72">0 1 2 1 3 2 4 5 6 6 5 7 0 5 4 0 2 5 1 6 7 1 7 3 0 6 1 4 6 0 2 3 7 5 2 7 8 9 10 9 11 10 12 13 14 14 13 15 8 13 12 8 10 13 9 14 15 9 15 11 8 14 9 12 14 8 10 11 15 13 10 15 </coordinatesIdx>
+      <textCoordsIdx count="72">0 1 2 1 3 2 0 2 1 1 2 3 0 3 1 0 2 3 0 1 3 0 3 2 0 3 1 2 3 0 0 1 3 2 0 3 0 1 2 1 3 2 0 2 1 1 2 3 0 3 1 0 2 3 0 1 3 0 3 2 0 3 1 2 3 0 0 1 3 2 0 3 </textCoordsIdx>
+      <colorsIdx count="72">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="24">0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="48">-0.2576 24.8688 4.0078 -0.2576 21.3144 4.0078 3.6635 24.8688 4.0078 3.6635 21.3144 4.0078 -0.2576 24.8688 -0.37 3.6635 24.8688 -0.37 -0.2576 21.3144 -0.37 3.6635 21.3144 -0.37 -3.0128 31.7143 1.8431 -3.0128 11.8905 1.8431 6.9686 31.7143 1.8431 6.9686 11.8905 1.8431 -3.0128 31.7143 -0.9251 6.9686 31.7143 -0.9251 -3.0128 11.8905 -0.9251 6.9686 11.8905 -0.9251 </vertices>
+      <normals count="48">0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 </normals>
+      <texCoords count="8">0 0 0 1 1 0 1 1 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+      <userProps count="0" />
+    </mesh>
+  </meshes>
+</tgcScene>

@@ -122,8 +122,9 @@ namespace TGC.Examples.Camara
             LockCam = false;
         }
 
-        public void UpdateCamera(float elapsedTime, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos)
+        public void UpdateCamera(float elapsedTime, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float vidaPorcentaje)
         {
+            Cursor.Hide();
             var moveVector = new Vector3(0, 0, 0);
             bool isMoving = false;
             float x = Position.X;
@@ -139,16 +140,20 @@ namespace TGC.Examples.Camara
 
             #region Movimientos
             //Forward
-            if (Input.keyDown(Key.W))
+            if (Input.keyDown(Key.W) && vidaPorcentaje > 0 )
             {
-                targetDistance += new Vector3(LookAt.X,sphereCamara.Position.Y,LookAt.Z)  - sphereCamara.Center;
+                targetDistance += new Vector3(0, 0, -1) * MovementSpeed;// (new Vector3(LookAt.X,0,LookAt.Z)  - new Vector3(Position.X,0,Position.Z))*MovementSpeed;
                 targetDistance.Normalize();  
                 if (collitionActive)
-                {   
+                {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    //newPosition = bounce(newPosition, targetDistance,obstaculos, lastPos);
-                    moveVector += new Vector3(0,0, newPosition.Z) * MovementSpeed;
-                    //isMoving = true;
+                    newPosition = bounce(newPosition, obstaculos);
+                    moveVector += newPosition * MovementSpeed;
+                    sphereCamara.setCenter(new Vector3(Position.X,Position.Y-30f,Position.Z));
+                    /*
+                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                    newPosition = bounce(newPosition, targetDistance,obstaculos, lastPos);
+                    moveVector += -newPosition*MovementSpeed;*/
                 }
                 else
                 {
@@ -157,7 +162,7 @@ namespace TGC.Examples.Camara
             }
 
             //Backward
-            if (Input.keyDown(Key.S))
+            if (Input.keyDown(Key.S) && vidaPorcentaje > 0)
             {
                 targetDistance += new Vector3(0, 0, 1) * MovementSpeed;
                 targetDistance.Normalize();
@@ -174,7 +179,7 @@ namespace TGC.Examples.Camara
             }
 
             //Strafe right
-            if (Input.keyDown(Key.D))
+            if (Input.keyDown(Key.D) && vidaPorcentaje > 0)
             {
                 targetDistance += new Vector3(-1, 0, 0) * MovementSpeed;
                 targetDistance.Normalize();
@@ -183,7 +188,6 @@ namespace TGC.Examples.Camara
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
                     //newPosition = bounce(newPosition, targetDistance, obstaculos, lastPos);
                     moveVector += newPosition * MovementSpeed;
-                    isMoving = true;
                 }
                 else
                 {
@@ -192,7 +196,7 @@ namespace TGC.Examples.Camara
             }
 
             //Strafe left
-            if (Input.keyDown(Key.A))
+            if (Input.keyDown(Key.A) && vidaPorcentaje > 0)
             {
                 targetDistance += new Vector3(1, 0, 0) * MovementSpeed;
                 targetDistance.Normalize();
@@ -259,7 +263,7 @@ namespace TGC.Examples.Camara
                 Cursor.Position = mouseCenter;
 
             //Calculamos la nueva posicion del ojo segun la rotacion actual de la camara.
-            var cameraRotatedPositionEye = Vector3.TransformNormal(moveVector * elapsedTime, cameraRotation);
+            var cameraRotatedPositionEye = Vector3.TransformNormal(moveVector  * elapsedTime, cameraRotation);
             positionEye += cameraRotatedPositionEye;
 
             cameraRotation = Matrix.RotationX(updownRot) * Matrix.RotationY(leftrightRot);
@@ -274,11 +278,6 @@ namespace TGC.Examples.Camara
             var cameraRotatedUpVector = Vector3.TransformNormal(cameraOriginalUpVector, cameraRotation);
 
             base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector);
-
-            if (isMoving)
-            {
-                sphereCamara.setCenter(Position);
-            }
         }
 
         /// <summary>
@@ -298,7 +297,7 @@ namespace TGC.Examples.Camara
             sphereCamara.render();
         }
 
-        public Vector3 bounce(Vector3 unaPosicion, Vector3 targetDistance, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, Vector3 lastPos)
+        public Vector3 bounce(Vector3 unaPosicion, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos)
         {
             foreach (var mesh in obstaculos)
             {
@@ -330,6 +329,39 @@ namespace TGC.Examples.Camara
                         if (puntoDeColision.Z < sphereCamara.Position.Z)
                         {
                             unaPosicion.Z += desplazar(sphereCamara.Radius, puntoDeColision);
+                        }
+                    }
+                    else
+                    {
+                        //en X
+                        if (puntoDeColision.X == sphereCamara.Position.X + sphereCamara.Radius)
+                        {
+                            //en Z
+
+                            if (puntoDeColision.Z > sphereCamara.Position.Z)
+                            {
+                                unaPosicion.Z -= desplazar(sphereCamara.Radius, puntoDeColision);
+                            }
+
+                            if (puntoDeColision.Z < sphereCamara.Position.Z)
+                            {
+                                unaPosicion.Z += desplazar(sphereCamara.Radius, puntoDeColision);
+                            }
+                        }
+
+                        //en Z
+                        if (puntoDeColision.Z == sphereCamara.Position.Z + sphereCamara.Radius)
+                        {
+                            //en X
+                            if (puntoDeColision.X > sphereCamara.Position.X)
+                            {
+                                unaPosicion.X -= desplazar(sphereCamara.Radius, puntoDeColision);
+                            }
+
+                            if (puntoDeColision.X < sphereCamara.Position.X)
+                            {
+                                unaPosicion.X += desplazar(sphereCamara.Radius, puntoDeColision);
+                            }
                         }
                     }
 

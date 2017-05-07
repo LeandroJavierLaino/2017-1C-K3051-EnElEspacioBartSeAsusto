@@ -17,6 +17,8 @@ using TGC.Core.Collision;
 using TGC.Examples.Collision.SphereCollision;
 using TGC.Core.BoundingVolumes;
 using TGC.Group.Model;
+using TGC.Examples.Engine2D.Spaceship.Core;
+using TGC.Core.Text;
 
 namespace TGC.Group.Model
 {
@@ -48,6 +50,15 @@ namespace TGC.Group.Model
 
         //Escena
         private TgcScene TgcScene { get; set; }
+
+        private Drawer2D drawer2D;
+        //Vida
+        private CustomSprite vida;
+        private float vidaPorcentaje = 100f;
+
+        private CustomSprite centerPoint;
+
+        private TgcText2D textoDeLaMuerte;
 
         private TgcMesh PuertaModelo { get; set; }
         private TgcMesh MonstruoModelo { get; set; }
@@ -81,6 +92,13 @@ namespace TGC.Group.Model
         private TgcMesh Puerta27 { get; set; }
         private TgcMesh Puerta28 { get; set; }
 
+        private Boton botonEscapePod1;
+        private Boton botonEscapePod2;
+        private Boton botonOxigeno;
+        private Boton botonElectricidad;
+        private Boton botonElectricidad2;
+        private Boton botonCombustible;
+
         private Monstruo monstruo { get; set; }
         private SphereCollisionManager collisionManager;
 
@@ -111,7 +129,14 @@ namespace TGC.Group.Model
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 51, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
-            //Version para cargar escena desde carpeta descomprimida
+            drawer2D = new Drawer2D();
+            vida = new CustomSprite();
+            vida.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\vidaRed.jpg", D3DDevice.Instance.Device);
+
+            centerPoint = new CustomSprite();
+            centerPoint.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\green.bmp", D3DDevice.Instance.Device);
+            
+            //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
             
@@ -124,11 +149,12 @@ namespace TGC.Group.Model
                 mesh.D3dMesh.ComputeNormals();
             }
 
-            //Device de DirectX para crear primitivas.
+            //Carga de puerta y de enemigo
             PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
 
             MonstruoModelo = loader.loadSceneFromFile(this.MediaDir + "\\Monstruo-TgcScene.xml").Meshes[0];
 
+            #region PuertasInit
             //=========================================================================================
             // Ojo con el add de meshes a la escena ya que los agrega y no son elementos independientes.
             // Hay que ver como reaccionan, para la entrega habria comentar las puertas, para que se
@@ -304,8 +330,9 @@ namespace TGC.Group.Model
             Puerta28.move(89f, 142f, 922f);
             TgcScene.Meshes.Add(Puerta28);
             */
+            #endregion
 
-
+            #region TriggerMonstruoInit
             //Se declaran y definen las zonas que al ser ingresadas activan al monstruo
             var monsterTriggers = new List<TgcBoundingSphere>();
             var monsterSpawnPoints = new List<Vector3>();
@@ -340,10 +367,11 @@ namespace TGC.Group.Model
 
             monsterTriggers.Add(new TgcBoundingSphere(new Vector3(770f, 40f + 110f, 1722f), 50f));
             monsterSpawnPoints.Add(new Vector3(766f, 30f + 110f, 1335f));
+#endregion
 
             monstruo = new Monstruo();
             monstruo.init(MonstruoModelo.createMeshInstance("Monstruo"),new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints);
-
+            
             objetosColisionables.Clear();
 
             foreach (var mesh in TgcScene.Meshes)
@@ -351,24 +379,49 @@ namespace TGC.Group.Model
                 objetosColisionables.Add(mesh.BoundingBox);
             }
             TgcScene.Meshes.Add(monstruo.mesh);
-            //Textura de la carperta Media. Game.Default es un archivo de configuracion (Game.settings) util para poner cosas.
-            //Pueden abrir el Game.settings que se ubica dentro de nuestro proyecto para configurar.
-            var pathTexturaCaja = MediaDir + Game.Default.TexturaCaja;
 
-            //Cargamos una textura, tener en cuenta que cargar una textura significa crear una copia en memoria.
-            //Es importante cargar texturas en Init, si se hace en el render loop podemos tener grandes problemas si instanciamos muchas.
-            var texture = TgcTexture.createTexture(pathTexturaCaja);
+            #region Texto de la Muerte
+            textoDeLaMuerte = new TgcText2D();
+            textoDeLaMuerte.Text = "YOU DIED";
+            textoDeLaMuerte.Color = Color.Red;
+            textoDeLaMuerte.Position = new Point(D3DDevice.Instance.Width/12,D3DDevice.Instance.Height/2);
+            textoDeLaMuerte.changeFont(new System.Drawing.Font("TimesNewRoman", 55 ));
+            #endregion
 
-            //Creamos una caja 3D ubicada de dimensiones (5, 10, 5) y la textura como color.
-            var size = new Vector3(10, 10, 10);
-            //Construimos una caja según los parámetros, por defecto la misma se crea con centro en el origen y se recomienda así para facilitar las transformaciones.
-            Box = TgcBox.fromSize(size, texture);
-            //Posición donde quiero que este la caja, es común que se utilicen estructuras internas para las transformaciones.
-            //Entonces actualizamos la posición lógica, luego podemos utilizar esto en render para posicionar donde corresponda con transformaciones.
-            Box.Position = new Vector3(-25, 0, 0);
+            #region BotonesInit
+            botonEscapePod1 = new Boton();           
+            botonEscapePod1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
+            botonEscapePod1.meshBoton.Position = new Vector3(440, 25, 30);
+            botonEscapePod1.changeColor(Color.Red);
 
+            botonEscapePod2 = new Boton();
+            botonEscapePod2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
+            botonEscapePod2.meshBoton.Position = new Vector3(440, 135, 30);
+            botonEscapePod2.changeColor(Color.Red);
+
+            botonOxigeno = new Boton();
+            botonOxigeno.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
+            botonOxigeno.meshBoton.Position = new Vector3(305, 135, 730);
+            botonOxigeno.changeColor(Color.Red);
+
+            botonElectricidad = new Boton();
+            botonElectricidad.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
+            botonElectricidad.meshBoton.Position = new Vector3(490, 25, 1520);
+            botonElectricidad.changeColor(Color.Red);
+
+            botonElectricidad2 = new Boton();
+            botonElectricidad2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
+            botonElectricidad2.meshBoton.Position = new Vector3(490, 135, 1520);
+            botonElectricidad2.changeColor(Color.Red);
+
+            botonCombustible = new Boton();
+            botonCombustible.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
+            botonCombustible.meshBoton.Position = new Vector3(550, 25, 280);
+            botonCombustible.changeColor(Color.Red);
+            #endregion
+
+            #region LucesInit
             //Luz?? Sep, si uno hace en el render un lightMesh.render(), te va a mostrar donde se posiciona la luz en el espacio.
-
             lightMesh = TgcBox.fromSize(new Vector3(5, 5, 5));
 
             //Pongo al mesh en posicion, activo e AutoTransform
@@ -392,7 +445,7 @@ namespace TGC.Group.Model
             flashlight = new Linterna();
             flashlight.setSelect(false);
             flashlight.setEnergia(100);
-
+            #endregion
         }
         #endregion
 
@@ -405,10 +458,14 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
+            vida.Position = new Vector2(20f, D3DDevice.Instance.Height-40f);
+            vida.Scaling = new Vector2(8f,0.5f);
+            centerPoint.Position = new Vector2(D3DDevice.Instance.Width / 2, D3DDevice.Instance.Height / 2);
+            centerPoint.Scaling = new Vector2(0.5f,0.5f);
 
             #region Logica Luces
             //Switch entre glowstick(F), encendedor(G) y linterna(H)
-            if (Input.keyPressed(Key.F))
+            if (Input.keyPressed(Key.F) && vidaPorcentaje > 0 )
             {
                 lightMesh.Color = Color.GreenYellow;
                 this.glowstick.setSelect(true);
@@ -416,7 +473,7 @@ namespace TGC.Group.Model
                 this.flashlight.setSelect(false);
                 timer = 0;
             }
-            if (Input.keyPressed(Key.G))
+            if (Input.keyPressed(Key.G) && vidaPorcentaje > 0 )
             {
                 this.glowstick.setSelect(false);
                 this.lighter.setSelect(true);
@@ -424,7 +481,7 @@ namespace TGC.Group.Model
                 lightMesh.Color = Color.Yellow;
                 timer = 0;
             }
-            if (Input.keyPressed(Key.H))
+            if (Input.keyPressed(Key.H) && vidaPorcentaje>0 )
             {
                 this.glowstick.setSelect(false);
                 this.lighter.setSelect(false);
@@ -458,7 +515,51 @@ namespace TGC.Group.Model
                     timer = 0;
                 }
             }
-#endregion
+            #endregion
+
+            #region Accion con botones
+
+            if (Input.keyPressed(Key.E) && distance(Camara.Position,botonElectricidad.meshBoton.Position) < 35)
+            {
+                botonElectricidad.changeColor(Color.Green);
+                botonElectricidad.isGreen = true;
+            }
+
+            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonElectricidad2.meshBoton.Position) < 35)
+            {
+                botonElectricidad2.changeColor(Color.Green);
+                botonElectricidad2.isGreen = true;
+            }
+
+            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonOxigeno.meshBoton.Position) < 35)
+            {
+                botonOxigeno.changeColor(Color.Green);
+                botonOxigeno.isGreen = true;
+            }
+
+            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonCombustible.meshBoton.Position) < 35)
+            {
+                botonCombustible.changeColor(Color.Green);
+                botonCombustible.isGreen = true;
+            }
+
+            //Tiene que estar en verde todos los demas botones
+            if (Input.keyPressed(Key.E) && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 35 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 35) && botonCombustible.isGreen && botonElectricidad.isGreen && botonElectricidad2.isGreen && botonOxigeno.isGreen)
+            {
+                botonEscapePod1.changeColor(Color.Green);
+                botonEscapePod2.changeColor(Color.Green);
+                //aaaaand We WON!!!
+            }
+
+            #endregion
+
+            #region Logica Personaje
+            if (distance(monstruo.Position, Camara.Position) < 50f && vidaPorcentaje > 0)
+            {
+                vidaPorcentaje -= 0.1f; 
+            }
+            vida.Scaling = new Vector2((vidaPorcentaje/100) * 8, 0.5f);
+            #endregion  
 
             #region Logica Monstruo
             //Para activar o desactivar al monstruo
@@ -477,7 +578,7 @@ namespace TGC.Group.Model
 #endregion
 
             var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.UpdateCamera(ElapsedTime, objetosColisionables);
+            camarita.UpdateCamera(ElapsedTime, objetosColisionables,vidaPorcentaje);
         }
         #endregion
 
@@ -492,6 +593,16 @@ namespace TGC.Group.Model
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
             timer += ElapsedTime;
+
+            drawer2D.BeginDrawSprite();
+            drawer2D.DrawSprite(vida);
+            drawer2D.DrawSprite(centerPoint);
+            drawer2D.EndDrawSprite();
+            
+            if (vidaPorcentaje <= 0)
+            {
+                textoDeLaMuerte.render();
+            }
 
             if (this.glowstick.getSelect() || this.lighter.getSelect())
             {
@@ -749,7 +860,9 @@ namespace TGC.Group.Model
                 mesh.BoundingBox.render();
 
             }
+
             monstruo.render();
+            
             //Dibuja un texto por pantalla
             TGC.Examples.Camara.TgcFpsCamera camaraPrint = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n "
@@ -761,24 +874,11 @@ namespace TGC.Group.Model
                 + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
                 + " Lighter Energy : " + lighter.getEnergia() + "\n"
                 + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
-                + " Time: " + timer + "\n"
+                + " Vida: " + vidaPorcentaje + "\n"
                 + " M para Monstruo D:" + "\n"
                 + " N para activar/desactivar colisiones del Monstruo \n"
                 + " L activa colisiones de la camara"
             , 0, 30, Color.OrangeRed);
-
-            //Siempre antes de renderizar el modelo necesitamos actualizar la matriz de transformacion.
-            //Debemos recordar el orden en cual debemos multiplicar las matrices, en caso de tener modelos jerárquicos, tenemos control total.
-            //Box.Transform = Matrix.Scaling(Box.Scale) * Matrix.RotationYawPitchRoll(Box.Rotation.Y, Box.Rotation.X, Box.Rotation.Z) * Matrix.Translation(Box.Position);
-            //A modo ejemplo realizamos toda las multiplicaciones, pero aquí solo nos hacia falta la traslación.
-            //Finalmente invocamos al render de la caja
-            //Box.render();
-
-            //Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
-            //Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
-            //Mesh.UpdateMeshTransform();
-            //Render de una escena
-            //TgcScene.renderAll();
 
             /*
             Puerta1.render();
@@ -811,9 +911,16 @@ namespace TGC.Group.Model
             Puerta28.render();
             */
             //lightMesh.render();
+            
+            botonEscapePod1.meshBoton.render();
+            botonEscapePod2.meshBoton.render();
+            botonElectricidad.meshBoton.render();
+            botonElectricidad2.meshBoton.render();
+            botonOxigeno.meshBoton.render();
+            botonCombustible.meshBoton.render();
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.render(ElapsedTime,objetosColisionables);
-
+            
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
         }
@@ -847,6 +954,20 @@ namespace TGC.Group.Model
             monstruo.mesh.dispose();
             TgcScene.disposeAll();
             Shader.Dispose();
+            botonEscapePod1.meshBoton.dispose();
+            botonEscapePod2.meshBoton.dispose();
+            botonElectricidad.meshBoton.dispose();
+            botonElectricidad2.meshBoton.dispose();
+            botonOxigeno.meshBoton.dispose();
+            botonCombustible.meshBoton.dispose();
+            textoDeLaMuerte.Dispose();
+            vida.Dispose();
+            centerPoint.Dispose();
+        }
+
+        public float distance(Vector3 a, Vector3 b)
+        {
+            return (FastMath.Sqrt(FastMath.Pow2(a.X - b.X) + FastMath.Pow2(a.Y - b.Y) + FastMath.Pow2(a.Z - b.Z)));
         }
     }
 }

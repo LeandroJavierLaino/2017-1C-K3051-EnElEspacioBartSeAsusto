@@ -85,7 +85,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
-    <Compile Include="Model\AABBCollisionManager.cs" />
+    <Compile Include="Model\Boton.cs" />
+    <Compile Include="Model\CustomBitmap.cs" />
+    <Compile Include="Model\CustomSprite.cs" />
+    <Compile Include="Model\Drawer2D.cs" />
     <Compile Include="Model\Linterna.cs" />
     <Compile Include="Model\GameModel.cs" />
     <Compile Include="Model\Monstruo.cs" />
