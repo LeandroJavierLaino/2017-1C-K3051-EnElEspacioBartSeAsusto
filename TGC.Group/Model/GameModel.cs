@@ -108,7 +108,7 @@ namespace TGC.Group.Model
         {
             //FPS Camara Modo Dios 
             //TODO: diseñar camara con colisiones y física.
-            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 50, 83), 125f, 100f, Input);
+            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 51, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
             //Version para cargar escena desde carpeta descomprimida
@@ -118,10 +118,11 @@ namespace TGC.Group.Model
             //Computamos las normales
             foreach(var mesh in TgcScene.Meshes)
             {
+                int[] adjacencia = {1,1,1,1,1,1,1,1,1,1,1,1};
+                
                 //TODO hay que reordenar normales
                 mesh.D3dMesh.ComputeNormals();
             }
-
 
             //Device de DirectX para crear primitivas.
             PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
@@ -478,8 +479,9 @@ namespace TGC.Group.Model
             var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.UpdateCamera(ElapsedTime, objetosColisionables);
         }
-#endregion
+        #endregion
 
+        #region Render
         /// <summary>
         ///     Se llama cada vez que hay que refrescar la pantalla.
         ///     Escribir aquí todo el código referido al renderizado.
@@ -490,8 +492,6 @@ namespace TGC.Group.Model
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
             timer += ElapsedTime;
-
-            
 
             if (this.glowstick.getSelect() || this.lighter.getSelect())
             {
@@ -817,6 +817,7 @@ namespace TGC.Group.Model
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
         }
+        #endregion
 
         /// <summary>
         ///     Se llama cuando termina la ejecución del ejemplo.

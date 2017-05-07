@@ -21,12 +21,15 @@ namespace TGC.Examples.Collision.SphereCollision
     {
         private const float EPSILON = 0.05f;
 
+        private bool GravityEnabled = true;
+        private Vector3 GravityForce = new Vector3(0, -10, 0);
+
         private readonly List<TgcBoundingAxisAlignBox> objetosCandidatos = new List<TgcBoundingAxisAlignBox>();
 
         public SphereCollisionManager()
         {
-            //GravityEnabled = true;
-            //GravityForce = new Vector3(0, -10, 0);
+            GravityEnabled = true;
+            GravityForce = new Vector3(0, -10, 0);
             SlideFactor = 1.3f;
         }
 
@@ -63,14 +66,17 @@ namespace TGC.Examples.Collision.SphereCollision
             collideWithWorld(characterSphere, movementVector, obstaculos);
 
             //Aplicar gravedad
-            //if (GravityEnabled)
-            //{
-            //    collideWithWorld(characterSphere, GravityForce, obstaculos);
-            //}
+            if (GravityEnabled)
+            {
+                collideWithWorld(characterSphere, GravityForce, obstaculos);
+            }
 
             return characterSphere.Center - originalSphereCenter;
         }
-
+        public void toggleGravity()
+        {
+            GravityEnabled = !GravityEnabled;
+        }
         /// <summary>
         ///     Detección de colisiones, filtrando los obstaculos que se encuentran dentro del radio de movimiento
         /// </summary>
