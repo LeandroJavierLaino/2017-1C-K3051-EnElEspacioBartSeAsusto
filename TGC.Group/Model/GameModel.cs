@@ -63,6 +63,7 @@ namespace TGC.Group.Model
         private TgcMesh PuertaModelo { get; set; }
         private TgcMesh MonstruoModelo { get; set; }
 
+        private Puerta puerta1; 
         private TgcMesh Puerta1 { get; set; }
         private TgcMesh Puerta2 { get; set; }
         private TgcMesh Puerta3 { get; set; }
@@ -160,12 +161,13 @@ namespace TGC.Group.Model
             // Hay que ver como reaccionan, para la entrega habria comentar las puertas, para que se
             // vea como el enemigo persigue al jugador
             //=========================================================================================
-            /*
-            Puerta1 = PuertaModelo.createMeshInstance("Puerta1");
-            Puerta1.AutoTransformEnable = true;
-            Puerta1.move(89f, 31.5f, 275f);
-            TgcScene.Meshes.Add(Puerta1);
 
+            puerta1 = new Puerta();
+            puerta1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
+            puerta1.changePosition(new Vector3(89f, 31.5f, 275f));
+            TgcScene.Meshes.Add(puerta1.getMesh());
+
+            /*
             Puerta2 = PuertaModelo.createMeshInstance("Puerta2");
             Puerta2.AutoTransformEnable = true;
             Puerta2.move(439f, 32f, 203f);
@@ -553,6 +555,14 @@ namespace TGC.Group.Model
 
             #endregion
 
+            #region Accion Puertas
+            if (Input.keyPressed(Key.E))
+            {
+                puerta1.abrirPuerta(Camara.Position);
+            }
+
+            #endregion
+
             #region Logica Personaje
             if (distance(monstruo.Position, Camara.Position) < 50f && vidaPorcentaje > 0)
             {
@@ -882,6 +892,7 @@ namespace TGC.Group.Model
 
             /*
             Puerta1.render();
+            /*
             Puerta2.render();
             Puerta3.render();
             Puerta4.render();
