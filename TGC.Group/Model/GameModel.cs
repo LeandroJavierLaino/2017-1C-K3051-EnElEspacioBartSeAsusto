@@ -51,19 +51,44 @@ namespace TGC.Group.Model
         //Escena
         private TgcScene TgcScene { get; set; }
 
+        #region HUD
+        //HUD
+        
+        //Dibujador o dibujante??? 
         private Drawer2D drawer2D;
+        
         //Vida
         private CustomSprite vida;
-        private float vidaPorcentaje = 100f;
-
+        private float vidaPorcentaje = 100.1f;
+        
+        //Punto de Mira
         private CustomSprite centerPoint;
 
+        //Stamina
+        private CustomSprite stamina;
+        private float staminaPorcentaje = 100f;
+
+        //Glowsticks
+        private CustomSprite glowstickHUD1;
+        private CustomSprite glowstickHUD2;
+        private CustomSprite glowstickHUD3;
+
+        //Lighter
+
+        //Flashlight
+
+        #endregion
         private TgcText2D textoDeLaMuerte;
 
         private TgcMesh PuertaModelo { get; set; }
         private TgcMesh MonstruoModelo { get; set; }
 
-        private Puerta puerta1; 
+        private Puerta puerta1;
+        private Puerta puerta2;
+        //private Puerta puerta3;
+        //private Puerta puerta4;
+        //private Puerta puerta5;
+        //private Puerta puerta6;
         private TgcMesh Puerta1 { get; set; }
         private TgcMesh Puerta2 { get; set; }
         private TgcMesh Puerta3 { get; set; }
@@ -114,7 +139,7 @@ namespace TGC.Group.Model
         private Linterna lighter;
         private Linterna flashlight;
 
-        private float timer = 0;
+        private float timer;
 
         #region Init
         /// <summary>
@@ -130,13 +155,28 @@ namespace TGC.Group.Model
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 51, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
+            #region HUD init
             drawer2D = new Drawer2D();
             vida = new CustomSprite();
             vida.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\vidaRed.jpg", D3DDevice.Instance.Device);
 
+            stamina = new CustomSprite();
+            stamina.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\staminaYellow.jpg", D3DDevice.Instance.Device);
+
             centerPoint = new CustomSprite();
             centerPoint.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\green.bmp", D3DDevice.Instance.Device);
-            
+
+            glowstickHUD1 = new CustomSprite();
+            glowstickHUD1.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\foam-stick-green.png", D3DDevice.Instance.Device);
+
+            glowstickHUD2 = new CustomSprite();
+            glowstickHUD2.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\foam-stick-green.png", D3DDevice.Instance.Device);
+
+            glowstickHUD3 = new CustomSprite();
+            glowstickHUD3.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\foam-stick-green.png", D3DDevice.Instance.Device);
+
+            #endregion
+
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
@@ -167,12 +207,12 @@ namespace TGC.Group.Model
             puerta1.changePosition(new Vector3(89f, 31.5f, 275f));
             TgcScene.Meshes.Add(puerta1.getMesh());
 
-            /*
-            Puerta2 = PuertaModelo.createMeshInstance("Puerta2");
-            Puerta2.AutoTransformEnable = true;
-            Puerta2.move(439f, 32f, 203f);
-            TgcScene.Meshes.Add(Puerta2);
+            puerta2 = new Puerta();
+            puerta2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
+            puerta2.changePosition(new Vector3(439f, 32f, 203f));
+            TgcScene.Meshes.Add(puerta2.getMesh());
 
+            /*
             Puerta3 = PuertaModelo.createMeshInstance("Puerta3");
             Puerta3.AutoTransformEnable = true;
             Puerta3.move(201f, 32f, 1570f);
@@ -448,6 +488,8 @@ namespace TGC.Group.Model
             flashlight.setSelect(false);
             flashlight.setEnergia(100);
             #endregion
+
+            timer = 0;
         }
         #endregion
 
@@ -460,10 +502,20 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
+            #region Update del HUD
             vida.Position = new Vector2(20f, D3DDevice.Instance.Height-40f);
             vida.Scaling = new Vector2(8f,0.5f);
+            stamina.Position = new Vector2(20f, D3DDevice.Instance.Height - 80f);
+            stamina.Scaling = new Vector2(8f, 0.5f);
             centerPoint.Position = new Vector2(D3DDevice.Instance.Width / 2, D3DDevice.Instance.Height / 2);
-            centerPoint.Scaling = new Vector2(0.5f,0.5f);
+            centerPoint.Scaling = new Vector2(0.25f,0.25f);
+            glowstickHUD1.Position = new Vector2(20f,20f);
+            glowstickHUD1.Scaling = new Vector2(0.125f,0.125f);
+            glowstickHUD2.Position = new Vector2(20f, glowstickHUD1.Position.Y + 20f);
+            glowstickHUD2.Scaling = new Vector2(0.125f, 0.125f);
+            glowstickHUD3.Position = new Vector2(20f, glowstickHUD2.Position.Y + 20f);
+            glowstickHUD3.Scaling = new Vector2(0.125f, 0.125f);
+            #endregion
 
             #region Logica Luces
             //Switch entre glowstick(F), encendedor(G) y linterna(H)
@@ -521,32 +573,32 @@ namespace TGC.Group.Model
 
             #region Accion con botones
 
-            if (Input.keyPressed(Key.E) && distance(Camara.Position,botonElectricidad.meshBoton.Position) < 35)
+            if (Input.keyPressed(Key.E) && distance(Camara.Position,botonElectricidad.meshBoton.Position) < 55)
             {
                 botonElectricidad.changeColor(Color.Green);
                 botonElectricidad.isGreen = true;
             }
 
-            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonElectricidad2.meshBoton.Position) < 35)
+            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonElectricidad2.meshBoton.Position) < 55)
             {
                 botonElectricidad2.changeColor(Color.Green);
                 botonElectricidad2.isGreen = true;
             }
 
-            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonOxigeno.meshBoton.Position) < 35)
+            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonOxigeno.meshBoton.Position) < 55)
             {
                 botonOxigeno.changeColor(Color.Green);
                 botonOxigeno.isGreen = true;
             }
 
-            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonCombustible.meshBoton.Position) < 35)
+            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonCombustible.meshBoton.Position) < 55)
             {
                 botonCombustible.changeColor(Color.Green);
                 botonCombustible.isGreen = true;
             }
 
             //Tiene que estar en verde todos los demas botones
-            if (Input.keyPressed(Key.E) && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 35 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 35) && botonCombustible.isGreen && botonElectricidad.isGreen && botonElectricidad2.isGreen && botonOxigeno.isGreen)
+            if (Input.keyPressed(Key.E) && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55) && botonCombustible.isGreen && botonElectricidad.isGreen && botonElectricidad2.isGreen && botonOxigeno.isGreen)
             {
                 botonEscapePod1.changeColor(Color.Green);
                 botonEscapePod2.changeColor(Color.Green);
@@ -559,16 +611,38 @@ namespace TGC.Group.Model
             if (Input.keyPressed(Key.E))
             {
                 puerta1.abrirPuerta(Camara.Position);
+                puerta2.abrirPuerta(Camara.Position);
+                //La misma logica para todasssssss las puertas U__________U
             }
 
             #endregion
 
             #region Logica Personaje
+            
+            //Vida
             if (distance(monstruo.Position, Camara.Position) < 50f && vidaPorcentaje > 0)
             {
                 vidaPorcentaje -= 0.1f; 
             }
+            else
+            {
+                //Botiquin? Maybe http://lmgtfy.com/?q=shrug+emoji
+            }
             vida.Scaling = new Vector2((vidaPorcentaje/100) * 8, 0.5f);
+
+            //Stamina
+            if (Input.keyDown(Key.LeftShift) && staminaPorcentaje > 0)
+            {
+                staminaPorcentaje -= 0.4f;
+            }
+            else
+            {
+                if (staminaPorcentaje < 100)
+                {
+                    staminaPorcentaje += 0.1f;
+                }
+            }
+            stamina.Scaling = new Vector2((staminaPorcentaje / 100) * 8, 0.5f);
             #endregion  
 
             #region Logica Monstruo
@@ -588,7 +662,7 @@ namespace TGC.Group.Model
 #endregion
 
             var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.UpdateCamera(ElapsedTime, objetosColisionables,vidaPorcentaje);
+            camarita.UpdateCamera(ElapsedTime, objetosColisionables,vidaPorcentaje,staminaPorcentaje);
         }
         #endregion
 
@@ -606,7 +680,20 @@ namespace TGC.Group.Model
 
             drawer2D.BeginDrawSprite();
             drawer2D.DrawSprite(vida);
+            drawer2D.DrawSprite(stamina);
             drawer2D.DrawSprite(centerPoint);
+            if (glowstick.getEnergia() >= 1 && glowstick.getSelect()==true)
+            {
+                drawer2D.DrawSprite(glowstickHUD1);
+                if (glowstick.getEnergia() >= 2)
+                {
+                    drawer2D.DrawSprite(glowstickHUD2);
+                }
+                if (glowstick.getEnergia() == 3)
+                {
+                    drawer2D.DrawSprite(glowstickHUD3);
+                }
+            }
             drawer2D.EndDrawSprite();
             
             if (vidaPorcentaje <= 0)
@@ -884,7 +971,6 @@ namespace TGC.Group.Model
                 + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
                 + " Lighter Energy : " + lighter.getEnergia() + "\n"
                 + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
-                + " Vida: " + vidaPorcentaje + "\n"
                 + " M para Monstruo D:" + "\n"
                 + " N para activar/desactivar colisiones del Monstruo \n"
                 + " L activa colisiones de la camara"
@@ -962,6 +1048,9 @@ namespace TGC.Group.Model
             Puerta13.dispose();
             Puerta14.dispose();
             */
+            glowstickHUD1.Dispose();
+            glowstickHUD2.Dispose();
+            glowstickHUD3.Dispose();
             monstruo.mesh.dispose();
             TgcScene.disposeAll();
             Shader.Dispose();
@@ -973,6 +1062,7 @@ namespace TGC.Group.Model
             botonCombustible.meshBoton.dispose();
             textoDeLaMuerte.Dispose();
             vida.Dispose();
+            stamina.Dispose();
             centerPoint.Dispose();
         }
 
