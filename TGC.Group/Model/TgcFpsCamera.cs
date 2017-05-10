@@ -171,11 +171,11 @@ namespace TGC.Examples.Camara
             if (Input.keyDown(Key.D) && vidaPorcentaje > 0)
             {
                 //Hay que ver si se puede obtener un vector ortogonal al targetDistance de W o S
-                targetDistance += new Vector3(-1, 0, 0) * MovementSpeed;
+                targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(-FastMath.QUARTER_PI)) * MovementSpeed;
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += newPosition;
+                    moveVector += new Vector3(-newPosition.Length(), 0, 0);
                 }
                 else
                 {
@@ -186,11 +186,11 @@ namespace TGC.Examples.Camara
             //Strafe left
             if (Input.keyDown(Key.A) && vidaPorcentaje > 0)
             {
-                targetDistance += new Vector3(1, 0, 0) * MovementSpeed;
+                targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.QUARTER_PI)) * MovementSpeed;
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += newPosition;
+                    moveVector += new Vector3(newPosition.Length(),0,0) ;
                 }
                 else
                 {

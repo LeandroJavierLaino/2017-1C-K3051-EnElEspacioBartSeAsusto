@@ -139,6 +139,8 @@ namespace TGC.Group.Model
         private Linterna lighter;
         private Linterna flashlight;
 
+        private List<Botiquin> botiquines;
+
         private float timer;
 
         #region Init
@@ -422,6 +424,21 @@ namespace TGC.Group.Model
             }
             TgcScene.Meshes.Add(monstruo.mesh);
 
+            #region Botiquines Init
+            /*
+            //Falta mesh y ubicaciones de cada botiquin
+            Botiquin botiquin1 = new Botiquin();
+
+            Botiquin botiquin2 = new Botiquin();
+
+            Botiquin botiquin3 = new Botiquin();
+
+            botiquines.Add(botiquin1);
+            botiquines.Add(botiquin2);
+            botiquines.Add(botiquin3);
+            */
+            #endregion
+
             #region Texto de la Muerte
             textoDeLaMuerte = new TgcText2D();
             textoDeLaMuerte.Text = "YOU DIED";
@@ -511,9 +528,9 @@ namespace TGC.Group.Model
             centerPoint.Scaling = new Vector2(0.25f,0.25f);
             glowstickHUD1.Position = new Vector2(20f,20f);
             glowstickHUD1.Scaling = new Vector2(0.125f,0.125f);
-            glowstickHUD2.Position = new Vector2(20f, glowstickHUD1.Position.Y + 20f);
+            glowstickHUD2.Position = new Vector2(20f, glowstickHUD1.Position.Y + 60f);
             glowstickHUD2.Scaling = new Vector2(0.125f, 0.125f);
-            glowstickHUD3.Position = new Vector2(20f, glowstickHUD2.Position.Y + 20f);
+            glowstickHUD3.Position = new Vector2(20f, glowstickHUD2.Position.Y + 60f);
             glowstickHUD3.Scaling = new Vector2(0.125f, 0.125f);
             #endregion
 
@@ -626,7 +643,22 @@ namespace TGC.Group.Model
             }
             else
             {
+                /*
                 //Botiquin? Maybe http://lmgtfy.com/?q=shrug+emoji
+                foreach (var botiquin in botiquines)
+                {
+                    if (distance(botiquin.Position, Camara.Position)<50 && Input.keyPressed(Key.E))
+                    {
+                        if (vidaPorcentaje <= 80)
+                        {
+                            vidaPorcentaje += 20;
+                        }
+                        else
+                        {
+                            vidaPorcentaje = 100;
+                        }
+                    }
+                }*/
             }
             vida.Scaling = new Vector2((vidaPorcentaje/100) * 8, 0.5f);
 
@@ -722,7 +754,13 @@ namespace TGC.Group.Model
                 mesh.Effect = Shader;
                 mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(mesh.RenderType);
             }
-
+            /*
+            foreach (var botiquin in botiquines)
+            {
+                botiquin.meshBotiquin.Effect = Shader;
+                botiquin.meshBotiquin.Technique = TgcShaders.Instance.getTgcMeshTechnique(botiquin.meshBotiquin.RenderType);
+            }
+            */
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
             {
@@ -957,6 +995,12 @@ namespace TGC.Group.Model
                 mesh.BoundingBox.render();
 
             }
+            /*
+            //Renderiza botiquines
+            foreach (var botiquin in botiquines)
+            {
+                botiquin.meshBotiquin.render();
+            }*/
 
             monstruo.render();
             

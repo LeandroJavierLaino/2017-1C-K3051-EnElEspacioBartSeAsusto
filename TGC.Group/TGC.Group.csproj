@@ -85,6 +85,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
+    <Compile Include="Model\Botiquin.cs" />
     <Compile Include="Model\Boton.cs" />
     <Compile Include="Model\CustomBitmap.cs" />
     <Compile Include="Model\CustomSprite.cs" />
