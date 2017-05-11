@@ -19,6 +19,7 @@ using TGC.Core.BoundingVolumes;
 using TGC.Group.Model;
 using TGC.Examples.Engine2D.Spaceship.Core;
 using TGC.Core.Text;
+using TGC.Core.PortalRendering;
 
 namespace TGC.Group.Model
 {
@@ -74,6 +75,7 @@ namespace TGC.Group.Model
         private CustomSprite glowstickHUD3;
 
         //Lighter
+        private CustomSprite lighterHUD;
 
         //Flashlight
 
@@ -85,13 +87,11 @@ namespace TGC.Group.Model
 
         private Puerta puerta1;
         private Puerta puerta2;
-        //private Puerta puerta3;
-        //private Puerta puerta4;
-        //private Puerta puerta5;
-        //private Puerta puerta6;
-        private TgcMesh Puerta1 { get; set; }
-        private TgcMesh Puerta2 { get; set; }
-        private TgcMesh Puerta3 { get; set; }
+        private Puerta puerta3;
+        private Puerta puerta4;
+        private Puerta puerta5;
+        private Puerta puerta6;
+
         private TgcMesh Puerta4 { get; set; }
         private TgcMesh Puerta5 { get; set; }
         private TgcMesh Puerta6 { get; set; }
@@ -177,14 +177,19 @@ namespace TGC.Group.Model
             glowstickHUD3 = new CustomSprite();
             glowstickHUD3.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\foam-stick-green.png", D3DDevice.Instance.Device);
 
+            lighterHUD = new CustomSprite();
+            lighterHUD.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\Zippo.png", D3DDevice.Instance.Device);
+
             #endregion
 
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
-            
+            //TgcScene.PortalRendering.createDebugPortals(Color.Purple);
+            //TgcScene.PortalRendering.Portals.Add(new Core.PortalRendering.TgcPortalRenderingPortal("puerta"));
+
             //Computamos las normales
-            foreach(var mesh in TgcScene.Meshes)
+            foreach (var mesh in TgcScene.Meshes)
             {
                 int[] adjacencia = {1,1,1,1,1,1,1,1,1,1,1,1};
                 
@@ -207,33 +212,40 @@ namespace TGC.Group.Model
             puerta1 = new Puerta();
             puerta1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta1.changePosition(new Vector3(89f, 31.5f, 275f));
+            //puerta1.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta1.getMesh());
+           
+            //TgcPortalRenderingPortal puerta1Portal = new TgcPortalRenderingPortal("puerta1Portal", puerta1.getMesh().BoundingBox);
+            //TgcScene.PortalRendering.Portals.Add(puerta1Portal);
 
             puerta2 = new Puerta();
             puerta2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta2.changePosition(new Vector3(439f, 32f, 203f));
+            //puerta2.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta2.getMesh());
+            //TgcScene.PortalRendering.Portals.Add(new Core.PortalRendering.TgcPortalRenderingPortal("puerta2", puerta2.getMesh().BoundingBox));
+     
+            puerta3 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
+            puerta3.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
+            puerta3.getMesh().move(new Vector3(201f, 32f, 1570f));
+            puerta3.getMesh().rotateY(FastMath.PI_HALF);
+            puerta3.getMesh().UpdateMeshTransform();
+            TgcScene.Meshes.Add(puerta3.getMesh());
 
             /*
-            Puerta3 = PuertaModelo.createMeshInstance("Puerta3");
-            Puerta3.AutoTransformEnable = true;
-            Puerta3.move(201f, 32f, 1570f);
-            Puerta3.rotateY(FastMath.PI_HALF);
-            Puerta3.createBoundingBox();
-            TgcScene.Meshes.Add(Puerta3);
-
             Puerta4 = PuertaModelo.createMeshInstance("Puerta4");
             Puerta4.AutoTransformEnable = true;
             Puerta4.move(452f, 32f, 1221f);
             Puerta4.rotateY(FastMath.PI_HALF);
             Puerta4.createBoundingBox();
             TgcScene.Meshes.Add(Puerta4);
-
+            
+            /*
             Puerta5 = PuertaModelo.createMeshInstance("Puerta5");
             Puerta5.AutoTransformEnable = true;
             Puerta5.move(459f, 32f, 1675f);
             TgcScene.Meshes.Add(Puerta5);
-
+            
             Puerta6 = PuertaModelo.createMeshInstance("Puerta6");
             Puerta6.AutoTransformEnable = true;
             Puerta6.move(734f, 32f, 1570f);
@@ -532,6 +544,9 @@ namespace TGC.Group.Model
             glowstickHUD2.Scaling = new Vector2(0.125f, 0.125f);
             glowstickHUD3.Position = new Vector2(20f, glowstickHUD2.Position.Y + 60f);
             glowstickHUD3.Scaling = new Vector2(0.125f, 0.125f);
+            lighterHUD.Position = new Vector2(20f, 20f);
+            lighterHUD.Scaling = new Vector2(0.0625f, 0.0625f);
+
             #endregion
 
             #region Logica Luces
@@ -629,6 +644,7 @@ namespace TGC.Group.Model
             {
                 puerta1.abrirPuerta(Camara.Position);
                 puerta2.abrirPuerta(Camara.Position);
+                puerta3.abrirPuerta(Camara.Position);
                 //La misma logica para todasssssss las puertas U__________U
             }
 
@@ -726,6 +742,10 @@ namespace TGC.Group.Model
                     drawer2D.DrawSprite(glowstickHUD3);
                 }
             }
+            if (lighter.getEnergia() > 0 && lighter.getSelect() == true)
+            {
+                drawer2D.DrawSprite(lighterHUD);
+            }
             drawer2D.EndDrawSprite();
             
             if (vidaPorcentaje <= 0)
@@ -761,6 +781,9 @@ namespace TGC.Group.Model
                 botiquin.meshBotiquin.Technique = TgcShaders.Instance.getTgcMeshTechnique(botiquin.meshBotiquin.RenderType);
             }
             */
+
+            //TgcScene.PortalRendering.updateVisibility(Camara.Position, Frustum);
+            
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
             {
@@ -881,10 +904,11 @@ namespace TGC.Group.Model
                     float z;
                     //Si no colisiona contra algo es esto
                     // lamda * director + coordenada en eje
-                    x = (float)80.5 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)80.5 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)80.5 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    x = (float)1* (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)1 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)1 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                     lightMesh.Position = new Vector3(x, y, z);
+                    lightMesh.Position = chocaLuz( lightMesh, Camara.Position,lightMesh.BoundingBox,objetosColisionables);
                     float a;
                     float b;
                     float c;
@@ -918,10 +942,11 @@ namespace TGC.Group.Model
                     float z;
                     //Si no colisiona contra algo es esto
                     // lamda * director + coordenada en eje
-                    x = (float)80.5 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)80.5 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)80.5 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    x = (float)1 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)1 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)1 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                     lightMesh.Position = new Vector3(x, y, z);
+                    lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
                     float a;
                     float b;
                     float c;
@@ -955,10 +980,11 @@ namespace TGC.Group.Model
                     float z;
                     //Si no colisiona contra algo es esto
                     // lamda * director + coordenada en eje
-                    x = (float)80.5 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)80.5 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)80.5 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    x = (float)1 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)1 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)1 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                     lightMesh.Position = new Vector3(x, y, z);
+                    lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
                     float a;
                     float b;
                     float c;
@@ -990,8 +1016,12 @@ namespace TGC.Group.Model
                     //TODO: poner las propiedades del shader que genera distorsiones D:
                 }
 
-                //Renderizar modelo
-                mesh.render();
+                //Renderizar modelo con FrustumCulling
+                var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, mesh.BoundingBox);
+                if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                {
+                    mesh.render();
+                }
                 mesh.BoundingBox.render();
 
             }
@@ -1052,7 +1082,6 @@ namespace TGC.Group.Model
             Puerta28.render();
             */
             //lightMesh.render();
-            
             botonEscapePod1.meshBoton.render();
             botonEscapePod2.meshBoton.render();
             botonElectricidad.meshBoton.render();
@@ -1113,6 +1142,49 @@ namespace TGC.Group.Model
         public float distance(Vector3 a, Vector3 b)
         {
             return (FastMath.Sqrt(FastMath.Pow2(a.X - b.X) + FastMath.Pow2(a.Y - b.Y) + FastMath.Pow2(a.Z - b.Z)));
+        }
+
+        public Vector3 chocaLuz(TgcBox cajaDeLuz, Vector3 centroCamara, TgcBoundingAxisAlignBox luz , List<TgcBoundingAxisAlignBox> colisionables)
+        {
+            Vector3 retorno = cajaDeLuz.Position;
+            foreach(var colisionable in colisionables)
+            {
+                if (Core.Collision.TgcCollisionUtils.testAABBAABB(luz,colisionable))
+                {
+                    retorno = Core.Collision.TgcCollisionUtils.closestPointAABB(centroCamara, colisionable);
+
+                    if (cajaDeLuz.Position.X + cajaDeLuz.Size.X > retorno.X)
+                    {
+                        retorno.X = cajaDeLuz.Position.X + cajaDeLuz.Size.X - retorno.X;
+                    }
+                    if (cajaDeLuz.Position.X + cajaDeLuz.Size.X < retorno.X)
+                    {
+                        retorno.X = cajaDeLuz.Position.X + cajaDeLuz.Size.X + retorno.X;
+                    }
+
+                    if (cajaDeLuz.Position.Y + cajaDeLuz.Size.Y > retorno.Y)
+                    {
+                        retorno.Y = cajaDeLuz.Position.Y + cajaDeLuz.Size.Y - retorno.Y;
+                    }
+                    if (cajaDeLuz.Position.Y + cajaDeLuz.Size.Y < retorno.Y)
+                    {
+                        retorno.Y = cajaDeLuz.Position.Y + cajaDeLuz.Size.Y + retorno.Y;
+                    }
+
+                    if (cajaDeLuz.Position.Z + cajaDeLuz.Size.Z > retorno.Z)
+                    {
+                        retorno.Z = cajaDeLuz.Position.Z + cajaDeLuz.Size.Z - retorno.Z;
+                    }
+                    if (cajaDeLuz.Position.Z + cajaDeLuz.Size.Z < retorno.Z)
+                    {
+                        retorno.Z = cajaDeLuz.Position.Z + cajaDeLuz.Size.Z + retorno.Z;
+                    }
+
+
+                    break;
+                }
+            }
+            return retorno;
         }
     }
 }
