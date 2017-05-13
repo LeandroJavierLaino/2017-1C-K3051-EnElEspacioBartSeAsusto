@@ -85,7 +85,8 @@ namespace TGC.Examples.Camara
             sphereCamara.setValues(new Vector3(x, y - 35f, z),15f);
             lockCam = true;
             collisionManagerCamara = new TGC.Examples.Collision.SphereCollision.SphereCollisionManager();
-            collisionManagerCamara.toggleGravity();
+           
+            //collisionManagerCamara.toggleGravity();
         }
 
         public TgcFpsCamera(Vector3 positionEye, float moveSpeed, float jumpSpeed, float rotationSpeed,
@@ -134,7 +135,7 @@ namespace TGC.Examples.Camara
             Cursor.Hide();
             var moveVector = new Vector3(0, 0, 0);
             Vector3 targetDistance = new Vector3(0, 0, 0);
-            sphereCamara.setCenter(new Vector3(Position.X, Position.Y -30f, Position.Z));
+            sphereCamara.setCenter(new Vector3(Position.X, Position.Y -40f, Position.Z));
 
             #region Movimientos
             //Forward
@@ -144,7 +145,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, 0, -newPosition.Length());
+                    moveVector += new Vector3(0, newPosition.Y, -newPosition.Length());
                 }
                 else
                 {
@@ -159,7 +160,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, -targetDistance, obstaculos);
-                    moveVector += new Vector3(0,0, newPosition.Length());
+                    moveVector += new Vector3(0, newPosition.Y, newPosition.Length());
                 }
                 else
                 {
@@ -175,7 +176,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(-newPosition.Length(), 0, 0);
+                    moveVector += new Vector3(-newPosition.Length(), newPosition.Y, 0);
                 }
                 else
                 {
@@ -190,7 +191,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(newPosition.Length(),0,0) ;
+                    moveVector += new Vector3(newPosition.Length(), newPosition.Y, 0) ;
                 }
                 else
                 {
@@ -198,15 +199,23 @@ namespace TGC.Examples.Camara
                 }
             }
             #endregion
-            
+
             #region Modificadores de movimiento
-            //Jump
-            if (Input.keyDown(Key.Space))
+            //Fall
+            if (!Input.keyDown(Key.W) || !Input.keyDown(Key.A) || !Input.keyDown(Key.D) || !Input.keyDown(Key.S) || !Input.keyDown(Key.Space) )
             {
+                newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                moveVector += new Vector3(0, newPosition.Y, 0);
+            }
+
+            //Jump
+            if (Input.keyPressed(Key.Space))
+            {
+                targetDistance += new Vector3(0,1,0) * JumpSpeed;
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, 1, 0) * JumpSpeed;
+                    moveVector += new Vector3(0, newPosition.Y, 0) ;
                 }
                 else
                 {

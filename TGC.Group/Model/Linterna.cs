@@ -41,5 +41,10 @@ namespace TGC.Group.Model
         {
             this.energia += valor;
         }
+
+        public void ganarEnergia(float valor)
+        {
+            this.energia += valor;
+        }
     }
 }

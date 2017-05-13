@@ -1,8 +1,8 @@
 <tgcScene>
-  <name>peldanio</name>
+  <name>botiquin</name>
   <texturesExport enabled="True" dir="Textures" />
   <lightmapExport enabled="False" dir="LightMaps" />
-  <sceneBoundingBox min="[60,0,60]" max="[120,10,80]" />
+  <sceneBoundingBox min="[0,0,0]" max="[32,11,26]" />
   <materials count="1">
     <m name="Multimaterial" type="Multimaterial">
       <subM name="Standardmaterial" type="Standardmaterial">
@@ -11,7 +11,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_FloorsVarious0054_1_seamless_S_COLOR.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">botiquin_frente.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -19,7 +19,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">TexturesCom_FloorsVarious0054_1_seamless_S_COLOR.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">botiquin_lado.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -27,7 +27,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">botiquin_lado.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -35,7 +35,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">botiquin_lado.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -43,7 +43,7 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">botiquin_lado.jpg</bitmap>
       </subM>
       <subM name="Standardmaterial" type="Standardmaterial">
         <ambient>[0,0,0,0]</ambient>
@@ -51,22 +51,22 @@
         <specular>[0,0,0,0]</specular>
         <opacity>1</opacity>
         <alphaBlendEnable>False</alphaBlendEnable>
-        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">metaltrack001a_COLOR.jpg</bitmap>
+        <bitmap uvTiling="[1,1]" uvOffset="[1,1]">botiquin_lado.jpg</bitmap>
       </subM>
     </m>
   </materials>
   <meshes count="1">
-    <mesh name="peldanio" layer="Default" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
-      <boundingBox min="[60,0,60]" max="[120,10,80]" />
-      <coordinatesIdx count="36">0 1 2 0 2 3 4 5 6 4 6 7 5 6 2 5 2 1 4 7 3 4 3 0 4 5 1 4 1 0 7 6 2 7 2 3 </coordinatesIdx>
-      <textCoordsIdx count="36">0 1 2 0 2 3 4 5 6 4 6 7 8 5 6 8 6 9 8 5 6 8 6 9 10 5 6 10 6 11 10 5 6 10 6 11 </textCoordsIdx>
+    <mesh name="Room-1-Roof-0" layer="Default" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[0,0,0]" max="[32,11,26]" />
+      <coordinatesIdx count="36">0 1 2 0 2 3 4 5 6 4 6 7 5 6 3 5 3 0 4 7 2 4 2 1 4 5 0 4 0 1 7 6 3 7 3 2 </coordinatesIdx>
+      <textCoordsIdx count="36">0 1 2 0 2 3 0 1 2 0 2 3 0 1 2 0 2 3 0 1 2 0 2 3 0 1 2 0 2 3 0 1 2 0 2 3 </textCoordsIdx>
       <colorsIdx count="36">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
       <matIds count="12">0 0 1 1 2 2 3 3 4 4 5 5 </matIds>
       <textCoordsLightMapIdx count="0">
       </textCoordsLightMapIdx>
-      <vertices count="24">60 10 60 120 10 60 120 10 80 60 10 80 60 0 60 120 0 60 120 0 80 60 0 80 </vertices>
+      <vertices count="24">32 11 0 0 11 0 0 11 26 32 11 26 0 0 0 32 0 0 32 0 26 0 0 26 </vertices>
       <normals count="24">0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 </normals>
-      <texCoords count="24">2.2 1 0.4 1 0.4 0 2.2 0 1.8 1 0 1 0 0 1.8 0 0.2 1 0.2 0 0.8 1 0.8 0 </texCoords>
+      <texCoords count="8">1 1 0 1 0 0 1 0 </texCoords>
       <colors count="3">255 255 255 </colors>
       <texCoordsLightMap count="0">
       </texCoordsLightMap>

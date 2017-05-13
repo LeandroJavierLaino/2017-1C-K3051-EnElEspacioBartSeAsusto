@@ -78,7 +78,8 @@ namespace TGC.Group.Model
         private CustomSprite lighterHUD;
 
         //Flashlight
-
+        private CustomSprite flashlightHUD;
+        private CustomSprite flashlightLiveHUD;
         #endregion
         private TgcText2D textoDeLaMuerte;
 
@@ -127,6 +128,7 @@ namespace TGC.Group.Model
 
         private Monstruo monstruo { get; set; }
         private SphereCollisionManager collisionManager;
+        private TgcBoundingSphere esferaDeLinterna;
 
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
@@ -139,7 +141,14 @@ namespace TGC.Group.Model
         private Linterna lighter;
         private Linterna flashlight;
 
-        private List<Botiquin> botiquines;
+        private Botiquin botiquin1;
+        private Botiquin botiquin2;
+        private Botiquin botiquin3;
+        private Botiquin botiquin4;
+        private Botiquin botiquin5;
+        private Botiquin botiquin6;
+
+        //private List<Botiquin> botiquines;
 
         private float timer;
 
@@ -152,10 +161,8 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Init()
         {
-            //FPS Camara Modo Dios 
-            //TODO: diseñar camara con colisiones y física.
-            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 51, 83), 125f, 100f, Input);
-            var d3dDevice = D3DDevice.Instance.Device;
+            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
+            var d3dDevice = D3DDevice.Instance.Device; 
 
             #region HUD init
             drawer2D = new Drawer2D();
@@ -180,6 +187,11 @@ namespace TGC.Group.Model
             lighterHUD = new CustomSprite();
             lighterHUD.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\Zippo.png", D3DDevice.Instance.Device);
 
+            flashlightHUD = new CustomSprite();
+            flashlightHUD.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\linternaHUD.png", D3DDevice.Instance.Device);
+
+            flashlightLiveHUD = new CustomSprite();
+            flashlightLiveHUD.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\white.bmp", D3DDevice.Instance.Device);
             #endregion
 
             //Carga de nivel
@@ -203,12 +215,6 @@ namespace TGC.Group.Model
             MonstruoModelo = loader.loadSceneFromFile(this.MediaDir + "\\Monstruo-TgcScene.xml").Meshes[0];
 
             #region PuertasInit
-            //=========================================================================================
-            // Ojo con el add de meshes a la escena ya que los agrega y no son elementos independientes.
-            // Hay que ver como reaccionan, para la entrega habria comentar las puertas, para que se
-            // vea como el enemigo persigue al jugador
-            //=========================================================================================
-
             puerta1 = new Puerta();
             puerta1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta1.changePosition(new Vector3(89f, 31.5f, 275f));
@@ -437,18 +443,44 @@ namespace TGC.Group.Model
             TgcScene.Meshes.Add(monstruo.mesh);
 
             #region Botiquines Init
-            /*
+            
             //Falta mesh y ubicaciones de cada botiquin
-            Botiquin botiquin1 = new Botiquin();
+            botiquin1 = new Botiquin();
+            botiquin1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
+            botiquin1.changePosicion(new Vector3(463,0,490));
+            TgcScene.Meshes.Add(botiquin1.meshBotiquin);
 
-            Botiquin botiquin2 = new Botiquin();
 
-            Botiquin botiquin3 = new Botiquin();
+            botiquin2 = new Botiquin();
+            botiquin2 = new Botiquin();
+            botiquin2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
+            botiquin2.changePosicion(new Vector3(463, 110, 490));
+            TgcScene.Meshes.Add(botiquin2.meshBotiquin);
 
-            botiquines.Add(botiquin1);
-            botiquines.Add(botiquin2);
-            botiquines.Add(botiquin3);
-            */
+            botiquin3 = new Botiquin();
+            botiquin3 = new Botiquin();
+            botiquin3.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
+            botiquin3.changePosicion(new Vector3(400, 0, 890));
+            TgcScene.Meshes.Add(botiquin3.meshBotiquin);
+
+            botiquin4 = new Botiquin();
+            botiquin4 = new Botiquin();
+            botiquin4.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
+            botiquin4.changePosicion(new Vector3(400, 110, 890));
+            TgcScene.Meshes.Add(botiquin4.meshBotiquin);
+
+            botiquin5 = new Botiquin();
+            botiquin5 = new Botiquin();
+            botiquin5.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
+            botiquin5.changePosicion(new Vector3(225, 0, 1600));
+            TgcScene.Meshes.Add(botiquin5.meshBotiquin);
+
+            botiquin6 = new Botiquin();
+            botiquin6 = new Botiquin();
+            botiquin6.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
+            botiquin6.changePosicion(new Vector3(225, 0, 1600));
+            TgcScene.Meshes.Add(botiquin6.meshBotiquin);
+
             #endregion
 
             #region Texto de la Muerte
@@ -464,31 +496,37 @@ namespace TGC.Group.Model
             botonEscapePod1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonEscapePod1.meshBoton.Position = new Vector3(440, 25, 30);
             botonEscapePod1.changeColor(Color.Red);
+            //TgcScene.Meshes.Add(botonEscapePod1.meshBoton);
 
             botonEscapePod2 = new Boton();
             botonEscapePod2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonEscapePod2.meshBoton.Position = new Vector3(440, 135, 30);
             botonEscapePod2.changeColor(Color.Red);
+            //TgcScene.Meshes.Add(botonEscapePod2.meshBoton);
 
             botonOxigeno = new Boton();
             botonOxigeno.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonOxigeno.meshBoton.Position = new Vector3(305, 135, 730);
             botonOxigeno.changeColor(Color.Red);
+            //TgcScene.Meshes.Add(botonOxigeno.meshBoton);
 
             botonElectricidad = new Boton();
             botonElectricidad.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonElectricidad.meshBoton.Position = new Vector3(490, 25, 1520);
             botonElectricidad.changeColor(Color.Red);
+            //TgcScene.Meshes.Add(botonElectricidad.meshBoton);
 
             botonElectricidad2 = new Boton();
             botonElectricidad2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonElectricidad2.meshBoton.Position = new Vector3(490, 135, 1520);
             botonElectricidad2.changeColor(Color.Red);
+            //TgcScene.Meshes.Add(botonElectricidad2.meshBoton);
 
             botonCombustible = new Boton();
             botonCombustible.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonCombustible.meshBoton.Position = new Vector3(550, 25, 280);
             botonCombustible.changeColor(Color.Red);
+            //TgcScene.Meshes.Add(botonCombustible.meshBoton);
             #endregion
 
             #region LucesInit
@@ -503,7 +541,6 @@ namespace TGC.Group.Model
             collisionManager = new SphereCollisionManager();
 
             playerPos = TgcBox.fromSize(new Vector3(5, 5, 5));
-            lightMesh.Position = new Vector3(463, 51, 83);
 
             glowstick = new Linterna();
             glowstick.setSelect(true);
@@ -516,6 +553,9 @@ namespace TGC.Group.Model
             flashlight = new Linterna();
             flashlight.setSelect(false);
             flashlight.setEnergia(100);
+
+            esferaDeLinterna = new TgcBoundingSphere();
+            esferaDeLinterna.setValues(lightMesh.Position,10f);
             #endregion
 
             timer = 0;
@@ -546,6 +586,10 @@ namespace TGC.Group.Model
             glowstickHUD3.Scaling = new Vector2(0.125f, 0.125f);
             lighterHUD.Position = new Vector2(20f, 20f);
             lighterHUD.Scaling = new Vector2(0.0625f, 0.0625f);
+            flashlightHUD.Position = new Vector2(20f, 20f);
+            flashlightHUD.Scaling = new Vector2(1.5f,1.5f);
+            flashlightLiveHUD.Position = new Vector2(25f,35f);
+            flashlightLiveHUD.Scaling = new Vector2(8f, 2.5f);
 
             #endregion
 
@@ -595,12 +639,28 @@ namespace TGC.Group.Model
             }
             if (flashlight.getSelect())
             {
+                float x;
+                float y;
+                float z;
+                //Si no colisiona contra algo es esto
+                // lamda * director + coordenada en eje
+                x = (float)14 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                y = (float)14 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                z = (float)14 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                lightMesh.Position = new Vector3(x, y, z);
+                lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
                 if (System.Math.Truncate(timer) % 1 == 0 &&flashlight.getEnergia()>0)
                 {
                     flashlight.perderEnergia(0.041f);
+                    flashlightLiveHUD.Scaling = new Vector2((flashlight.getEnergia() / 100) * 8, 2.5f);
                     timer = 0;
                 }
             }
+            if (!flashlight.getSelect())
+            {
+                flashlight.ganarEnergia(0.020f);
+            }
+
             #endregion
 
             #region Accion con botones
@@ -650,32 +710,35 @@ namespace TGC.Group.Model
 
             #endregion
 
+            #region Accion Botiquines
+            if(vidaPorcentaje < 100 && Input.keyPressed(Key.E))
+            { 
+                botiquin1.consumir(Camara.Position);
+                botiquin2.consumir(Camara.Position);
+                botiquin3.consumir(Camara.Position);
+                botiquin4.consumir(Camara.Position);
+                botiquin5.consumir(Camara.Position);
+                botiquin6.consumir(Camara.Position);
+                if (vidaPorcentaje < 80)
+                {
+                    vidaPorcentaje += 20f;
+                }
+                else
+                {
+                    vidaPorcentaje = 100f; 
+                }
+            }
+
+            #endregion
+
             #region Logica Personaje
-            
+
             //Vida
             if (distance(monstruo.Position, Camara.Position) < 50f && vidaPorcentaje > 0)
             {
                 vidaPorcentaje -= 0.1f; 
             }
-            else
-            {
-                /*
-                //Botiquin? Maybe http://lmgtfy.com/?q=shrug+emoji
-                foreach (var botiquin in botiquines)
-                {
-                    if (distance(botiquin.Position, Camara.Position)<50 && Input.keyPressed(Key.E))
-                    {
-                        if (vidaPorcentaje <= 80)
-                        {
-                            vidaPorcentaje += 20;
-                        }
-                        else
-                        {
-                            vidaPorcentaje = 100;
-                        }
-                    }
-                }*/
-            }
+
             vida.Scaling = new Vector2((vidaPorcentaje/100) * 8, 0.5f);
 
             //Stamina
@@ -746,6 +809,12 @@ namespace TGC.Group.Model
             {
                 drawer2D.DrawSprite(lighterHUD);
             }
+            if (flashlight.getEnergia() > 0 && flashlight.getSelect() == true)
+            {
+                drawer2D.DrawSprite(flashlightHUD);
+                drawer2D.DrawSprite(flashlightLiveHUD);
+            }
+            
             drawer2D.EndDrawSprite();
             
             if (vidaPorcentaje <= 0)
@@ -774,13 +843,6 @@ namespace TGC.Group.Model
                 mesh.Effect = Shader;
                 mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(mesh.RenderType);
             }
-            /*
-            foreach (var botiquin in botiquines)
-            {
-                botiquin.meshBotiquin.Effect = Shader;
-                botiquin.meshBotiquin.Technique = TgcShaders.Instance.getTgcMeshTechnique(botiquin.meshBotiquin.RenderType);
-            }
-            */
 
             //TgcScene.PortalRendering.updateVisibility(Camara.Position, Frustum);
             
@@ -904,11 +966,10 @@ namespace TGC.Group.Model
                     float z;
                     //Si no colisiona contra algo es esto
                     // lamda * director + coordenada en eje
-                    x = (float)1* (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)1 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)1 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    x = (float)50 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)50 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)50 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                     lightMesh.Position = new Vector3(x, y, z);
-                    lightMesh.Position = chocaLuz( lightMesh, Camara.Position,lightMesh.BoundingBox,objetosColisionables);
                     float a;
                     float b;
                     float c;
@@ -937,16 +998,8 @@ namespace TGC.Group.Model
                 }
                 if (flashlight.getSelect() && flashlight.getEnergia() <= 10 && flashlight.getEnergia() > 0)
                 {
-                    float x;
-                    float y;
-                    float z;
-                    //Si no colisiona contra algo es esto
-                    // lamda * director + coordenada en eje
-                    x = (float)1 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)1 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)1 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-                    lightMesh.Position = new Vector3(x, y, z);
-                    lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
+                    
+                    //lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
                     float a;
                     float b;
                     float c;
@@ -980,11 +1033,11 @@ namespace TGC.Group.Model
                     float z;
                     //Si no colisiona contra algo es esto
                     // lamda * director + coordenada en eje
-                    x = (float)1 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)1 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)1 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
+                    x = (float)14 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
+                    y = (float)14 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
+                    z = (float)14 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                     lightMesh.Position = new Vector3(x, y, z);
-                    lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
+                    //lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
                     float a;
                     float b;
                     float c;
@@ -1025,12 +1078,9 @@ namespace TGC.Group.Model
                 mesh.BoundingBox.render();
 
             }
-            /*
+
             //Renderiza botiquines
-            foreach (var botiquin in botiquines)
-            {
-                botiquin.meshBotiquin.render();
-            }*/
+            //botiquin1.meshBotiquin.render();
 
             monstruo.render();
             
@@ -1082,6 +1132,7 @@ namespace TGC.Group.Model
             Puerta28.render();
             */
             //lightMesh.render();
+            //lightMesh.BoundingBox.render();
             botonEscapePod1.meshBoton.render();
             botonEscapePod2.meshBoton.render();
             botonElectricidad.meshBoton.render();
@@ -1121,18 +1172,14 @@ namespace TGC.Group.Model
             Puerta13.dispose();
             Puerta14.dispose();
             */
+            
             glowstickHUD1.Dispose();
             glowstickHUD2.Dispose();
             glowstickHUD3.Dispose();
+            flashlightHUD.Dispose();
             monstruo.mesh.dispose();
             TgcScene.disposeAll();
             Shader.Dispose();
-            botonEscapePod1.meshBoton.dispose();
-            botonEscapePod2.meshBoton.dispose();
-            botonElectricidad.meshBoton.dispose();
-            botonElectricidad2.meshBoton.dispose();
-            botonOxigeno.meshBoton.dispose();
-            botonCombustible.meshBoton.dispose();
             textoDeLaMuerte.Dispose();
             vida.Dispose();
             stamina.Dispose();
@@ -1149,10 +1196,16 @@ namespace TGC.Group.Model
             Vector3 retorno = cajaDeLuz.Position;
             foreach(var colisionable in colisionables)
             {
-                if (Core.Collision.TgcCollisionUtils.testAABBAABB(luz,colisionable))
+                if (Core.Collision.TgcCollisionUtils.testAABBAABB(luz, colisionable))
                 {
-                    retorno = Core.Collision.TgcCollisionUtils.closestPointAABB(centroCamara, colisionable);
+                    if(Core.Collision.TgcCollisionUtils.classifyBoxBox(colisionable, luz)==Core.Collision.TgcCollisionUtils.BoxBoxResult.Atravesando)
+                    {
 
+                        Vector3 puntodecolision = Core.Collision.TgcCollisionUtils.closestPointAABB(cajaDeLuz.Position, colisionable);
+
+                        retorno = centroCamara * distance(centroCamara, puntodecolision);
+                    }
+                    /*
                     if (cajaDeLuz.Position.X + cajaDeLuz.Size.X > retorno.X)
                     {
                         retorno.X = cajaDeLuz.Position.X + cajaDeLuz.Size.X - retorno.X;
@@ -1178,12 +1231,12 @@ namespace TGC.Group.Model
                     if (cajaDeLuz.Position.Z + cajaDeLuz.Size.Z < retorno.Z)
                     {
                         retorno.Z = cajaDeLuz.Position.Z + cajaDeLuz.Size.Z + retorno.Z;
-                    }
-
-
-                    break;
+                    }*/
+                    //break;
                 }
+                
             }
+                
             return retorno;
         }
     }
