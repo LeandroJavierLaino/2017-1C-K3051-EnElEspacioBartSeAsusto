@@ -21,17 +21,13 @@ namespace TGC.Group.Model
 
         public void changePosicion(Vector3 newPosition)
         {
+            Position = newPosition;
             meshBotiquin.Position = newPosition;
         }
 
         public void consumir(Vector3 posicion)
         {
-            if (distance(posicion, meshBotiquin.Position) < 80 )
-            {
-
-                changePosicion(new Vector3(0, 0, 0));
-            }       
-               
+                changePosicion(new Vector3(0, 0, 0)); 
         }
 
         public float distance(Vector3 a, Vector3 b)

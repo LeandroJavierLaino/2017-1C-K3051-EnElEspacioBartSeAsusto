@@ -76,6 +76,7 @@ namespace TGC.Group.Model
 
         //Lighter
         private CustomSprite lighterHUD;
+        private CustomSprite lighterLiveHUD;
 
         //Flashlight
         private CustomSprite flashlightHUD;
@@ -188,6 +189,10 @@ namespace TGC.Group.Model
 
             lighterHUD = new CustomSprite();
             lighterHUD.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\Zippo.png", D3DDevice.Instance.Device);
+
+            lighterLiveHUD = new CustomSprite();
+            lighterLiveHUD.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\white.bmp", D3DDevice.Instance.Device);
+            lighterLiveHUD.Color = Color.Yellow;
 
             flashlightHUD = new CustomSprite();
             flashlightHUD.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\linternaHUD.png", D3DDevice.Instance.Device);
@@ -608,6 +613,8 @@ namespace TGC.Group.Model
             glowstickHUD3.Scaling = new Vector2(0.125f, 0.125f);
             lighterHUD.Position = new Vector2(20f, 20f);
             lighterHUD.Scaling = new Vector2(0.0625f, 0.0625f);
+            lighterLiveHUD.Position = new Vector2(10f, 35f);
+            lighterLiveHUD.Scaling = new Vector2(2.0f, 15f);
             flashlightHUD.Position = new Vector2(20f, 20f);
             flashlightHUD.Scaling = new Vector2(1.5f,1.5f);
             flashlightLiveHUD.Position = new Vector2(25f,35f);
@@ -661,6 +668,7 @@ namespace TGC.Group.Model
                 if (System.Math.Truncate(timer) % 1 == 0 && lighter.getEnergia()>0)
                 {
                     lighter.perderEnergia(0.083f);
+                    lighterLiveHUD.Scaling= new Vector2(2,(lighter.getEnergia()/100)*15);
                     timer = 0;
                 }
             }
@@ -727,8 +735,8 @@ namespace TGC.Group.Model
             #endregion
 
             #region Accion Puertas
-            bool closed = true;
-            if (Input.keyPressed(Key.E) && closed) 
+
+            if (Input.keyPressed(Key.E)) 
             {
                 puerta1.abrirPuerta(Camara.Position);
                 puerta2.abrirPuerta(Camara.Position);
@@ -737,7 +745,6 @@ namespace TGC.Group.Model
                 puerta5.abrirPuerta(Camara.Position);
                 puerta6.abrirPuerta(Camara.Position);
                 //La misma logica para todasssssss las puertas U__________U
-                closed = false;
             }
 
             //Esta forma complica que se cierren las puertas
@@ -755,7 +762,7 @@ namespace TGC.Group.Model
             #endregion
 
             #region Accion Botiquines
-            if (vidaPorcentaje < 100 && Input.keyPressed(Key.E) && distance(Camara.Position,botiquin1.Position)<80)
+            if (vidaPorcentaje < 100 && Input.keyDown(Key.E) && distance(Camara.Position,botiquin1.Position)<80)
             { 
                 botiquin1.consumir(Camara.Position);
                 if (vidaPorcentaje < 80)
@@ -834,7 +841,7 @@ namespace TGC.Group.Model
             //Vida
             if (distance(monstruo.Position, Camara.Position) < 50f && vidaPorcentaje > 0)
             {
-                vidaPorcentaje -= 0.1f; 
+                vidaPorcentaje -= 0.2f; 
             }
 
             vida.Scaling = new Vector2((vidaPorcentaje/100) * 8, 0.5f);
@@ -915,6 +922,10 @@ namespace TGC.Group.Model
             if (lighter.getSelect())
             {
                 drawer2D.DrawSprite(lighterHand);
+            }
+            if (lighter.getSelect() && lighter.getEnergia()>0)
+            {
+                drawer2D.DrawSprite(lighterLiveHUD);
             }
             if (flashlight.getEnergia() > 0 && flashlight.getSelect())
             {
