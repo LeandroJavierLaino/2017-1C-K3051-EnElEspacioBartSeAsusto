@@ -57,6 +57,9 @@ namespace TGC.Group.Model
 
         //Escena
         private TgcScene TgcScene { get; set; }
+        Celda celdaEscapePod1;
+        List<Celda> celdasEscena = new List<Celda>();
+        List<Portal> portalesEscena = new List<Portal>();
 
         //Estado
 
@@ -187,6 +190,7 @@ namespace TGC.Group.Model
         {
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
+            
             # region Menu
             var botonjugar = new Menu.Button(Input, boton_normal, boton_mouseover,
                 () => {  }
@@ -194,7 +198,7 @@ namespace TGC.Group.Model
             #endregion
 
 
-
+            
             #region HUD init
             drawer2D = new Drawer2D();
             vida = new CustomSprite();
@@ -262,9 +266,13 @@ namespace TGC.Group.Model
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
-            //TgcScene.PortalRendering.createDebugPortals(Color.Purple);
-            //TgcScene.PortalRendering.Portals.Add(new Core.PortalRendering.TgcPortalRenderingPortal("puerta"));
-            
+
+            celdaEscapePod1 = new Celda();
+            celdaEscapePod1.establecerCelda(new Vector3(210,100,170), new Vector3(460,50,105));//Al fin posicion y dimension OK aunque podria llegar hasta el portal =/
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[0]);
+
+            celdasEscena.Add(celdaEscapePod1);
+
             /*
             //Computamos las normales
             foreach (var mesh in TgcScene.Meshes)
@@ -667,11 +675,11 @@ namespace TGC.Group.Model
             flashlightHUD.Scaling = new Vector2(1.5f,1.5f);
             flashlightLiveHUD.Position = new Vector2(25f,35f);
             flashlightLiveHUD.Scaling = new Vector2(8f, 2.5f);
-            glowstickHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, 350f);
+            glowstickHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f,D3DDevice.Instance.Height - 400f);
             glowstickHand.Scaling = new Vector2(0.167f, 0.125f);
-            lighterHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, 350f);
+            lighterHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, D3DDevice.Instance.Height - 400f);
             lighterHand.Scaling = new Vector2(0.167f, 0.125f);
-            flashlightHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, 350f);
+            flashlightHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, D3DDevice.Instance.Height - 400f);
             flashlightHand.Scaling = new Vector2(0.167f, 0.125f);
             #endregion
 
@@ -1243,7 +1251,21 @@ namespace TGC.Group.Model
                 var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, mesh.BoundingBox);
                 if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
                 {
-                    mesh.render();
+
+                  //celdaEscapePod1.render(Camara.Position);
+                  /**/
+                    if(mesh.Position.Y < Camara.Position.Y + 60f)
+                    {
+                        mesh.render();
+                    }
+                    else
+                    {
+                        if (mesh.Position.Y >= Camara.Position.Y-50f )
+                        {
+                            mesh.render();
+                        }
+                    }/**/
+                                       
                 }
                 //mesh.BoundingBox.render();
 

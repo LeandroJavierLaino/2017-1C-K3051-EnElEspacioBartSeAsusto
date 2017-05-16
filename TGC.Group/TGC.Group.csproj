@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="Model\Botiquin.cs" />
     <Compile Include="Model\Boton.cs" />
+    <Compile Include="Model\Celda.cs" />
     <Compile Include="Model\CustomBitmap.cs" />
     <Compile Include="Model\CustomSprite.cs" />
     <Compile Include="Model\Drawer2D.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Model\GameModel.cs" />
     <Compile Include="Model\Menu.cs" />
     <Compile Include="Model\Monstruo.cs" />
+    <Compile Include="Model\Portal.cs" />
     <Compile Include="Model\Puerta.cs" />
     <Compile Include="Model\SphereCollisionManager.cs" />
     <Compile Include="Model\TgcFpsCamera.cs" />
