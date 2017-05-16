@@ -51,10 +51,11 @@ namespace TGC.Group.Model
 
         //Escena
         private TgcScene TgcScene { get; set; }
+        Celda celdaEscapePod1;
 
         #region HUD
         //HUD
-        
+
         //Dibujador o dibujante??? 
         private Drawer2D drawer2D;
         
@@ -165,8 +166,8 @@ namespace TGC.Group.Model
         public override void Init()
         {
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
-            var d3dDevice = D3DDevice.Instance.Device; 
-
+            var d3dDevice = D3DDevice.Instance.Device;
+            
             #region HUD init
             drawer2D = new Drawer2D();
             vida = new CustomSprite();
@@ -214,9 +215,11 @@ namespace TGC.Group.Model
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
-            //TgcScene.PortalRendering.createDebugPortals(Color.Purple);
-            //TgcScene.PortalRendering.Portals.Add(new Core.PortalRendering.TgcPortalRenderingPortal("puerta"));
-            
+
+            celdaEscapePod1 = new Celda();
+            celdaEscapePod1.establecerCelda(new Vector3(210,100,170), new Vector3(370,50,30));
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[0]);
+
             /*
             //Computamos las normales
             foreach (var mesh in TgcScene.Meshes)
@@ -1195,7 +1198,21 @@ namespace TGC.Group.Model
                 var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, mesh.BoundingBox);
                 if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
                 {
-                    mesh.render();
+
+                  //  celdaEscapePod1.render(Camara.Position);
+                  
+                    if(mesh.Position.Y < Camara.Position.Y + 60f)
+                    {
+                        mesh.render();
+                    }
+                    else
+                    {
+                        if (mesh.Position.Y >= Camara.Position.Y-50f )
+                        {
+                            mesh.render();
+                        }
+                    }
+                                       
                 }
                 //mesh.BoundingBox.render();
 
