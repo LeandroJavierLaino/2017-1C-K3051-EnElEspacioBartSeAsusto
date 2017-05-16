@@ -52,6 +52,8 @@ namespace TGC.Group.Model
         //Escena
         private TgcScene TgcScene { get; set; }
         Celda celdaEscapePod1;
+        List<Celda> celdasEscena = new List<Celda>();
+        List<Portal> portalesEscena = new List<Portal>();
 
         #region HUD
         //HUD
@@ -217,8 +219,10 @@ namespace TGC.Group.Model
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
 
             celdaEscapePod1 = new Celda();
-            celdaEscapePod1.establecerCelda(new Vector3(210,100,170), new Vector3(370,50,30));
+            celdaEscapePod1.establecerCelda(new Vector3(210,100,170), new Vector3(460,50,105));//Al fin posicion y dimension OK aunque podria llegar hasta el portal =/
             celdaEscapePod1.agregarMesh(TgcScene.Meshes[0]);
+
+            celdasEscena.Add(celdaEscapePod1);
 
             /*
             //Computamos las normales
@@ -622,11 +626,11 @@ namespace TGC.Group.Model
             flashlightHUD.Scaling = new Vector2(1.5f,1.5f);
             flashlightLiveHUD.Position = new Vector2(25f,35f);
             flashlightLiveHUD.Scaling = new Vector2(8f, 2.5f);
-            glowstickHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, 350f);
+            glowstickHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f,D3DDevice.Instance.Height - 400f);
             glowstickHand.Scaling = new Vector2(0.167f, 0.125f);
-            lighterHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, 350f);
+            lighterHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, D3DDevice.Instance.Height - 400f);
             lighterHand.Scaling = new Vector2(0.167f, 0.125f);
-            flashlightHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, 350f);
+            flashlightHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, D3DDevice.Instance.Height - 400f);
             flashlightHand.Scaling = new Vector2(0.167f, 0.125f);
             #endregion
 
@@ -1199,8 +1203,8 @@ namespace TGC.Group.Model
                 if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
                 {
 
-                  //  celdaEscapePod1.render(Camara.Position);
-                  
+                  //celdaEscapePod1.render(Camara.Position);
+                  /**/
                     if(mesh.Position.Y < Camara.Position.Y + 60f)
                     {
                         mesh.render();
@@ -1211,7 +1215,7 @@ namespace TGC.Group.Model
                         {
                             mesh.render();
                         }
-                    }
+                    }/**/
                                        
                 }
                 //mesh.BoundingBox.render();

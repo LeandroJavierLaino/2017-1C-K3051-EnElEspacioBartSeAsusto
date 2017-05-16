@@ -34,7 +34,7 @@ namespace TGC.Group.Model
 
         public bool estaJugadorEnCelda(Vector3 positionPlayer)
         {
-            return celda.Size.Y > positionPlayer.Y && (positionPlayer.X + celda.Position.X < celda.Size.X || positionPlayer.X - celda.Position.X > celda.Size.X) && (positionPlayer.Z + celda.Position.Z < celda.Size.Z || positionPlayer.Z - celda.Position.Z > celda.Size.Z);
+            return celda.BoundingBox.PMax.X >= positionPlayer.X && celda.BoundingBox.PMax.Y >= positionPlayer.Y && celda.BoundingBox.PMax.Z >= positionPlayer.Z && celda.BoundingBox.PMin.X <= positionPlayer.X && celda.BoundingBox.PMin.Y <= positionPlayer.Y && celda.BoundingBox.PMin.Z <= positionPlayer.Z;
         }
 
         public void render(Vector3 positionPlayer)
@@ -51,6 +51,16 @@ namespace TGC.Group.Model
                     portal.render(positionPlayer);
                 }
             }            
+        }
+
+        public void render()
+        {
+            celda.BoundingBox.computeFaces();
+            celda.BoundingBox.render();
+            foreach(var mesh in meshesDeLaCelda)
+            {
+                mesh.render();
+            }
         }
     }
 }

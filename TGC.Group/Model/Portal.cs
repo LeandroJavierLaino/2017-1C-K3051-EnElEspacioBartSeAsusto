@@ -23,8 +23,27 @@ namespace TGC.Group.Model
 
         public void render(Vector3 positionPlayer)
         {
-            celdaA.render(positionPlayer);
-            celdaB.render(positionPlayer);
+            //Renderizo ambas celdas si estoy justo en el portal
+            if (estaEnPortal(positionPlayer))
+            {
+                celdaA.render();
+                celdaB.render();
+            }
+            //si el jugador esta en la celdaA renderizo la celdaB
+            if (celdaA.estaJugadorEnCelda(positionPlayer))
+            {
+                celdaB.render();
+            }
+            //si el jugador esta en la celdaB renderizo la celdaA
+            if (celdaB.estaJugadorEnCelda(positionPlayer))
+            {
+                celdaA.render();
+            }
+        }
+
+        public bool estaEnPortal(Vector3 positionPlayer)
+        {
+            return portal.BoundingBox.PMax.X >= positionPlayer.X && portal.BoundingBox.PMax.Y >= positionPlayer.Y && portal.BoundingBox.PMax.Z >= positionPlayer.Z && portal.BoundingBox.PMin.X <= positionPlayer.X && portal.BoundingBox.PMin.Y <= positionPlayer.Y && portal.BoundingBox.PMin.Z <= positionPlayer.Z;
         }
     }
 }
