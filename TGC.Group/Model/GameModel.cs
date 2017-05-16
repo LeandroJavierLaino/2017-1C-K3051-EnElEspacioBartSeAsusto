@@ -45,6 +45,12 @@ namespace TGC.Group.Model
 
         private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionables = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
 
+        //Estados del juego
+        private GameState StateJuego;
+        private GameState StateMenu;
+        
+        private GameState CurrentState;
+
         //Caja que se muestra en el ejemplo.
         //usar TgcBox como ejemplo para cargar cualquier caja que queramos.
         private TgcBox Box { get; set; }
@@ -52,9 +58,24 @@ namespace TGC.Group.Model
         //Escena
         private TgcScene TgcScene { get; set; }
 
+        //Estado
+
+        #region Menu
+        //Menu
+        //Bitmaps de botones
+        private CustomBitmap boton_normal;
+        private CustomBitmap boton_mouseover;
+
+        //Redundancia FTW
+        Menu.Menu menu;
+
+        #endregion
+
+
+
         #region HUD
         //HUD
-        
+
         //Dibujador o dibujante??? 
         private Drawer2D drawer2D;
         
@@ -165,7 +186,14 @@ namespace TGC.Group.Model
         public override void Init()
         {
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
-            var d3dDevice = D3DDevice.Instance.Device; 
+            var d3dDevice = D3DDevice.Instance.Device;
+            # region Menu
+            var botonjugar = new Menu.Button(Input, boton_normal, boton_mouseover,
+                () => {  }
+            );
+            #endregion
+
+
 
             #region HUD init
             drawer2D = new Drawer2D();
@@ -211,6 +239,26 @@ namespace TGC.Group.Model
 
             #endregion
 
+            //Seteamos las acciones que se realizan dependiendo del estado del juego;
+
+            #region AccionesJuego
+            StateJuego = new GameState();
+            StateJuego.Update = () =>
+            {
+            };
+            StateJuego.Update = () =>
+            {
+            };
+            #endregion
+            #region AccionesMenu
+            StateMenu = new GameState();
+            StateMenu.Update = () =>
+            {
+            };
+            StateMenu.Update = () =>
+            {
+            };
+            #endregion
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");

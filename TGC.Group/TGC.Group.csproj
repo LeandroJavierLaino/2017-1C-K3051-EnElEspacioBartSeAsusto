@@ -90,8 +90,10 @@
     <Compile Include="Model\CustomBitmap.cs" />
     <Compile Include="Model\CustomSprite.cs" />
     <Compile Include="Model\Drawer2D.cs" />
+    <Compile Include="Model\GameState.cs" />
     <Compile Include="Model\Linterna.cs" />
     <Compile Include="Model\GameModel.cs" />
+    <Compile Include="Model\Menu.cs" />
     <Compile Include="Model\Monstruo.cs" />
     <Compile Include="Model\Puerta.cs" />
     <Compile Include="Model\SphereCollisionManager.cs" />
