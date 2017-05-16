@@ -243,26 +243,21 @@ namespace TGC.Group.Model
 
             #endregion
 
-            //Seteamos las acciones que se realizan dependiendo del estado del juego;
-
+            //Seteamos las acciones que se realizan dependiendo del estado del juego
             #region AccionesJuego
             StateJuego = new GameState();
-            StateJuego.Update = () =>
-            {
-            };
-            StateJuego.Update = () =>
-            {
-            };
+            StateJuego.Update = UpdateGame;
+            StateJuego.Render = RenderGame;
             #endregion
+
             #region AccionesMenu
             StateMenu = new GameState();
-            StateMenu.Update = () =>
-            {
-            };
-            StateMenu.Update = () =>
-            {
-            };
+            StateMenu.Update = UpdateMenu;
+            StateMenu.Render = RenderMenu;
             #endregion
+
+            CurrentState = StateJuego;
+
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
@@ -654,15 +649,20 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
+            CurrentState.Update();
+        }
+        #endregion
+
+        public void UpdateGame() {
             #region Update del HUD
-            vida.Position = new Vector2(20f, D3DDevice.Instance.Height-40f);
-            vida.Scaling = new Vector2(8f,0.5f);
+            vida.Position = new Vector2(20f, D3DDevice.Instance.Height - 40f);
+            vida.Scaling = new Vector2(8f, 0.5f);
             stamina.Position = new Vector2(20f, D3DDevice.Instance.Height - 80f);
             stamina.Scaling = new Vector2(8f, 0.5f);
             centerPoint.Position = new Vector2(D3DDevice.Instance.Width / 2, D3DDevice.Instance.Height / 2);
-            centerPoint.Scaling = new Vector2(0.25f,0.25f);
-            glowstickHUD1.Position = new Vector2(20f,20f);
-            glowstickHUD1.Scaling = new Vector2(0.125f,0.125f);
+            centerPoint.Scaling = new Vector2(0.25f, 0.25f);
+            glowstickHUD1.Position = new Vector2(20f, 20f);
+            glowstickHUD1.Scaling = new Vector2(0.125f, 0.125f);
             glowstickHUD2.Position = new Vector2(20f, glowstickHUD1.Position.Y + 60f);
             glowstickHUD2.Scaling = new Vector2(0.125f, 0.125f);
             glowstickHUD3.Position = new Vector2(20f, glowstickHUD2.Position.Y + 60f);
@@ -672,10 +672,10 @@ namespace TGC.Group.Model
             lighterLiveHUD.Position = new Vector2(10f, 35f);
             lighterLiveHUD.Scaling = new Vector2(2.0f, 15f);
             flashlightHUD.Position = new Vector2(20f, 20f);
-            flashlightHUD.Scaling = new Vector2(1.5f,1.5f);
-            flashlightLiveHUD.Position = new Vector2(25f,35f);
+            flashlightHUD.Scaling = new Vector2(1.5f, 1.5f);
+            flashlightLiveHUD.Position = new Vector2(25f, 35f);
             flashlightLiveHUD.Scaling = new Vector2(8f, 2.5f);
-            glowstickHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f,D3DDevice.Instance.Height - 400f);
+            glowstickHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, D3DDevice.Instance.Height - 400f);
             glowstickHand.Scaling = new Vector2(0.167f, 0.125f);
             lighterHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, D3DDevice.Instance.Height - 400f);
             lighterHand.Scaling = new Vector2(0.167f, 0.125f);
@@ -685,7 +685,7 @@ namespace TGC.Group.Model
 
             #region Logica Luces
             //Switch entre glowstick(F), encendedor(G) y linterna(H)
-            if (Input.keyPressed(Key.F) && vidaPorcentaje > 0 )
+            if (Input.keyPressed(Key.F) && vidaPorcentaje > 0)
             {
                 lightMesh.Color = Color.GreenYellow;
                 this.glowstick.setSelect(true);
@@ -693,7 +693,7 @@ namespace TGC.Group.Model
                 this.flashlight.setSelect(false);
                 timer = 0;
             }
-            if (Input.keyPressed(Key.G) && vidaPorcentaje > 0 )
+            if (Input.keyPressed(Key.G) && vidaPorcentaje > 0)
             {
                 this.glowstick.setSelect(false);
                 this.lighter.setSelect(true);
@@ -701,7 +701,7 @@ namespace TGC.Group.Model
                 lightMesh.Color = Color.Yellow;
                 timer = 0;
             }
-            if (Input.keyPressed(Key.H) && vidaPorcentaje>0 )
+            if (Input.keyPressed(Key.H) && vidaPorcentaje > 0)
             {
                 this.glowstick.setSelect(false);
                 this.lighter.setSelect(false);
@@ -713,7 +713,7 @@ namespace TGC.Group.Model
             //para el glowstick cada 60 seg deberiamos perder 1 barra.
             if (glowstick.getSelect())
             {
-                if (System.Math.Truncate(timer)/60 == 1 && glowstick.getEnergia()>0)
+                if (System.Math.Truncate(timer) / 60 == 1 && glowstick.getEnergia() > 0)
                 {
                     glowstick.perderEnergia(1);
                     timer = 0;
@@ -721,10 +721,10 @@ namespace TGC.Group.Model
             }
             if (lighter.getSelect())
             {
-                if (System.Math.Truncate(timer) % 1 == 0 && lighter.getEnergia()>0)
+                if (System.Math.Truncate(timer) % 1 == 0 && lighter.getEnergia() > 0)
                 {
                     lighter.perderEnergia(0.083f);
-                    lighterLiveHUD.Scaling= new Vector2(2,(lighter.getEnergia()/100)*15);
+                    lighterLiveHUD.Scaling = new Vector2(2, (lighter.getEnergia() / 100) * 15);
                     timer = 0;
                 }
             }
@@ -740,14 +740,14 @@ namespace TGC.Group.Model
                 z = (float)14 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                 lightMesh.Position = new Vector3(x, y, z);
                 lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
-                if (System.Math.Truncate(timer) % 1 == 0 &&flashlight.getEnergia()>0)
+                if (System.Math.Truncate(timer) % 1 == 0 && flashlight.getEnergia() > 0)
                 {
                     flashlight.perderEnergia(0.041f);
                     flashlightLiveHUD.Scaling = new Vector2((flashlight.getEnergia() / 100) * 8, 2.5f);
                     timer = 0;
                 }
             }
-            if (!flashlight.getSelect() && flashlight.getEnergia()<100)
+            if (!flashlight.getSelect() && flashlight.getEnergia() < 100)
             {
                 flashlight.ganarEnergia(0.020f);
             }
@@ -756,7 +756,7 @@ namespace TGC.Group.Model
 
             #region Accion con botones
 
-            if (Input.keyPressed(Key.E) && distance(Camara.Position,botonElectricidad.meshBoton.Position) < 55)
+            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonElectricidad.meshBoton.Position) < 55)
             {
                 botonElectricidad.changeColor(Color.Green);
                 botonElectricidad.isGreen = true;
@@ -792,7 +792,7 @@ namespace TGC.Group.Model
 
             #region Accion Puertas
 
-            if (Input.keyPressed(Key.E)) 
+            if (Input.keyPressed(Key.E))
             {
                 puerta1.abrirPuerta(Camara.Position);
                 puerta2.abrirPuerta(Camara.Position);
@@ -818,8 +818,8 @@ namespace TGC.Group.Model
             #endregion
 
             #region Accion Botiquines
-            if (vidaPorcentaje < 100 && Input.keyDown(Key.E) && distance(Camara.Position,botiquin1.Position)<80)
-            { 
+            if (vidaPorcentaje < 100 && Input.keyDown(Key.E) && distance(Camara.Position, botiquin1.Position) < 80)
+            {
                 botiquin1.consumir(Camara.Position);
                 if (vidaPorcentaje < 80)
                 {
@@ -827,7 +827,7 @@ namespace TGC.Group.Model
                 }
                 else
                 {
-                    vidaPorcentaje = 100f; 
+                    vidaPorcentaje = 100f;
                 }
             }
             if (vidaPorcentaje < 100 && Input.keyPressed(Key.E) && distance(Camara.Position, botiquin2.Position) < 80)
@@ -897,10 +897,10 @@ namespace TGC.Group.Model
             //Vida
             if (distance(monstruo.Position, Camara.Position) < 50f && vidaPorcentaje > 0)
             {
-                vidaPorcentaje -= 0.2f; 
+                vidaPorcentaje -= 0.2f;
             }
 
-            vida.Scaling = new Vector2((vidaPorcentaje/100) * 8, 0.5f);
+            vida.Scaling = new Vector2((vidaPorcentaje / 100) * 8, 0.5f);
 
             //Stamina
             if (Input.keyDown(Key.LeftShift) && staminaPorcentaje > 0)
@@ -919,7 +919,8 @@ namespace TGC.Group.Model
 
             #region Logica Monstruo
             //Para activar o desactivar al monstruo
-            if (Input.keyPressed(Key.M)) {
+            if (Input.keyPressed(Key.M))
+            {
                 monstruo.Activo = !monstruo.Activo;
             }
 
@@ -928,15 +929,17 @@ namespace TGC.Group.Model
             {
                 monstruo.Colisiones = !monstruo.Colisiones;
             }
-            
+
             //Logica del monstruo
             monstruo.update(Camara.Position, objetosColisionables, ElapsedTime);
-#endregion
+            #endregion
 
             var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.UpdateCamera(ElapsedTime, objetosColisionables,vidaPorcentaje,staminaPorcentaje);
+            camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje);
+
         }
-        #endregion
+
+        public void UpdateMenu() { }
 
         #region Render
         /// <summary>
@@ -946,6 +949,11 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Render()
         {
+            CurrentState.Render();
+        }
+        #endregion
+
+        public void RenderGame() {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
             timer += ElapsedTime;
@@ -956,7 +964,7 @@ namespace TGC.Group.Model
             drawer2D.DrawSprite(centerPoint);
             if (glowstick.getEnergia() >= 1 && glowstick.getSelect())
             {
-                
+
                 drawer2D.DrawSprite(glowstickHUD1);
                 if (glowstick.getEnergia() >= 2)
                 {
@@ -979,7 +987,7 @@ namespace TGC.Group.Model
             {
                 drawer2D.DrawSprite(lighterHand);
             }
-            if (lighter.getSelect() && lighter.getEnergia()>0)
+            if (lighter.getSelect() && lighter.getEnergia() > 0)
             {
                 drawer2D.DrawSprite(lighterLiveHUD);
             }
@@ -992,9 +1000,9 @@ namespace TGC.Group.Model
             {
                 drawer2D.DrawSprite(flashlightHand);
             }
-            
+
             drawer2D.EndDrawSprite();
-            
+
             if (vidaPorcentaje <= 0)
             {
                 textoDeLaMuerte.render();
@@ -1015,7 +1023,7 @@ namespace TGC.Group.Model
             }
 
             playerPos.Position = Camara.Position;
-            
+
             foreach (var mesh in TgcScene.Meshes)
             {
                 mesh.Effect = Shader;
@@ -1023,11 +1031,11 @@ namespace TGC.Group.Model
             }
 
             //TgcScene.PortalRendering.updateVisibility(Camara.Position, Frustum);
-            
+
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
             {
-                
+
                 //se actualiza el transform del mesh
                 mesh.UpdateMeshTransform();
 
@@ -1049,7 +1057,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
-                if (glowstick.getSelect() &&  glowstick.getEnergia() == 0)
+                if (glowstick.getSelect() && glowstick.getEnergia() == 0)
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -1176,7 +1184,7 @@ namespace TGC.Group.Model
                 }
                 if (flashlight.getSelect() && flashlight.getEnergia() <= 10 && flashlight.getEnergia() > 0)
                 {
-                    
+
                     //lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
                     float a;
                     float b;
@@ -1252,27 +1260,27 @@ namespace TGC.Group.Model
                 if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
                 {
 
-                  //celdaEscapePod1.render(Camara.Position);
-                  /**/
-                    if(mesh.Position.Y < Camara.Position.Y + 60f)
+                    //celdaEscapePod1.render(Camara.Position);
+                    /**/
+                    if (mesh.Position.Y < Camara.Position.Y + 60f)
                     {
                         mesh.render();
                     }
                     else
                     {
-                        if (mesh.Position.Y >= Camara.Position.Y-50f )
+                        if (mesh.Position.Y >= Camara.Position.Y - 50f)
                         {
                             mesh.render();
                         }
                     }/**/
-                                       
+
                 }
                 //mesh.BoundingBox.render();
 
             }
 
             monstruo.render();
-            
+
             //Dibuja un texto por pantalla
             TGC.Examples.Camara.TgcFpsCamera camaraPrint = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n "
@@ -1298,12 +1306,13 @@ namespace TGC.Group.Model
             botonOxigeno.meshBoton.render();
             botonCombustible.meshBoton.render();
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.render(ElapsedTime,objetosColisionables);
-            
+            camarita.render(ElapsedTime, objetosColisionables);
+
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
+
         }
-        #endregion
+        public void RenderMenu() { }
 
         /// <summary>
         ///     Se llama cuando termina la ejecución del ejemplo.
