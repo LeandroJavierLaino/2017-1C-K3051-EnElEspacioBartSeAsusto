@@ -44,21 +44,18 @@ namespace TGC.Group.Model
 
         internal void abrirPuerta(Vector3 position)
         {
-            if ( (distance(position, modeloPuerta.Position)) < 55)
+            if ( (distance(position, modeloPuerta.Position)) < 55 && !puertaAbierta)
             {
                 changePosition(new Vector3(modeloPuerta.Position.X, 210f + modeloPuerta.Position.Y, modeloPuerta.Position.Z));
                 puertaAbierta = !puertaAbierta;
             }
         }
 
-        public void cerrarPuerta(bool cond)
+        public void cerrarPuerta(Vector3 posicion)
         {
-            if (modeloPuerta.Position != posicionOriginal && puertaAbierta)
-            {
-                changePosition(new Vector3(modeloPuerta.Position.X, modeloPuerta.Position.Y - 210f, modeloPuerta.Position.Z));
+                modeloPuerta.Position = posicion;
+                modeloPuerta.UpdateMeshTransform();
                 puertaAbierta = !puertaAbierta;
-            }
-            
         }
 
         public float distance(Vector3 a, Vector3 b)

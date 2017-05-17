@@ -155,6 +155,7 @@ namespace TGC.Group.Model
         private Boton botonElectricidad;
         private Boton botonElectricidad2;
         private Boton botonCombustible;
+        private Boton botonEscapePod1Door;
 
         private Monstruo monstruo { get; set; }
         private SphereCollisionManager collisionManager;
@@ -275,7 +276,8 @@ namespace TGC.Group.Model
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
-
+            
+            #region Portal Rendering
             float centro1Floor = 50;
             float altura = 100;
             float centro2Floor = 160;
@@ -294,7 +296,7 @@ namespace TGC.Group.Model
             celdasEscena.Add(celdaOne1Floor);
             
             Portal portalEscapeOne = new Portal();
-            portalEscapeOne.establecerPortal(new Vector3(60, altura, 10), new Vector3(0,centro2Floor,0), celdaEscapePod1, celdaOne1Floor);
+            portalEscapeOne.establecerPortal(new Vector3(60, altura, 10), new Vector3(0,centro1Floor,0), celdaEscapePod1, celdaOne1Floor);
             portalesEscena.Add(portalEscapeOne);
 
             Celda celdaTwo1Floor = new Celda();
@@ -302,10 +304,22 @@ namespace TGC.Group.Model
             //Meshes 
             celdasEscena.Add(celdaTwo1Floor);
 
+            Portal portalOneTwo1Floor = new Portal();
+            portalOneTwo1Floor.establecerPortal(new Vector3(60, altura, 10), new Vector3(0, centro1Floor, 0), celdaOne1Floor, celdaTwo1Floor);
+            portalesEscena.Add(portalOneTwo1Floor);
+
             Celda celdaThree1Floor = new Celda();
             celdaThree1Floor.establecerCelda(new Vector3(440,altura,450),new Vector3(0,centro1Floor,0));
             //Meshes
             celdasEscena.Add(celdaThree1Floor);
+
+            Portal portalOneThree1Floor = new Portal();
+            portalOneThree1Floor.establecerPortal(new Vector3(60, altura, 10), new Vector3(0, centro1Floor, 0), celdaOne1Floor, celdaThree1Floor);
+            portalesEscena.Add(portalOneThree1Floor);
+
+            Portal portalTwoThree1Floor = new Portal();
+            portalTwoThree1Floor.establecerPortal(new Vector3(10, altura, 60), new Vector3(0, centro1Floor, 0), celdaOne1Floor, celdaThree1Floor);
+            portalesEscena.Add(portalTwoThree1Floor);
 
             Celda celdaFour1Floor = new Celda();
             celdaFour1Floor.establecerCelda(new Vector3(420,altura,310),new Vector3(0,centro1Floor,0));
@@ -322,10 +336,18 @@ namespace TGC.Group.Model
             //Meshes
             celdasEscena.Add(celdaEscalera7);
 
+            Portal portal1FloorEscalera7 = new Portal();
+            portal1FloorEscalera7.establecerPortal(new Vector3(60, altura, 10), new Vector3(0, centro1Floor, 0), celdaFive1Floor, celdaEscalera7);
+            portalesEscena.Add(portal1FloorEscalera7);
+
             Celda celdaEscalera8 = new Celda();
             celdaEscalera8.establecerCelda(new Vector3(270,alturaEscalera,180),new Vector3(0,centroEscalera,0));
             //Meshes
             celdasEscena.Add(celdaEscalera8);
+
+            Portal portal1FloorEscalera8 = new Portal();
+            portal1FloorEscalera8.establecerPortal(new Vector3(10, altura, 60), new Vector3(0, centro1Floor, 0), celdaOne1Floor, celdaEscalera8);
+            portalesEscena.Add(portal1FloorEscalera8);
 
             Celda celdaEscapePod2 = new Celda();
             celdaEscapePod2.establecerCelda(new Vector3(210, altura, 180), new Vector3(460, centro2Floor, 105));//Al fin posicion y dimension OK 
@@ -361,7 +383,8 @@ namespace TGC.Group.Model
             celdaFive2Floor.establecerCelda(new Vector3(660, altura, 440), new Vector3(0, centro2Floor, 0));
             //Meshes
             celdasEscena.Add(celdaFive2Floor);
-
+            #endregion
+            
             /*
             //Computamos las normales
             foreach (var mesh in TgcScene.Meshes)
@@ -706,6 +729,12 @@ namespace TGC.Group.Model
             botonCombustible.meshBoton.Position = new Vector3(550, 25, 280);
             botonCombustible.changeColor(Color.Red);
             //TgcScene.Meshes.Add(botonCombustible.meshBoton);
+
+            botonEscapePod1Door = new Boton();
+            botonEscapePod1Door.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
+            botonEscapePod1Door.meshBoton.Position = new Vector3(504, 25, 190);
+            botonEscapePod1Door.changeColor(Color.Red);
+            TgcScene.Meshes.Add(botonEscapePod1Door.meshBoton);
             #endregion
 
             #region LucesInit
@@ -904,18 +933,14 @@ namespace TGC.Group.Model
                 //La misma logica para todasssssss las puertas U__________U
             }
 
-            //Esta forma complica que se cierren las puertas
-            /*
-            if (Input.keyPressed(Key.E)&& !closed)
+            //botones de las puertas
+            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonEscapePod1Door.meshBoton.Position) < 55)
             {
-                puerta1.cerrarPuerta(true);
-                puerta2.cerrarPuerta(true);
-                puerta3.cerrarPuerta(true);
-                puerta4.cerrarPuerta(true);
-                puerta5.cerrarPuerta(true);
-                puerta6.cerrarPuerta(true);
+                //puerta1.cerrarPuerta(new Vector3(89f, 32f, 275f));
+                //puerta1.changePosition(new Vector3(89f, 32f, 275f));
+                puerta1.getMesh().Position = new Vector3(89f, 32f, 275f);
+                puerta1.getMesh().UpdateMeshTransform();
             }
-            */
             #endregion
 
             #region Accion Botiquines
