@@ -48,7 +48,8 @@ namespace TGC.Group.Model
         //Estados del juego
         private GameState StateJuego;
         private GameState StateMenu;
-        
+        private GameState StatePause;
+
         private GameState CurrentState;
 
         //Caja que se muestra en el ejemplo.
@@ -69,9 +70,11 @@ namespace TGC.Group.Model
         private CustomBitmap boton_normal;
         private CustomBitmap boton_mouseover;
 
+
         //Redundancia FTW
         Menu.Menu menu;
 
+        private TgcText2D textoPausa;
         #endregion
 
 
@@ -190,15 +193,21 @@ namespace TGC.Group.Model
         {
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
-            
-            # region Menu
-            var botonjugar = new Menu.Button(Input, boton_normal, boton_mouseover,
-                () => {  }
+
+            #region Init Menu
+            menu = new Menu.Menu(Input, "En el espacio Bart se asustó");
+            boton_mouseover = new CustomBitmap(MediaDir + "\\Textures\\botonMouseover.png", D3DDevice.Instance.Device);
+            boton_normal = new CustomBitmap(MediaDir + "\\Textures\\botonNormal.png", D3DDevice.Instance.Device);
+
+            var botonjugar = new Menu.Button("Jugar",Input, boton_normal, boton_mouseover,
+                () => { this.CurrentState = StateJuego; }
             );
+            botonjugar.Position = new Vector2(100, 200);
+            menu.pushButton(botonjugar);
             #endregion
 
 
-            
+
             #region HUD init
             drawer2D = new Drawer2D();
             vida = new CustomSprite();
@@ -255,8 +264,13 @@ namespace TGC.Group.Model
             StateMenu.Update = UpdateMenu;
             StateMenu.Render = RenderMenu;
             #endregion
+            #region AccionesPausa
+            StatePause = new GameState();
+            StatePause.Update = UpdatePause;
+            StatePause.Render = RenderPause;
+            #endregion
 
-            CurrentState = StateJuego;
+            CurrentState = StateMenu;
 
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -565,8 +579,15 @@ namespace TGC.Group.Model
             textoDeLaMuerte = new TgcText2D();
             textoDeLaMuerte.Text = "YOU DIED";
             textoDeLaMuerte.Color = Color.Red;
-            textoDeLaMuerte.Position = new Point(D3DDevice.Instance.Width/12,D3DDevice.Instance.Height/2);
-            textoDeLaMuerte.changeFont(new System.Drawing.Font("TimesNewRoman", 55 ));
+            textoDeLaMuerte.Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2);
+            textoDeLaMuerte.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
+            #endregion
+            #region Texto de Pausa
+            textoPausa = new TgcText2D();
+            textoPausa.Text = "PAUSA";
+            textoPausa.Color = Color.Gray;
+            textoPausa.Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2);
+            textoPausa.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
             #endregion
 
             #region BotonesInit
@@ -915,7 +936,14 @@ namespace TGC.Group.Model
                 }
             }
             stamina.Scaling = new Vector2((staminaPorcentaje / 100) * 8, 0.5f);
-            #endregion  
+            //Pausa
+            if (Input.keyPressed(Key.Return))
+            {
+                CurrentState = StatePause;
+            }
+
+            #endregion
+
 
             #region Logica Monstruo
             //Para activar o desactivar al monstruo
@@ -939,8 +967,12 @@ namespace TGC.Group.Model
 
         }
 
-        public void UpdateMenu() { }
+        public void UpdateMenu() { menu.Update(ElapsedTime); }
 
+        public void UpdatePause()
+        {
+            if (Input.keyPressed(Key.Return)) CurrentState=StateJuego;
+        }
         #region Render
         /// <summary>
         ///     Se llama cada vez que hay que refrescar la pantalla.
@@ -949,13 +981,14 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Render()
         {
+            PreRender();
             CurrentState.Render();
+            PostRender();
         }
         #endregion
 
         public void RenderGame() {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
-            PreRender();
             timer += ElapsedTime;
 
             drawer2D.BeginDrawSprite();
@@ -1308,11 +1341,15 @@ namespace TGC.Group.Model
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.render(ElapsedTime, objetosColisionables);
 
-            //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
-            PostRender();
-
+            
         }
-        public void RenderMenu() { }
+        public void RenderPause() {
+            RenderGame();
+            textoPausa.render();
+        }
+        public void RenderMenu() {
+            menu.Render(ElapsedTime, this.drawer2D);
+        }
 
         /// <summary>
         ///     Se llama cuando termina la ejecución del ejemplo.
@@ -1328,7 +1365,7 @@ namespace TGC.Group.Model
             flashlightHUD.Dispose();
             monstruo.mesh.dispose();
             TgcScene.disposeAll();
-            Shader.Dispose();
+            if(Shader!=null) Shader.Dispose();
             textoDeLaMuerte.Dispose();
             vida.Dispose();
             stamina.Dispose();
