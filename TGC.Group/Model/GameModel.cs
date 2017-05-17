@@ -58,7 +58,7 @@ namespace TGC.Group.Model
 
         //Escena
         private TgcScene TgcScene { get; set; }
-        Celda celdaEscapePod1;
+        
         List<Celda> celdasEscena = new List<Celda>();
         List<Portal> portalesEscena = new List<Portal>();
 
@@ -276,11 +276,91 @@ namespace TGC.Group.Model
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
 
-            celdaEscapePod1 = new Celda();
-            celdaEscapePod1.establecerCelda(new Vector3(210,100,170), new Vector3(460,50,105));//Al fin posicion y dimension OK aunque podria llegar hasta el portal =/
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[0]);
+            float centro1Floor = 50;
+            float altura = 100;
+            float centro2Floor = 160;
+            float alturaEscalera = 210;
+            float centroEscalera = 105;
 
+            Celda celdaEscapePod1 = new Celda();
+            celdaEscapePod1.establecerCelda(new Vector3(210,altura,180), new Vector3(460,centro1Floor,105));//Al fin posicion y dimension OK 
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[0]);
+            //Meshes
             celdasEscena.Add(celdaEscapePod1);
+
+            Celda celdaOne1Floor = new Celda();
+            celdaOne1Floor.establecerCelda(new Vector3(970, altura, 330), new Vector3(0,centro1Floor,0));//falta centro XZ
+            //Meshes 
+            celdasEscena.Add(celdaOne1Floor);
+            
+            Portal portalEscapeOne = new Portal();
+            portalEscapeOne.establecerPortal(new Vector3(60, altura, 10), new Vector3(0,centro2Floor,0), celdaEscapePod1, celdaOne1Floor);
+            portalesEscena.Add(portalEscapeOne);
+
+            Celda celdaTwo1Floor = new Celda();
+            celdaTwo1Floor.establecerCelda(new Vector3(550,altura,450),new Vector3(0,centro1Floor,0));
+            //Meshes 
+            celdasEscena.Add(celdaTwo1Floor);
+
+            Celda celdaThree1Floor = new Celda();
+            celdaThree1Floor.establecerCelda(new Vector3(440,altura,450),new Vector3(0,centro1Floor,0));
+            //Meshes
+            celdasEscena.Add(celdaThree1Floor);
+
+            Celda celdaFour1Floor = new Celda();
+            celdaFour1Floor.establecerCelda(new Vector3(420,altura,310),new Vector3(0,centro1Floor,0));
+            //Meshes
+            celdasEscena.Add(celdaFour1Floor);
+
+            Celda celdaFive1Floor = new Celda();
+            celdaFive1Floor.establecerCelda(new Vector3(660,altura,440),new Vector3(0,centro1Floor,0));
+            //Meshes
+            celdasEscena.Add(celdaFive1Floor);
+
+            Celda celdaEscalera7 = new Celda();
+            celdaEscalera7.establecerCelda(new Vector3(180,alturaEscalera,270),new Vector3(0,centroEscalera,0));
+            //Meshes
+            celdasEscena.Add(celdaEscalera7);
+
+            Celda celdaEscalera8 = new Celda();
+            celdaEscalera8.establecerCelda(new Vector3(270,alturaEscalera,180),new Vector3(0,centroEscalera,0));
+            //Meshes
+            celdasEscena.Add(celdaEscalera8);
+
+            Celda celdaEscapePod2 = new Celda();
+            celdaEscapePod2.establecerCelda(new Vector3(210, altura, 180), new Vector3(460, centro2Floor, 105));//Al fin posicion y dimension OK 
+            celdaEscapePod2.agregarMesh(TgcScene.Meshes[0]);
+            //Meshes
+            celdasEscena.Add(celdaEscapePod2);
+
+            Celda celdaOne2Floor = new Celda();
+            celdaOne2Floor.establecerCelda(new Vector3(970, altura, 330), new Vector3(0, centro2Floor, 0));//falta centro XZ
+            //Meshes 
+            celdasEscena.Add(celdaOne2Floor);
+
+            Portal portalEscapeOne2 = new Portal();
+            portalEscapeOne2.establecerPortal(new Vector3(60,altura,10), new Vector3(0,centro2Floor,0), celdaEscapePod1, celdaOne1Floor);
+            portalesEscena.Add(portalEscapeOne2);
+
+            Celda celdaTwo2Floor = new Celda();
+            celdaTwo2Floor.establecerCelda(new Vector3(550, altura, 450), new Vector3(0, centro2Floor, 0));
+            //Meshes 
+            celdasEscena.Add(celdaTwo2Floor);
+
+            Celda celdaThree2Floor = new Celda();
+            celdaThree2Floor.establecerCelda(new Vector3(440, altura, 450), new Vector3(0, centro2Floor, 0));
+            //Meshes
+            celdasEscena.Add(celdaThree2Floor);
+
+            Celda celdaFour2Floor = new Celda();
+            celdaFour2Floor.establecerCelda(new Vector3(420, altura, 310), new Vector3(0, centro2Floor, 0));
+            //Meshes
+            celdasEscena.Add(celdaFour2Floor);
+
+            Celda celdaFive2Floor = new Celda();
+            celdaFive2Floor.establecerCelda(new Vector3(660, altura, 440), new Vector3(0, centro2Floor, 0));
+            //Meshes
+            celdasEscena.Add(celdaFive2Floor);
 
             /*
             //Computamos las normales
@@ -1288,26 +1368,7 @@ namespace TGC.Group.Model
                     //TODO: poner las propiedades del shader que genera distorsiones D:
                 }
 
-                //Renderizar modelo con FrustumCulling
-                var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, mesh.BoundingBox);
-                if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
-                {
-
-                    //celdaEscapePod1.render(Camara.Position);
-                    /**/
-                    if (mesh.Position.Y < Camara.Position.Y + 60f)
-                    {
-                        mesh.render();
-                    }
-                    else
-                    {
-                        if (mesh.Position.Y >= Camara.Position.Y - 50f)
-                        {
-                            mesh.render();
-                        }
-                    }/**/
-
-                }
+                
                 //mesh.BoundingBox.render();
 
             }
@@ -1329,6 +1390,30 @@ namespace TGC.Group.Model
                 + " N para activar/desactivar colisiones del Monstruo \n"
                 + " L activa colisiones de la camara"
             , 0, 30, Color.OrangeRed);
+
+            foreach(var mesh in TgcScene.Meshes)
+            {
+                //Renderizar modelo con FrustumCulling
+                var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, mesh.BoundingBox);
+                if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                {
+
+                    //celdaEscapePod1.render(Camara.Position);
+                    /**/
+                    if (mesh.Position.Y < Camara.Position.Y + 60f)
+                    {
+                        mesh.render();
+                    }
+                    else
+                    {
+                        if (mesh.Position.Y > Camara.Position.Y - 50f)
+                        {
+                            mesh.render();
+                        }
+                    }/**/
+
+                }
+            }
 
             //lightMesh.render();
             //lightMesh.BoundingBox.render();
