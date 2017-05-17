@@ -14,11 +14,13 @@ namespace TGC.Group.Model
         private Celda celdaB = new Celda();
         private TgcBox portal;
 
-        public void establecerPortal(Vector3 size, Vector3 position)
+        public void establecerPortal(Vector3 size, Vector3 position,Celda cellA, Celda cellB)
         {
             portal = new TgcBox();
             portal.Position = position;
             portal.Size = size;
+            celdaA = cellA;
+            celdaB = cellB;
         }
 
         public void render(Vector3 positionPlayer)
