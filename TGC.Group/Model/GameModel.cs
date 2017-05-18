@@ -850,7 +850,7 @@ namespace TGC.Group.Model
                 y = (float)14 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
                 z = (float)14 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
                 lightMesh.Position = new Vector3(x, y, z);
-                lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
+                //lightMesh.Position = chocaLuz(lightMesh, Camara.Position, new Vector3(x, y, z), objetosColisionables);
                 if (System.Math.Truncate(timer) % 1 == 0 && flashlight.getEnergia() > 0)
                 {
                     flashlight.perderEnergia(0.041f);
@@ -1285,15 +1285,6 @@ namespace TGC.Group.Model
                 }
                 if (flashlight.getSelect() && flashlight.getEnergia() > 10)
                 {
-                    float x;
-                    float y;
-                    float z;
-                    //Si no colisiona contra algo es esto
-                    // lamda * director + coordenada en eje
-                    x = (float)50 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)50 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)50 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-                    lightMesh.Position = new Vector3(x, y, z);
                     float a;
                     float b;
                     float c;
@@ -1411,6 +1402,7 @@ namespace TGC.Group.Model
                 + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
                 + " Lighter Energy : " + lighter.getEnergia() + "\n"
                 + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
+                + " Tamaño en Y: " + TgcScene.Meshes[0].BoundingBox.calculateSize().Y + "\n"
                 + " M para Monstruo D:" + "\n"
                 + " N para activar/desactivar colisiones del Monstruo \n"
                 + " L activa colisiones de la camara"
@@ -1440,8 +1432,7 @@ namespace TGC.Group.Model
                 }
             }
 
-            //lightMesh.render();
-            //lightMesh.BoundingBox.render();
+            lightMesh.render();
             botonEscapePod1.meshBoton.render();
             botonEscapePod2.meshBoton.render();
             botonElectricidad.meshBoton.render();
@@ -1487,52 +1478,54 @@ namespace TGC.Group.Model
             return (FastMath.Sqrt(FastMath.Pow2(a.X - b.X) + FastMath.Pow2(a.Y - b.Y) + FastMath.Pow2(a.Z - b.Z)));
         }
 
-        public Vector3 chocaLuz(TgcBox cajaDeLuz, Vector3 centroCamara, TgcBoundingAxisAlignBox luz , List<TgcBoundingAxisAlignBox> colisionables)
+        public Vector3 chocaLuz(TgcBox cajaDeLuz, Vector3 centroCamara, Vector3 targetPosition , List<TgcBoundingAxisAlignBox> colisionables)
         {
             Vector3 retorno = cajaDeLuz.Position;
-            foreach(var colisionable in colisionables)
+            TgcBox clon = cajaDeLuz;
+            clon.Position = targetPosition;
+            retorno = clon.Position;
+
+            List<TgcBoundingAxisAlignBox> candidates = new List<TgcBoundingAxisAlignBox>();
+
+            foreach (var colisionable in colisionables)
             {
-                if (Core.Collision.TgcCollisionUtils.testAABBAABB(luz, colisionable))
+                if (Core.Collision.TgcCollisionUtils.testAABBAABB(clon.BoundingBox, colisionable))
                 {
-                    if(Core.Collision.TgcCollisionUtils.classifyBoxBox(colisionable, luz)==Core.Collision.TgcCollisionUtils.BoxBoxResult.Atravesando)
-                    {
-
-                        Vector3 puntodecolision = Core.Collision.TgcCollisionUtils.closestPointAABB(cajaDeLuz.Position, colisionable);
-
-                        retorno = centroCamara * distance(centroCamara, puntodecolision);
-                    }
-                    /*
-                    if (cajaDeLuz.Position.X + cajaDeLuz.Size.X > retorno.X)
-                    {
-                        retorno.X = cajaDeLuz.Position.X + cajaDeLuz.Size.X - retorno.X;
-                    }
-                    if (cajaDeLuz.Position.X + cajaDeLuz.Size.X < retorno.X)
-                    {
-                        retorno.X = cajaDeLuz.Position.X + cajaDeLuz.Size.X + retorno.X;
-                    }
-
-                    if (cajaDeLuz.Position.Y + cajaDeLuz.Size.Y > retorno.Y)
-                    {
-                        retorno.Y = cajaDeLuz.Position.Y + cajaDeLuz.Size.Y - retorno.Y;
-                    }
-                    if (cajaDeLuz.Position.Y + cajaDeLuz.Size.Y < retorno.Y)
-                    {
-                        retorno.Y = cajaDeLuz.Position.Y + cajaDeLuz.Size.Y + retorno.Y;
-                    }
-
-                    if (cajaDeLuz.Position.Z + cajaDeLuz.Size.Z > retorno.Z)
-                    {
-                        retorno.Z = cajaDeLuz.Position.Z + cajaDeLuz.Size.Z - retorno.Z;
-                    }
-                    if (cajaDeLuz.Position.Z + cajaDeLuz.Size.Z < retorno.Z)
-                    {
-                        retorno.Z = cajaDeLuz.Position.Z + cajaDeLuz.Size.Z + retorno.Z;
-                    }*/
-                    //break;
+                    candidates.Add(colisionable);
                 }
-                
             }
-                
+
+            foreach (var colisionable in candidates)
+            {
+                var caras = colisionable.computeFaces();
+
+                foreach(var cara in caras)
+                {
+                    var pNormal = TgcCollisionUtils.getPlaneNormal(cara.Plane);
+
+                    var movementRay = new TgcRay(retorno, targetPosition);
+                    float brutePlaneDist;
+                    Vector3 brutePlaneIntersectionPoint;
+
+                    if (!TgcCollisionUtils.intersectRayPlane(movementRay, cara.Plane, out brutePlaneDist,out brutePlaneIntersectionPoint))
+                    {
+                        continue;
+                    }
+
+                    var radioCaja = cajaDeLuz.Size.X / 2; //"radio" de una caja =P
+                    var movementRadiusLengthSq = Vector3.Multiply(targetPosition, radioCaja).LengthSq();
+
+                    if (brutePlaneDist * brutePlaneDist > movementRadiusLengthSq)
+                    {
+                        continue;
+                    }
+                    
+                    
+                }
+              
+                break;
+            }
+
             return retorno;
         }
     }
