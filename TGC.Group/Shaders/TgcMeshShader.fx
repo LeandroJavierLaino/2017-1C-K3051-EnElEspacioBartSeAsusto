@@ -77,7 +77,8 @@ struct PS_INPUT_VERTEX_COLOR
 //Pixel Shader
 float4 ps_VertexColor(PS_INPUT_VERTEX_COLOR input) : COLOR0
 {
-	return input.Color;
+	float k = (input.Color.r + input.Color.g + input.Color.b) / 3.0;
+	return input.Color * k;
 }
 
 /*

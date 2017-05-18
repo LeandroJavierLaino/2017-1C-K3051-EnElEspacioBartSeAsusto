@@ -1157,6 +1157,7 @@ namespace TGC.Group.Model
 
             if(vidaPorcentaje == 0)
             {
+                 Shader = TgcShaders.Instance.TgcMeshShader;
                 //Shader black and white
             }
 
@@ -1383,8 +1384,19 @@ namespace TGC.Group.Model
                 {
                     //TODO: poner las propiedades del shader que genera distorsiones D:
                 }
+                if (vidaPorcentaje <= 0)
+                {
+                    if (glowstick.getSelect() || lighter.getSelect())
+                    {
+                        mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gray));
+                    }
 
-                
+                    if (flashlight.getSelect())
+                    {
+                        mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gray));
+                    }
+                }
+    
                 //mesh.BoundingBox.render();
 
             }
@@ -1432,7 +1444,7 @@ namespace TGC.Group.Model
                 }
             }
 
-            lightMesh.render();
+            //lightMesh.render();
             botonEscapePod1.meshBoton.render();
             botonEscapePod2.meshBoton.render();
             botonElectricidad.meshBoton.render();
