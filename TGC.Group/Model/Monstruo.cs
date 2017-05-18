@@ -81,7 +81,7 @@ namespace TGC.Group.Model
             move_ignore_collisions(Movement);
         }
 
-        public void render() {
+        public void Render() {
             if (activo)
             {
                 mesh.UpdateMeshTransform();
@@ -94,7 +94,7 @@ namespace TGC.Group.Model
 
         
         //La lista de triggers y la de spawnPoints deben ser del mismo tamaño
-        public void init(TgcMesh mesh,/*Vector3 startPos, List<Core.BoundingVolumes.TgcBoundingSphere> triggers, List<Vector3> spawnPoints,*/ List<Vector3> recorrido) {
+        public void Init(TgcMesh mesh,/*Vector3 startPos, List<Core.BoundingVolumes.TgcBoundingSphere> triggers, List<Vector3> spawnPoints,*/ List<Vector3> recorrido) {
             this.mesh = mesh;
             sphere = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(mesh);
 			sphere.setValues(sphere.Center, 20);
@@ -144,7 +144,7 @@ namespace TGC.Group.Model
 			move(movement, obstaculos);
 			return ret;
         }
-        public void update(Vector3 targetPos, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float ElapsedTime) {
+        public void Update(Vector3 targetPos, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float ElapsedTime) {
 			if (!activo) return;
 			//chequear si veo al jugador
 			
@@ -161,19 +161,21 @@ namespace TGC.Group.Model
 			}
 			//SI LO VEO LO HAGO PELOTAAA
 			if (target_visible) { target = targetPos; chasingPlayer = true; }
-			//el objetivo pasa a ser la ultima posicion donde se vio al jugador
-			//si alcance dicha posicion y no lo veo hago teleport al proximo punto de relevancia
-			//si no lo veo voy al proximo punto
-			if (MoveTowards(target, obstaculos, ElapsedTime)) {
+			
+			if (MoveTowards(target, obstaculos, ElapsedTime) && !chasingPlayer)
+			{
 				//si llegue al proximo punto cambio de punto
 				++nextNode;
 				nextNode %= recorrido.Count();
 				target = recorrido[nextNode];
-				//si estaba persiguiendo al jugador y ya no lo veo continuo con el recorrido
-				if (chasingPlayer == true && !target_visible) {
-					chasingPlayer = false;
-					Position = recorrido[nextNode];
-				}
+				
+			}
+			//si estoy persiguiendo al jugador pero ya no lo veo y estoy cerca del ultimo punto donde lo vi
+			if (chasingPlayer == true && !target_visible && Core.Collision.TgcCollisionUtils.testPointSphere(new TgcBoundingSphere(sphere.Center,sphere.Radius+20), target))
+			{
+				//dejo de perseguir y regreso a mi recorrido
+				chasingPlayer = false;
+				Position = recorrido[nextNode];
 			}
 
 
