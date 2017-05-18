@@ -34,6 +34,8 @@ namespace TGC.Group.Model
         //Posicion
         public Vector3 Position { get { return mesh.Position; } set { mesh.Position = value; this.sphere.setCenter(value); } }
 
+        //Nodos de recorrido
+        private List<Vector2> recorrido;
 
         //Si la camara colisiona con un trigger el monstruo aparece en el spawnpoint de igual indice
         private List<Core.BoundingVolumes.TgcBoundingSphere> triggers = new List<TgcBoundingSphere>();
@@ -83,14 +85,16 @@ namespace TGC.Group.Model
         }
 
         //La lista de triggers y la de spawnPoints deben ser del mismo tamaño
-        public void init(TgcMesh mesh,Vector3 startPos, List<Core.BoundingVolumes.TgcBoundingSphere> triggers, List<Vector3> spawnPoints) {
+        public void init(TgcMesh mesh,Vector3 startPos, List<Core.BoundingVolumes.TgcBoundingSphere> triggers, List<Vector3> spawnPoints, List<Vector2> recorrido) {
             this.mesh = mesh;
             sphere = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(mesh);
 
             Position = startPos;
             this.triggers = triggers;
             this.spawnPoints = spawnPoints;
+            this.recorrido = recorrido;
             collisionManager = new SphereCollisionManager();
+
         }
 
         public void update(Vector3 targetPos, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float ElapsedTime) {

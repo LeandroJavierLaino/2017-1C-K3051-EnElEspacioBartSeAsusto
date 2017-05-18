@@ -11,7 +11,9 @@ namespace TGC.Group.Model
         /*
          * Los seteamos como queremos
          * Esto permite tener varios estados que podemos setear
-         * capturando los atributos privados del Juego
+         * con funciones del GameModel
+         * o Lambdas locales al mismo
+         * logrando acceso los atributos privados
          */
         public Action Update { get; set; }
         public Action Render { get; set; }
