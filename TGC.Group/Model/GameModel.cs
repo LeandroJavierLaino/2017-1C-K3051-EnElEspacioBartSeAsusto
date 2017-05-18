@@ -557,7 +557,7 @@ namespace TGC.Group.Model
             TgcScene.Meshes.Add(puerta28.getMesh());
 
             #endregion
-
+            /*
             #region TriggerMonstruoInit
             //Se declaran y definen las zonas que al ser ingresadas activan al monstruo
             var monsterTriggers = new List<TgcBoundingSphere>();
@@ -594,27 +594,28 @@ namespace TGC.Group.Model
             monsterTriggers.Add(new TgcBoundingSphere(new Vector3(770f, 40f + 110f, 1722f), 50f));
             monsterSpawnPoints.Add(new Vector3(766f, 30f + 110f, 1335f));
             #endregion
+            */
             #region Recorrido Monstruo
-            var recorrido = new List<Vector2> ();
-            recorrido.Add(new Vector2(944, 242));
-            recorrido.Add(new Vector2(944, 954));
-            recorrido.Add(new Vector2(618, 961));
-            recorrido.Add(new Vector2(618, 1331));
-            recorrido.Add(new Vector2(771, 1331));
-            recorrido.Add(new Vector2(771, 1708));
-            recorrido.Add(new Vector2(171, 1708));
-            recorrido.Add(new Vector2(171, 1330));
-            recorrido.Add(new Vector2(261, 1330));
-            recorrido.Add(new Vector2(258, 962));
-            recorrido.Add(new Vector2(41, 962));
-            recorrido.Add(new Vector2(41, 691));
-            recorrido.Add(new Vector2(424, 691));
-            recorrido.Add(new Vector2(424, 471));
-            recorrido.Add(new Vector2(39, 471));
-            recorrido.Add(new Vector2(39, 242));
+            var recorrido = new List<Vector3> ();
+            recorrido.Add(new Vector3(944, 30, 242 ));
+            recorrido.Add(new Vector3(944, 30, 954 ));
+            recorrido.Add(new Vector3(618, 30, 954 ));
+            recorrido.Add(new Vector3(618, 30, 1331));
+            recorrido.Add(new Vector3(771, 30, 1331));
+            recorrido.Add(new Vector3(771, 30, 1708));
+            recorrido.Add(new Vector3(171, 30, 1708));
+            recorrido.Add(new Vector3(171, 30, 1330));
+            recorrido.Add(new Vector3(261, 30, 1330));
+            recorrido.Add(new Vector3(258, 30, 962 ));
+            recorrido.Add(new Vector3(41 , 30, 962 ));
+            recorrido.Add(new Vector3(41 , 30, 691 ));
+            recorrido.Add(new Vector3(424, 30, 691 ));
+            recorrido.Add(new Vector3(424, 30, 471 ));
+            recorrido.Add(new Vector3(39 , 30, 471 ));
+            recorrido.Add(new Vector3(39 , 30, 242 ));
             #endregion
             monstruo = new Monstruo();
-            monstruo.init(MonstruoModelo.createMeshInstance("Monstruo"),new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints, recorrido);
+            monstruo.init(MonstruoModelo.createMeshInstance("Monstruo"),/*new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints,*/ recorrido);
             
             objetosColisionables.Clear();
 
