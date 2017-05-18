@@ -20,6 +20,7 @@ using TGC.Group.Model;
 using TGC.Examples.Engine2D.Spaceship.Core;
 using TGC.Core.Text;
 using TGC.Core.PortalRendering;
+using TGC.Core.Sound;
 
 namespace TGC.Group.Model
 {
@@ -155,7 +156,6 @@ namespace TGC.Group.Model
         private Boton botonElectricidad;
         private Boton botonElectricidad2;
         private Boton botonCombustible;
-        private Boton botonEscapePod1Door;
 
         private Monstruo monstruo { get; set; }
         private SphereCollisionManager collisionManager;
@@ -179,7 +179,7 @@ namespace TGC.Group.Model
         private Botiquin botiquin5;
         private Botiquin botiquin6;
 
-        //private List<Botiquin> botiquines;
+        private TgcMp3Player mp3Player;
 
         private float timer;
 
@@ -192,6 +192,8 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Init()
         {
+            mp3Player = new TgcMp3Player();
+
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
@@ -206,8 +208,6 @@ namespace TGC.Group.Model
             botonjugar.Position = new Vector2(100, 200);
             menu.pushButton(botonjugar);
             #endregion
-
-
 
             #region HUD init
             drawer2D = new Drawer2D();
@@ -265,6 +265,7 @@ namespace TGC.Group.Model
             StateMenu.Update = UpdateMenu;
             StateMenu.Render = RenderMenu;
             #endregion
+
             #region AccionesPausa
             StatePause = new GameState();
             StatePause.Update = UpdatePause;
@@ -397,7 +398,6 @@ namespace TGC.Group.Model
             */
 
             //Carga de puerta y de enemigo
-            PuertaModelo = loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0];
 
             MonstruoModelo = loader.loadSceneFromFile(this.MediaDir + "\\Monstruo-TgcScene.xml").Meshes[0];
 
@@ -405,30 +405,22 @@ namespace TGC.Group.Model
             puerta1 = new Puerta();
             puerta1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta1.changePosition(new Vector3(89f, 32f, 275f));
-            puerta1.setPosicionOriginal(new Vector3(89f, 32f, 275f));
             TgcScene.Meshes.Add(puerta1.getMesh());
-           
-            //TgcPortalRenderingPortal puerta1Portal = new TgcPortalRenderingPortal("puerta1Portal", puerta1.getMesh().BoundingBox);
-            //TgcScene.PortalRendering.Portals.Add(puerta1Portal);
 
             puerta2 = new Puerta();
             puerta2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta2.changePosition(new Vector3(439f, 32f, 203f));
-            puerta2.setPosicionOriginal(new Vector3(439f, 32f, 203f));
             TgcScene.Meshes.Add(puerta2.getMesh());
-            //TgcScene.PortalRendering.Portals.Add(new Core.PortalRendering.TgcPortalRenderingPortal("puerta2", puerta2.getMesh().BoundingBox));
-     
-            puerta3 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta3.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta3.getMesh().move(new Vector3(201f, 32f, 1570f));
-            puerta3.getMesh().rotateY(FastMath.PI_HALF);
+
+            puerta3 = new Puerta();
+            puerta3.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta3.getMesh().move(new Vector3(201f-15f, 32f, 1570f-22f));
             puerta3.getMesh().UpdateMeshTransform();
             TgcScene.Meshes.Add(puerta3.getMesh());
 
-            puerta4 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta4.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta4.getMesh().move(new Vector3(452f, 32f, 1221f));
-            puerta4.getMesh().rotateY(FastMath.PI_HALF);
+            puerta4 = new Puerta();
+            puerta4.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta4.getMesh().move(new Vector3(452f-15f, 32f, 1221f-22f));
             puerta4.getMesh().UpdateMeshTransform();
             TgcScene.Meshes.Add(puerta4.getMesh());
 
@@ -437,53 +429,44 @@ namespace TGC.Group.Model
             puerta5.changePosition(new Vector3(459f, 32f, 1675f));
             TgcScene.Meshes.Add(puerta5.getMesh());
 
-            puerta6 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta6.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta6.getMesh().move(new Vector3(734f, 32f, 1570f));
-            puerta6.getMesh().rotateY(FastMath.PI_HALF);
+            puerta6 = new Puerta();
+            puerta6.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta6.getMesh().move(new Vector3(734f-15f, 32f, 1570f-22f));
             puerta6.getMesh().UpdateMeshTransform();
             TgcScene.Meshes.Add(puerta6.getMesh());
 
-            puerta7 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta7.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta7.getMesh().move(new Vector3(915f, 32f, 751f));
-            puerta7.getMesh().rotateY(FastMath.PI_HALF);
+            puerta7 = new Puerta();
+            puerta7.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta7.getMesh().move(new Vector3(915f-20f, 32f, 751f-22f));
             puerta7.getMesh().UpdateMeshTransform();
-            puerta7.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta7.getMesh());
-
-            puerta8 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta8.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta8.getMesh().move(new Vector3(915f, 32f, 751f));
-            puerta8.getMesh().rotateY(FastMath.PI_HALF);
+            
+            puerta8 = new Puerta();
+            puerta8.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta8.getMesh().move(new Vector3(695f-20f, 32f, 578f));
             puerta8.getMesh().UpdateMeshTransform();
-            puerta8.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta8.getMesh());
-
+            
             puerta9 = new Puerta();
             puerta9.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta9.changePosition(new Vector3(469f, 32f, 921f));
             TgcScene.Meshes.Add(puerta9.getMesh());
-
-            puerta10 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta10.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta10.getMesh().move(new Vector3(915f, 32f, 751f));
-            puerta10.getMesh().rotateY(FastMath.PI_HALF);
+            
+            puerta10 = new Puerta();
+            puerta10.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta10.getMesh().move(new Vector3(695f-20f, 32f, 886f));
             puerta10.getMesh().UpdateMeshTransform();
-            puerta10.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta10.getMesh());
-
+            
             puerta11 = new Puerta();
             puerta11.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta11.changePosition(new Vector3(399f, 32f, 724f));
             TgcScene.Meshes.Add(puerta11.getMesh());
 
-            puerta12 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta12.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta12.getMesh().move(new Vector3(454f, 32f, 331f));
-            puerta12.getMesh().rotateY(FastMath.PI_HALF);
+            puerta12 = new Puerta();
+            puerta12.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta12.getMesh().move(new Vector3(454f-15f, 32f, 331f-22f));
             puerta12.getMesh().UpdateMeshTransform();
-            puerta12.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta12.getMesh());
 
             puerta13 = new Puerta();
@@ -506,20 +489,16 @@ namespace TGC.Group.Model
             puerta16.changePosition(new Vector3(439f, 142f, 203f));
             TgcScene.Meshes.Add(puerta16.getMesh());
 
-            puerta17 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta17.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta17.getMesh().move(new Vector3(201f, 142f, 1570f));
-            puerta17.getMesh().rotateY(FastMath.PI_HALF);
+            puerta17 = new Puerta();
+            puerta17.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta17.getMesh().move(new Vector3(201f-15f, 142f, 1570f-22f));
             puerta17.getMesh().UpdateMeshTransform();
-            puerta17.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta17.getMesh());
 
-            puerta18 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta18.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta18.getMesh().move(new Vector3(452f, 142f, 1221f));
-            puerta18.getMesh().rotateY(FastMath.PI_HALF);
+            puerta18 = new Puerta();
+            puerta18.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta18.getMesh().move(new Vector3(452f-15f, 142f, 1221f-22f));
             puerta18.getMesh().UpdateMeshTransform();
-            puerta18.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta18.getMesh());
 
             puerta19 = new Puerta();
@@ -527,28 +506,22 @@ namespace TGC.Group.Model
             puerta19.changePosition(new Vector3(459f, 142f, 1675f));
             TgcScene.Meshes.Add(puerta19.getMesh());
 
-            puerta20 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta20.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta20.getMesh().move(new Vector3(734f, 142f, 1570f));
-            puerta20.getMesh().rotateY(FastMath.PI_HALF);
+            puerta20 = new Puerta();
+            puerta20.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta20.getMesh().move(new Vector3(734f-15f, 142f, 1570f-22f));
             puerta20.getMesh().UpdateMeshTransform();
-            puerta20.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta20.getMesh());
 
-            puerta21 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta21.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta21.getMesh().move(new Vector3(915f, 142f, 751f));
-            puerta21.getMesh().rotateY(FastMath.PI_HALF);
+            puerta21 = new Puerta();
+            puerta21.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta21.getMesh().move(new Vector3(915f-15f, 142f, 751f-22f));
             puerta21.getMesh().UpdateMeshTransform();
-            puerta21.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta21.getMesh());
 
-            puerta22 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta22.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta22.getMesh().move(new Vector3(695f, 142f, 600f));
-            puerta22.getMesh().rotateY(FastMath.PI_HALF);
+            puerta22 = new Puerta();
+            puerta22.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta22.getMesh().move(new Vector3(695f-15f, 142f, 600f-22f));
             puerta22.getMesh().UpdateMeshTransform();
-            puerta22.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta22.getMesh());
 
             puerta23 = new Puerta();
@@ -556,12 +529,10 @@ namespace TGC.Group.Model
             puerta23.changePosition(new Vector3(469f, 142f, 921f));
             TgcScene.Meshes.Add(puerta23.getMesh());
 
-            puerta24 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta24.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta24.getMesh().move(new Vector3(695f, 142f, 912f));
-            puerta24.getMesh().rotateY(FastMath.PI_HALF);
+            puerta24 = new Puerta();
+            puerta24.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta24.getMesh().move(new Vector3(695f-15f, 142f, 912f-22f));
             puerta24.getMesh().UpdateMeshTransform();
-            puerta24.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta24.getMesh());
 
             puerta25 = new Puerta();
@@ -569,12 +540,10 @@ namespace TGC.Group.Model
             puerta25.changePosition(new Vector3(399f, 142f, 724f));
             TgcScene.Meshes.Add(puerta25.getMesh());
 
-            puerta26 = new Puerta();//estas puertas necesitan un modelo rotado sino no funcionan bien las coliciones
-            puerta26.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
-            puerta26.getMesh().move(new Vector3(454f, 142f, 331f));
-            puerta26.getMesh().rotateY(FastMath.PI_HALF);
+            puerta26 = new Puerta();
+            puerta26.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
+            puerta26.getMesh().move(new Vector3(454f-15f, 142f, 331f-22f));
             puerta26.getMesh().UpdateMeshTransform();
-            puerta26.getMesh().createBoundingBox();
             TgcScene.Meshes.Add(puerta26.getMesh());
 
             puerta27 = new Puerta();
@@ -685,6 +654,7 @@ namespace TGC.Group.Model
             textoDeLaMuerte.Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2);
             textoDeLaMuerte.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
             #endregion
+
             #region Texto de Pausa
             textoPausa = new TgcText2D();
             textoPausa.Text = "PAUSA";
@@ -698,43 +668,32 @@ namespace TGC.Group.Model
             botonEscapePod1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonEscapePod1.meshBoton.Position = new Vector3(440, 25, 30);
             botonEscapePod1.changeColor(Color.Red);
-            //TgcScene.Meshes.Add(botonEscapePod1.meshBoton);
 
             botonEscapePod2 = new Boton();
             botonEscapePod2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonEscapePod2.meshBoton.Position = new Vector3(440, 135, 30);
             botonEscapePod2.changeColor(Color.Red);
-            //TgcScene.Meshes.Add(botonEscapePod2.meshBoton);
 
             botonOxigeno = new Boton();
             botonOxigeno.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonOxigeno.meshBoton.Position = new Vector3(305, 135, 730);
             botonOxigeno.changeColor(Color.Red);
-            //TgcScene.Meshes.Add(botonOxigeno.meshBoton);
 
             botonElectricidad = new Boton();
             botonElectricidad.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonElectricidad.meshBoton.Position = new Vector3(490, 25, 1520);
             botonElectricidad.changeColor(Color.Red);
-            //TgcScene.Meshes.Add(botonElectricidad.meshBoton);
 
             botonElectricidad2 = new Boton();
             botonElectricidad2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonElectricidad2.meshBoton.Position = new Vector3(490, 135, 1520);
             botonElectricidad2.changeColor(Color.Red);
-            //TgcScene.Meshes.Add(botonElectricidad2.meshBoton);
 
             botonCombustible = new Boton();
             botonCombustible.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonCombustible.meshBoton.Position = new Vector3(550, 25, 280);
             botonCombustible.changeColor(Color.Red);
-            //TgcScene.Meshes.Add(botonCombustible.meshBoton);
 
-            botonEscapePod1Door = new Boton();
-            botonEscapePod1Door.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
-            botonEscapePod1Door.meshBoton.Position = new Vector3(504, 25, 190);
-            botonEscapePod1Door.changeColor(Color.Red);
-            TgcScene.Meshes.Add(botonEscapePod1Door.meshBoton);
             #endregion
 
             #region LucesInit
@@ -812,7 +771,10 @@ namespace TGC.Group.Model
             flashlightHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, D3DDevice.Instance.Height - 400f);
             flashlightHand.Scaling = new Vector2(0.167f, 0.125f);
             #endregion
-
+            //Musica (Pero anda en rebelde no quiere reproducir)
+            //mp3Player.closeFile();
+            //mp3Player.FileName = mp3Player.NombreLargo(this.MediaDir + "..\\Mastermind.mp3");
+            
             #region Logica Luces
             //Switch entre glowstick(F), encendedor(G) y linterna(H)
             if (Input.keyPressed(Key.F) && vidaPorcentaje > 0)
@@ -924,23 +886,37 @@ namespace TGC.Group.Model
 
             if (Input.keyPressed(Key.E))
             {
+                //Abre y cierra las puertas estando cerca del umbral de la puerta
                 puerta1.abrirPuerta(Camara.Position);
                 puerta2.abrirPuerta(Camara.Position);
                 puerta3.abrirPuerta(Camara.Position);
                 puerta4.abrirPuerta(Camara.Position);
                 puerta5.abrirPuerta(Camara.Position);
                 puerta6.abrirPuerta(Camara.Position);
-                //La misma logica para todasssssss las puertas U__________U
+                puerta7.abrirPuerta(Camara.Position);
+                puerta8.abrirPuerta(Camara.Position);
+                puerta9.abrirPuerta(Camara.Position);
+                puerta10.abrirPuerta(Camara.Position);
+                puerta11.abrirPuerta(Camara.Position);
+                puerta12.abrirPuerta(Camara.Position);
+                puerta13.abrirPuerta(Camara.Position);
+                puerta14.abrirPuerta(Camara.Position);
+                puerta15.abrirPuerta(Camara.Position);
+                puerta16.abrirPuerta(Camara.Position);
+                puerta17.abrirPuerta(Camara.Position);
+                puerta18.abrirPuerta(Camara.Position);
+                puerta19.abrirPuerta(Camara.Position);
+                puerta20.abrirPuerta(Camara.Position);
+                puerta21.abrirPuerta(Camara.Position);
+                puerta22.abrirPuerta(Camara.Position);
+                puerta23.abrirPuerta(Camara.Position);
+                puerta24.abrirPuerta(Camara.Position);
+                puerta25.abrirPuerta(Camara.Position);
+                puerta26.abrirPuerta(Camara.Position);
+                puerta27.abrirPuerta(Camara.Position);
+                puerta28.abrirPuerta(Camara.Position);
             }
 
-            //botones de las puertas
-            if (Input.keyPressed(Key.E) && distance(Camara.Position, botonEscapePod1Door.meshBoton.Position) < 55)
-            {
-                //puerta1.cerrarPuerta(new Vector3(89f, 32f, 275f));
-                //puerta1.changePosition(new Vector3(89f, 32f, 275f));
-                puerta1.getMesh().Position = new Vector3(89f, 32f, 275f);
-                puerta1.getMesh().UpdateMeshTransform();
-            }
             #endregion
 
             #region Accion Botiquines
@@ -1095,7 +1071,7 @@ namespace TGC.Group.Model
         public void RenderGame() {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             timer += ElapsedTime;
-
+            //mp3Player.play(true);
             drawer2D.BeginDrawSprite();
             drawer2D.DrawSprite(vida);
             drawer2D.DrawSprite(stamina);
@@ -1158,6 +1134,11 @@ namespace TGC.Group.Model
             if (glowstick.getEnergia() == 0 && System.Math.Truncate(lighter.getEnergia()) == 0 && System.Math.Truncate(flashlight.getEnergia()) == 0)
             {
                 //TODO: Poner un Shader que distorsione todo D:
+            }
+
+            if(vidaPorcentaje == 0)
+            {
+                //Shader black and white
             }
 
             playerPos.Position = Camara.Position;
