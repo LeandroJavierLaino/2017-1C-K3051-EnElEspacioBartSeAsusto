@@ -80,16 +80,17 @@ namespace TGC.Group.Model
         Menu.Menu menu;
 		Menu.Menu menuHowToPlay;
 
-        private TgcText2D textoPausa;
-        #endregion
+		private TgcText2D textoPausa;
+		private TgcText2D textoHowToPlay;
+		#endregion
 
 
 
-        #region HUD
-        //HUD
+		#region HUD
+		//HUD
 
-        //Dibujador o dibujante??? 
-        private Drawer2D drawer2D;
+		//Dibujador o dibujante??? 
+		private Drawer2D drawer2D;
         
         //Vida
         private CustomSprite vida;
@@ -234,7 +235,9 @@ namespace TGC.Group.Model
 				var botonjugar = new Menu.Button("Jugar", Input, boton_normal, boton_mouseover,
 					() => { this.CurrentState = StateGame; }
 				, Fonts.Families[0]);
-				botonjugar.Position = new Vector2(100, 200);
+				
+				botonjugar.Position = new Vector2(100, D3DDevice.Instance.Height / 4);
+				
 				menuHowToPlay.pushButton(botonjugar);
 			}
 			#endregion
@@ -708,18 +711,30 @@ namespace TGC.Group.Model
             textoDeLaMuerte.Color = Color.Red;
             textoDeLaMuerte.Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2);
             textoDeLaMuerte.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
-            #endregion
+			#endregion
 
-            #region Texto de Pausa
-            textoPausa = new TgcText2D();
-            textoPausa.Text = "PAUSA";
-            textoPausa.Color = Color.Gray;
-            textoPausa.Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2);
-            textoPausa.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
-            #endregion
-
-            #region BotonesInit
-            botonEscapePod1 = new Boton();           
+			#region Texto de Pausa
+			textoPausa = new TgcText2D()
+			{
+				Text = "PAUSA",
+				Color = Color.Gray,
+				Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2)
+			};
+			textoPausa.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
+			#endregion
+			#region Texto de ComoJugar
+			textoHowToPlay = new TgcText2D()
+			{
+				Text = "Hay un monstruo en el edificio! No sabemos qué es y no importa cómo llegó. La prioridad es salir con vida. Arreglándotelas con escasa iluminación, deberás pulsar los varios botones rojos que se encuentran para poder escapar. Pero ojo, que no te agarre el cuco porque sos boleta!!! Te movés con WASD, con el mouse manejás la cámara.Con E abrís puertas y apretás botones.Con FGH aternás entre tus diferentes recursos de iluminación.Con Shift corrés.",
+				Color = Color.White,
+				Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2),
+				Size = new Size((int)(D3DDevice.Instance.Width * (5f / 6f)), D3DDevice.Instance.Height),
+				Align = TgcText2D.TextAlign.LEFT
+			};
+			textoHowToPlay.changeFont(new System.Drawing.Font("TimesNewRoman", 25));
+			#endregion
+			#region BotonesInit
+			botonEscapePod1 = new Boton();           
             botonEscapePod1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonEscapePod1.meshBoton.Position = new Vector3(440, 25, 30);
             botonEscapePod1.changeColor(Color.Red);
@@ -1488,6 +1503,8 @@ namespace TGC.Group.Model
         }
 		public void RenderHowToPlay() {
 			menuHowToPlay.Render(ElapsedTime, this.drawer2D);
+			textoHowToPlay.render();
+
 		}
         public void RenderMenu() {
             menu.Render(ElapsedTime, this.drawer2D);
