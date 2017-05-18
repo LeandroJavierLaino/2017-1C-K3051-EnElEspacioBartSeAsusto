@@ -13,13 +13,7 @@ namespace TGC.Group.Model
     class Puerta
     {
         private TgcMesh modeloPuerta { get; set; }
-        private Vector3 posicionOriginal;
         private bool puertaAbierta = false;
-
-        public void setPosicionOriginal(Vector3 unaPosicion)
-        {
-            posicionOriginal = unaPosicion;
-        }
 
         public void changePosition(Vector3 newPosition)
         {
@@ -44,21 +38,19 @@ namespace TGC.Group.Model
 
         internal void abrirPuerta(Vector3 position)
         {
-            if ( (distance(position, modeloPuerta.Position)) < 55)
+            if ( (distance(position, modeloPuerta.Position)) < 55 && !puertaAbierta)
             {
                 changePosition(new Vector3(modeloPuerta.Position.X, 210f + modeloPuerta.Position.Y, modeloPuerta.Position.Z));
                 puertaAbierta = !puertaAbierta;
             }
-        }
-
-        public void cerrarPuerta(bool cond)
-        {
-            if (modeloPuerta.Position != posicionOriginal && puertaAbierta)
+            else
             {
-                changePosition(new Vector3(modeloPuerta.Position.X, modeloPuerta.Position.Y - 210f, modeloPuerta.Position.Z));
-                puertaAbierta = !puertaAbierta;
+                if ((distance(position, modeloPuerta.Position)) < 255 && puertaAbierta)
+                {
+                    changePosition(new Vector3(modeloPuerta.Position.X, modeloPuerta.Position.Y - 210f, modeloPuerta.Position.Z));
+                    puertaAbierta = !puertaAbierta;
+                }
             }
-            
         }
 
         public float distance(Vector3 a, Vector3 b)
