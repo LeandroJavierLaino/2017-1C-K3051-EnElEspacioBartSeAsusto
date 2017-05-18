@@ -46,10 +46,14 @@ namespace TGC.Group.Model
 
         private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionables = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
 
+		//Coleccion de fuentes privadas (se cargan desde archivos)
+		private System.Drawing.Text.PrivateFontCollection Fonts;
+
         //Estados del juego
-        private GameState StateJuego;
+        private GameState StateGame;
         private GameState StateMenu;
         private GameState StatePause;
+		private GameState StateHowToPlay;
 
         private GameState CurrentState;
 
@@ -74,6 +78,7 @@ namespace TGC.Group.Model
 
         //Redundancia FTW
         Menu.Menu menu;
+		Menu.Menu menuHowToPlay;
 
         private TgcText2D textoPausa;
         #endregion
@@ -183,34 +188,59 @@ namespace TGC.Group.Model
 
         private float timer;
 
-        #region Init
-        /// <summary>
-        ///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo.
-        ///     Escribir aquí todo el código de inicialización: cargar modelos, texturas, estructuras de optimización, todo
-        ///     procesamiento que podemos pre calcular para nuestro juego.
-        ///     Borrar el codigo ejemplo no utilizado.
-        /// </summary>
-        public override void Init()
-        {
-            mp3Player = new TgcMp3Player();
+		#region Init
+		/// <summary>
+		///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo.
+		///     Escribir aquí todo el código de inicialización: cargar modelos, texturas, estructuras de optimización, todo
+		///     procesamiento que podemos pre calcular para nuestro juego.
+		///     Borrar el codigo ejemplo no utilizado.
+		/// </summary>
+		public override void Init()
+		{
+			mp3Player = new TgcMp3Player();
 
-            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
-            var d3dDevice = D3DDevice.Instance.Device;
+			#region Fonts
+			Fonts = new System.Drawing.Text.PrivateFontCollection();
+			Fonts.AddFontFile(MediaDir + "\\Fonts\\murderous desire DEMO.otf");
+			#endregion
 
-            #region Init Menu
-            menu = new Menu.Menu(Input, "En el espacio Bart se asustó");
-            boton_mouseover = new CustomBitmap(MediaDir + "\\Textures\\botonMouseover.png", D3DDevice.Instance.Device);
-            boton_normal = new CustomBitmap(MediaDir + "\\Textures\\botonNormal.png", D3DDevice.Instance.Device);
+			Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
+			var d3dDevice = D3DDevice.Instance.Device;
 
-            var botonjugar = new Menu.Button("Jugar",Input, boton_normal, boton_mouseover,
-                () => { this.CurrentState = StateJuego; }
-            );
-            botonjugar.Position = new Vector2(100, 200);
-            menu.pushButton(botonjugar);
-            #endregion
+			#region Init Menu
+			{ 
+				menu = new Menu.Menu(Input, "En el espacio Bart se asustó", Fonts.Families[0]);
+				boton_mouseover = new CustomBitmap(MediaDir + "\\Textures\\botonMouseover.png", D3DDevice.Instance.Device);
+				boton_normal = new CustomBitmap(MediaDir + "\\Textures\\botonNormal.png", D3DDevice.Instance.Device);
 
-            #region HUD init
-            drawer2D = new Drawer2D();
+				var botonJugar = new Menu.Button("Jugar", Input, boton_normal, boton_mouseover,
+					() => { this.CurrentState = StateGame; }
+				, Fonts.Families[0]);
+				botonJugar.Position = new Vector2(100, 200);
+				menu.pushButton(botonJugar);
+
+				var botonComoJugar = new Menu.Button("Como Jugar", Input, boton_normal, boton_mouseover,
+					() => { this.CurrentState = StateHowToPlay; }
+				, Fonts.Families[0]);
+				botonComoJugar.Position = new Vector2(100, 275);
+				menu.pushButton(botonComoJugar);
+			}
+
+			{ 
+				menuHowToPlay = new Menu.Menu(Input, "Cómo Jugar", Fonts.Families[0]);
+				boton_mouseover = new CustomBitmap(MediaDir + "\\Textures\\botonMouseover.png", D3DDevice.Instance.Device);
+				boton_normal = new CustomBitmap(MediaDir + "\\Textures\\botonNormal.png", D3DDevice.Instance.Device);
+
+				var botonjugar = new Menu.Button("Jugar", Input, boton_normal, boton_mouseover,
+					() => { this.CurrentState = StateGame; }
+				, Fonts.Families[0]);
+				botonjugar.Position = new Vector2(100, 200);
+				menuHowToPlay.pushButton(botonjugar);
+			}
+			#endregion
+
+			#region HUD init
+			drawer2D = new Drawer2D();
             vida = new CustomSprite();
             vida.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\vidaRed.jpg", D3DDevice.Instance.Device);
 
@@ -255,19 +285,25 @@ namespace TGC.Group.Model
 
             //Seteamos las acciones que se realizan dependiendo del estado del juego
             #region AccionesJuego
-            StateJuego = new GameState();
-            StateJuego.Update = UpdateGame;
-            StateJuego.Render = RenderGame;
+            StateGame = new GameState();
+            StateGame.Update = UpdateGame;
+            StateGame.Render = RenderGame;
             #endregion
 
             #region AccionesMenu
             StateMenu = new GameState();
             StateMenu.Update = UpdateMenu;
             StateMenu.Render = RenderMenu;
-            #endregion
+			#endregion
 
-            #region AccionesPausa
-            StatePause = new GameState();
+			#region AccionesHowToPlay
+			StateHowToPlay = new GameState();
+			StateHowToPlay.Update = UpdateHowToPlay;
+			StateHowToPlay.Render = RenderHowToPlay;
+			#endregion
+
+			#region AccionesPausa
+			StatePause = new GameState();
             StatePause.Update = UpdatePause;
             StatePause.Render = RenderPause;
             #endregion
@@ -615,7 +651,7 @@ namespace TGC.Group.Model
             recorrido.Add(new Vector3(39 , 30, 242 ));
             #endregion
             monstruo = new Monstruo();
-            monstruo.init(MonstruoModelo.createMeshInstance("Monstruo"),/*new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints,*/ recorrido);
+            monstruo.Init(MonstruoModelo.createMeshInstance("Monstruo"),/*new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints,*/ recorrido);
             
             objetosColisionables.Clear();
 
@@ -1059,7 +1095,7 @@ namespace TGC.Group.Model
             }
 
             //Logica del monstruo
-            monstruo.update(Camara.Position, objetosColisionables, ElapsedTime);
+            monstruo.Update(Camara.Position, objetosColisionables, ElapsedTime);
             #endregion
 
             var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
@@ -1071,8 +1107,10 @@ namespace TGC.Group.Model
 
         public void UpdatePause()
         {
-            if (Input.keyPressed(Key.Return)) CurrentState=StateJuego;
+            if (Input.keyPressed(Key.Return)) CurrentState=StateGame;
         }
+
+		public void UpdateHowToPlay() { menuHowToPlay.Update(ElapsedTime); }
         #region Render
         /// <summary>
         ///     Se llama cada vez que hay que refrescar la pantalla.
@@ -1398,7 +1436,7 @@ namespace TGC.Group.Model
 
             }
 
-            monstruo.render();
+            monstruo.Render();
 
             //Dibuja un texto por pantalla
             TGC.Examples.Camara.TgcFpsCamera camaraPrint = (TGC.Examples.Camara.TgcFpsCamera)Camara;
@@ -1457,6 +1495,9 @@ namespace TGC.Group.Model
             RenderGame();
             textoPausa.render();
         }
+		public void RenderHowToPlay() {
+			menuHowToPlay.Render(ElapsedTime, this.drawer2D);
+		}
         public void RenderMenu() {
             menu.Render(ElapsedTime, this.drawer2D);
         }

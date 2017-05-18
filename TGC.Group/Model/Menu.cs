@@ -24,7 +24,6 @@ namespace TGC.Group.Model.Menu
 
     class Menu : MenuObject
     {
-        Drawer2D drawer;
         String Titulo;
         List<Button> mBotones;
         TgcText2D drawText;
@@ -42,11 +41,12 @@ namespace TGC.Group.Model.Menu
 
         public void pushButton(Button button) { mBotones.Add(button); }
         public void removeButton(Button button) { mBotones.Remove(button); }
-        public Menu(TgcD3dInput Input,String Titulo) : base(Input) {
+        public Menu(TgcD3dInput Input,String Titulo, FontFamily fontFamily) : base(Input) {
             this.mBotones = new List<Button>();
             this.Titulo = Titulo;
             this.drawText = new TgcText2D();
-            this.drawText.changeFont(new Font("TimesNewRoman", 50, FontStyle.Regular));
+            this.drawText.changeFont(new Font(fontFamily, 50, FontStyle.Regular));
+			
         }
 
     }
@@ -101,7 +101,7 @@ namespace TGC.Group.Model.Menu
         #endregion
 
         
-        public Button(String Name, TgcD3dInput Input, CustomBitmap normal, CustomBitmap mouseover, Action Callback) : base(Input) {
+        public Button(String Name, TgcD3dInput Input, CustomBitmap normal, CustomBitmap mouseover, Action Callback, FontFamily fontFamily) : base(Input) {
             this.nombre = Name;
             this.sprite_normal = normal;
             this.sprite_mouseover = mouseover;
@@ -111,7 +111,7 @@ namespace TGC.Group.Model.Menu
             this.Callback = Callback;
             drawText = new TgcText2D();
             drawText.Align = TgcText2D.TextAlign.LEFT;
-            drawText.changeFont(new Font("TimesNewRoman", 25, FontStyle.Regular));
+            drawText.changeFont(new Font(fontFamily, 25, FontStyle.Regular));
             
         }
     }
