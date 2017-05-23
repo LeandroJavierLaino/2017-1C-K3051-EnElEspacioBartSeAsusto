@@ -210,7 +210,7 @@ namespace TGC.Examples.Camara
             if (!Input.keyDown(Key.W) || !Input.keyDown(Key.A) || !Input.keyDown(Key.D) || !Input.keyDown(Key.S) || !Input.keyDown(Key.Space) )
             {
                 newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                moveVector += new Vector3(0, newPosition.Y*1.5f, 0);
+                moveVector += new Vector3(0, newPosition.Y, 0);
             }
 
             //Jump
@@ -220,18 +220,18 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, newPosition.Y, 0) ;
+                    moveVector += new Vector3(0, newPosition.Y + 3*JumpSpeed, 0) ;
                 }
                 else
                 {
                     moveVector += new Vector3(0, 1, 0) * JumpSpeed;
                 }               
             }
-
+            /*
             if(sphereCamara.Center.Y < 55)
             { 
                 sphereCamara.setCenter(new Vector3(sphereCamara.Center.X,sphereCamara.Center.Y+1,sphereCamara.Center.Z));
-            }
+            }*/
 
             //Crouch
             if (Input.keyDown(Key.LeftControl))

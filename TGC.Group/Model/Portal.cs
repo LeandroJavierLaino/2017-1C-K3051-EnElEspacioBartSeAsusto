@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TGC.Core.BoundingVolumes;
 using TGC.Core.Geometry;
 
 namespace TGC.Group.Model
@@ -21,6 +22,11 @@ namespace TGC.Group.Model
             portal.Size = size;
             celdaA = cellA;
             celdaB = cellB;
+        }
+
+        public TgcBoundingAxisAlignBox getBoundingBox()
+        {
+            return portal.BoundingBox;
         }
 
         public void render(Vector3 positionPlayer)

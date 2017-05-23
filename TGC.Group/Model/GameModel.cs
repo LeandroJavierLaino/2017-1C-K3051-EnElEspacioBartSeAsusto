@@ -202,7 +202,8 @@ namespace TGC.Group.Model
 
 			#region Fonts
 			Fonts = new System.Drawing.Text.PrivateFontCollection();
-			Fonts.AddFontFile(MediaDir + "\\Fonts\\murderous desire DEMO.otf");
+            Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
+            //Fonts.AddFontFile(MediaDir + "\\Fonts\\murderous desire DEMO.otf");//esta fuente no funca en la maquina del laburo pero es la que va xD
 			#endregion
 
 			Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
@@ -316,8 +317,9 @@ namespace TGC.Group.Model
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
-            
+
             #region Portal Rendering
+
             float centro1Floor = 50;
             float altura = 100;
             float centro2Floor = 160;
@@ -326,18 +328,26 @@ namespace TGC.Group.Model
 
             Celda celdaEscapePod1 = new Celda();
             celdaEscapePod1.establecerCelda(new Vector3(210,altura,180), new Vector3(460,centro1Floor,105));//Al fin posicion y dimension OK 
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[0]);
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[211]);
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[212]);
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[213]);
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[214]);
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[215]);
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[216]);
+            celdaEscapePod1.agregarMesh(TgcScene.Meshes[217]);
             //Meshes
-            celdasEscena.Add(celdaEscapePod1);
 
             Celda celdaOne1Floor = new Celda();
             celdaOne1Floor.establecerCelda(new Vector3(970, altura, 330), new Vector3(0,centro1Floor,0));//falta centro XZ
             //Meshes 
-            celdasEscena.Add(celdaOne1Floor);
             
             Portal portalEscapeOne = new Portal();
             portalEscapeOne.establecerPortal(new Vector3(60, altura, 10), new Vector3(0,centro1Floor,0), celdaEscapePod1, celdaOne1Floor);
+            celdaEscapePod1.agregarPortal(portalEscapeOne);
+            celdaOne1Floor.agregarPortal(portalEscapeOne);
             portalesEscena.Add(portalEscapeOne);
+            celdasEscena.Add(celdaEscapePod1);
+            celdasEscena.Add(celdaOne1Floor);
 
             Celda celdaTwo1Floor = new Celda();
             celdaTwo1Floor.establecerCelda(new Vector3(550,altura,450),new Vector3(0,centro1Floor,0));
@@ -424,6 +434,8 @@ namespace TGC.Group.Model
             //Meshes
             celdasEscena.Add(celdaFive2Floor);
             #endregion
+
+            //se recalculan las normales
             foreach (var mesh in TgcScene.Meshes)
             {
                 int[] adj = new int[mesh.D3dMesh.NumberFaces * 3];
@@ -1169,11 +1181,12 @@ namespace TGC.Group.Model
 				//TODO: Poner un Shader que distorsione todo D:
 			}
 
+            /*
 			if (vidaPorcentaje <= 0)
 			{
 				Shader = TgcShaders.Instance.TgcMeshShader;
 				//Shader black and white
-			}
+			}*/
 
 			playerPos.Position = Camara.Position;
 
@@ -1509,12 +1522,12 @@ namespace TGC.Group.Model
             {
                 //TODO: Poner un Shader que distorsione todo D:
             }
-
+            /*
             if(vidaPorcentaje == 0)
             {
                  Shader = TgcShaders.loadEffect(ShadersDir + "\\GrayShader.fx");
                 //Shader black and white
-            }
+            }*/
 
             playerPos.Position = Camara.Position;
 
@@ -1523,8 +1536,6 @@ namespace TGC.Group.Model
                 mesh.Effect = Shader;
                 mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(mesh.RenderType);
             }
-
-            //TgcScene.PortalRendering.updateVisibility(Camara.Position, Frustum);
 
             //Renderizar meshes
             foreach (var mesh in TgcScene.Meshes)
@@ -1763,15 +1774,21 @@ namespace TGC.Group.Model
                 + " L activa colisiones de la camara"
             , 0, 30, Color.OrangeRed);
 
+            //render por "Portal" Rendering
+            /*
+            foreach (var celda in celdasEscena)
+            {
+                celda.render(Camara.Position,Camara.LookAt);
+            }
+            */
+            
+            //Render con Frustum Culling
             foreach(var mesh in TgcScene.Meshes)
             {
                 //Renderizar modelo con FrustumCulling
                 var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, mesh.BoundingBox);
                 if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
                 {
-
-                    //celdaEscapePod1.render(Camara.Position);
-                    /**/
                     if (mesh.Position.Y < Camara.Position.Y + 60f)
                     {
                         mesh.render();
@@ -1782,10 +1799,10 @@ namespace TGC.Group.Model
                         {
                             mesh.render();
                         }
-                    }/**/
+                    }
 
                 }
-            }
+             }
 
             //lightMesh.render();
             botonEscapePod1.meshBoton.render();

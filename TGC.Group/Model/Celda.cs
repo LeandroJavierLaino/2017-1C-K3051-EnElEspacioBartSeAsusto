@@ -37,7 +37,7 @@ namespace TGC.Group.Model
             return celda.BoundingBox.PMax.X >= positionPlayer.X && celda.BoundingBox.PMax.Y >= positionPlayer.Y && celda.BoundingBox.PMax.Z >= positionPlayer.Z && celda.BoundingBox.PMin.X <= positionPlayer.X && celda.BoundingBox.PMin.Y <= positionPlayer.Y && celda.BoundingBox.PMin.Z <= positionPlayer.Z;
         }
 
-        public void render(Vector3 positionPlayer)
+        public void render(Vector3 positionPlayer,Vector3 vistaPlayer)
         {
             if (estaJugadorEnCelda(positionPlayer))
             {
@@ -45,18 +45,28 @@ namespace TGC.Group.Model
                 {
                     mesh.render();
                 }
+                TgcRay rayoDeVista = new TgcRay(positionPlayer,vistaPlayer);
+
+                Vector3 p;
+                List<Portal> portalesCandidatos = new List<Portal>();
 
                 foreach (var portal in portales)
                 {
-                    portal.render(positionPlayer);
+                    if(Core.Collision.TgcCollisionUtils.intersectRayAABB(rayoDeVista, portal.getBoundingBox() ,out p))
+                    {
+                        portalesCandidatos.Add(portal);
+                    }
+                }
+
+                foreach (var candidato in portalesCandidatos)
+                {
+                    candidato.render(positionPlayer);
                 }
             }            
         }
 
         public void render()
         {
-            celda.BoundingBox.computeFaces();
-            celda.BoundingBox.render();
             foreach(var mesh in meshesDeLaCelda)
             {
                 mesh.render();
