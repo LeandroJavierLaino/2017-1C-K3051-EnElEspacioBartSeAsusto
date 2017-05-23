@@ -141,8 +141,9 @@ struct PS_DIFFUSE_MAP
 //Pixel Shader
 float4 ps_DiffuseMap(PS_DIFFUSE_MAP input) : COLOR0
 {
+	float k = (input.Color.r + input.Color.g + input.Color.b) / 3.0;
 	//Modular color de la textura por color del mesh
-	return tex2D(diffuseMap, input.Texcoord) * input.Color;
+	return tex2D(diffuseMap, input.Texcoord) * k;
 }
 
 /*
@@ -187,9 +188,10 @@ VS_OUTPUT_DIFFUSE_MAP_AND_LIGHTMAP vs_diffuseMapAndLightmap(VS_INPUT_DIFFUSE_MAP
 
 	//Proyectar posicion
 	output.Position = mul(input.Position, matWorldViewProj);
-
+	
+	float k = (input.Color.r + input.Color.g + input.Color.b) / 3.0;
 	//Enviar color directamente
-	output.Color = input.Color;
+	output.Color = input.Color * k;
 
 	//Enviar Texcoord directamente
 	output.Texcoord = input.Texcoord;

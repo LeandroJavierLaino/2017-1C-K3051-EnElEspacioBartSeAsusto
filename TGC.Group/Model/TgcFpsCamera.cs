@@ -150,7 +150,7 @@ namespace TGC.Examples.Camara
                     //newPosition = bounce(targetDistance, obstaculos, sphereCamara);
                     //sphereCamara.setCenter(newPosition);
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, newPosition.Y, -newPosition.Length());
+                    moveVector += new Vector3(0, newPosition.Y + elapsedTime*15f, -newPosition.Length());
                 }
                 else
                 {
@@ -165,7 +165,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, newPosition.Y, newPosition.Length());
+                    moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, newPosition.Length());
                 }
                 else
                 {
@@ -181,7 +181,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(-newPosition.Length(), newPosition.Y, 0);
+                    moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
                 }
                 else
                 {
@@ -196,7 +196,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(newPosition.Length(), newPosition.Y, 0) ;
+                    moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0) ;
                 }
                 else
                 {
@@ -210,7 +210,7 @@ namespace TGC.Examples.Camara
             if (!Input.keyDown(Key.W) || !Input.keyDown(Key.A) || !Input.keyDown(Key.D) || !Input.keyDown(Key.S) || !Input.keyDown(Key.Space) )
             {
                 newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                moveVector += new Vector3(0, newPosition.Y, 0);
+                moveVector += new Vector3(0, newPosition.Y*1.5f, 0);
             }
 
             //Jump

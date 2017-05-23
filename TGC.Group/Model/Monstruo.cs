@@ -86,8 +86,8 @@ namespace TGC.Group.Model
             {
                 mesh.UpdateMeshTransform();
                 mesh.render();
-                sphere.render();
-                mesh.BoundingBox.render();
+                //sphere.render();
+                //mesh.BoundingBox.render();
             //    foreach (var trigger in triggers) { trigger.render(); }
             }
         }

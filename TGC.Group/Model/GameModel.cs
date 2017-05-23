@@ -424,17 +424,12 @@ namespace TGC.Group.Model
             //Meshes
             celdasEscena.Add(celdaFive2Floor);
             #endregion
-            
-            /*
-            //Computamos las normales
             foreach (var mesh in TgcScene.Meshes)
             {
-                int[] adjacencia = {1,1,1,1,1,1,1,1,1,1,1,1};
-                
-                //TODO hay que reordenar normales
-                mesh.D3dMesh.ComputeNormals();
+                int[] adj = new int[mesh.D3dMesh.NumberFaces * 3];
+                mesh.D3dMesh.GenerateAdjacency(0, adj);
+                mesh.D3dMesh.ComputeNormals(adj);
             }
-            */
 
             //Carga de puerta y de enemigo
 
@@ -1159,8 +1154,6 @@ namespace TGC.Group.Model
 		{ //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
 			timer += ElapsedTime;
 			//mp3Player.play(true);
-		
-			
 
 			if (this.glowstick.getSelect() || this.lighter.getSelect())
 			{
@@ -1176,7 +1169,7 @@ namespace TGC.Group.Model
 				//TODO: Poner un Shader que distorsione todo D:
 			}
 
-			if (vidaPorcentaje == 0)
+			if (vidaPorcentaje <= 0)
 			{
 				Shader = TgcShaders.Instance.TgcMeshShader;
 				//Shader black and white
@@ -1200,7 +1193,7 @@ namespace TGC.Group.Model
 				mesh.UpdateMeshTransform();
 
 				//Logica de luces dependiendo de la seleccion y la energia de las mismas
-				if (glowstick.getSelect() && glowstick.getEnergia() != 0)
+				if (glowstick.getSelect() && glowstick.getEnergia() > 0)
 				{
 					lightMesh.Position = Camara.Position;
 					//Cargar variables shader de la luz
@@ -1214,10 +1207,10 @@ namespace TGC.Group.Model
 					mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
 					mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
 					mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-					mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+					mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
 					mesh.Effect.SetValue("materialSpecularExp", 20f);
 				}
-				if (glowstick.getSelect() && glowstick.getEnergia() == 0)
+				if (glowstick.getSelect() && glowstick.getEnergia() <= 0)
 				{
 					lightMesh.Position = Camara.Position;
 					//Cargar variables shader de la luz
@@ -1231,7 +1224,7 @@ namespace TGC.Group.Model
 					mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
 					mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gainsboro));
 					mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-					mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+					mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
 					mesh.Effect.SetValue("materialSpecularExp", 20f);
 				}
 				if (lighter.getSelect() && lighter.getEnergia() > 20)
@@ -1267,7 +1260,7 @@ namespace TGC.Group.Model
 						mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
 						mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
 						mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-						mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+						mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
 						mesh.Effect.SetValue("materialSpecularExp", 20f);
 					}
 					if (System.Math.Truncate(lighter.getEnergia()) % 2 == 1)
@@ -1284,7 +1277,7 @@ namespace TGC.Group.Model
 						mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
 						mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
 						mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-						mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+						mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
 						mesh.Effect.SetValue("materialSpecularExp", 20f);
 					}
 				}
@@ -1302,7 +1295,7 @@ namespace TGC.Group.Model
 					mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
 					mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
 					mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-					mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+					mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
 					mesh.Effect.SetValue("materialSpecularExp", 20f);
 				}
 				if (flashlight.getSelect() && flashlight.getEnergia() > 10)
@@ -1405,20 +1398,7 @@ namespace TGC.Group.Model
 				{
 					//TODO: poner las propiedades del shader que genera distorsiones D:
 				}
-				if (vidaPorcentaje <= 0)
-				{
-					if (glowstick.getSelect() || lighter.getSelect())
-					{
-						mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gray));
-					}
 
-					if (flashlight.getSelect())
-					{
-						mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gray));
-					}
-				}
-
-				//mesh.BoundingBox.render();
 
 			}
 
@@ -1532,7 +1512,7 @@ namespace TGC.Group.Model
 
             if(vidaPorcentaje == 0)
             {
-                 Shader = TgcShaders.Instance.TgcMeshShader;
+                 Shader = TgcShaders.loadEffect(ShadersDir + "\\GrayShader.fx");
                 //Shader black and white
             }
 
@@ -1554,7 +1534,7 @@ namespace TGC.Group.Model
                 mesh.UpdateMeshTransform();
 
                 //Logica de luces dependiendo de la seleccion y la energia de las mismas
-                if (glowstick.getSelect() && glowstick.getEnergia() != 0)
+                if (glowstick.getSelect() && glowstick.getEnergia() > 0)
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -1568,10 +1548,10 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("materialSpecularExp", 20f);
                 }
-                if (glowstick.getSelect() && glowstick.getEnergia() == 0)
+                if (glowstick.getSelect() && glowstick.getEnergia() <= 0)
                 {
                     lightMesh.Position = Camara.Position;
                     //Cargar variables shader de la luz
@@ -1621,7 +1601,7 @@ namespace TGC.Group.Model
                         mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                         mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
                         mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-                        mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                        mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
                         mesh.Effect.SetValue("materialSpecularExp", 20f);
                     }
                     if (System.Math.Truncate(lighter.getEnergia()) % 2 == 1)
@@ -1638,7 +1618,7 @@ namespace TGC.Group.Model
                         mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                         mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
                         mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-                        mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
+                        mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
                         mesh.Effect.SetValue("materialSpecularExp", 20f);
                     }
                 }
@@ -1759,19 +1739,7 @@ namespace TGC.Group.Model
                 {
                     //TODO: poner las propiedades del shader que genera distorsiones D:
                 }
-                if (vidaPorcentaje <= 0)
-                {
-                    if (glowstick.getSelect() || lighter.getSelect())
-                    {
-                        mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gray));
-                    }
-
-                    if (flashlight.getSelect())
-                    {
-                        mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gray));
-                    }
-                }
-    
+   
                 //mesh.BoundingBox.render();
 
             }
