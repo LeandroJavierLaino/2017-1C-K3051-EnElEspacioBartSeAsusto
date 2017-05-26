@@ -82,14 +82,14 @@ namespace TGC.Group.Model
         }
 
         public void Render() {
-            if (activo)
-            {
+            //if (activo)
+            //{
                 mesh.UpdateMeshTransform();
                 mesh.render();
                 //sphere.render();
                 //mesh.BoundingBox.render();
             //    foreach (var trigger in triggers) { trigger.render(); }
-            }
+            //}
         }
 
         

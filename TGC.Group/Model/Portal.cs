@@ -29,6 +29,11 @@ namespace TGC.Group.Model
             return portal.BoundingBox;
         }
 
+        public TgcBox getPortal()
+        {
+            return portal;
+        }
+
         public void render(Vector3 positionPlayer)
         {
             //Renderizo ambas celdas si estoy justo en el portal

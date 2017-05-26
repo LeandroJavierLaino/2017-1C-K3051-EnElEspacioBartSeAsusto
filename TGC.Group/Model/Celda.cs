@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TGC.Core.BoundingVolumes;
+using TGC.Core.Collision;
 using TGC.Core.Geometry;
 using TGC.Core.SceneLoader;
 
@@ -37,7 +39,7 @@ namespace TGC.Group.Model
             return celda.BoundingBox.PMax.X >= positionPlayer.X && celda.BoundingBox.PMax.Y >= positionPlayer.Y && celda.BoundingBox.PMax.Z >= positionPlayer.Z && celda.BoundingBox.PMin.X <= positionPlayer.X && celda.BoundingBox.PMin.Y <= positionPlayer.Y && celda.BoundingBox.PMin.Z <= positionPlayer.Z;
         }
 
-        public void render(Vector3 positionPlayer,Vector3 vistaPlayer)
+        public void render(Vector3 positionPlayer,TgcFrustum frustum)
         {
             if (estaJugadorEnCelda(positionPlayer))
             {
@@ -45,14 +47,14 @@ namespace TGC.Group.Model
                 {
                     mesh.render();
                 }
-                TgcRay rayoDeVista = new TgcRay(positionPlayer,vistaPlayer);
-
-                Vector3 p;
+                
+                //Si el portal cae dentro del Frustum o de la vista del jugador renderizamos aquello que pertenezca al jugador
                 List<Portal> portalesCandidatos = new List<Portal>();
-
+                
                 foreach (var portal in portales)
                 {
-                    if(Core.Collision.TgcCollisionUtils.intersectRayAABB(rayoDeVista, portal.getBoundingBox() ,out p))
+                    var r = TgcCollisionUtils.classifyFrustumAABB(frustum, portal.getPortal().BoundingBox);
+                    if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
                     {
                         portalesCandidatos.Add(portal);
                     }
