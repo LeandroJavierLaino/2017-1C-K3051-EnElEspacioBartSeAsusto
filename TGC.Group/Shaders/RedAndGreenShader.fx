@@ -16,6 +16,9 @@ float4x4 matWorldView; //Matriz World * View
 float4x4 matWorldViewProj; //Matriz World * View * Projection
 float4x4 matInverseTransposeWorld; //Matriz Transpose(Invert(World))
 
+//esta verde el boton?
+bool isGreen;
+
 //Textura para DiffuseMap
 texture texDiffuseMap;
 sampler2D diffuseMap = sampler_state
@@ -142,7 +145,8 @@ float4 ps_DiffuseMap(PS_DIFFUSE_MAP input) : COLOR0
 {
 	//Modular color de la textura por color del mesh
 	
-	return tex2D(diffuseMap, input.Texcoord)*float4 (0.0f,1.0f,0.0f,1.0f);
+	if(isGreen) return tex2D(diffuseMap, input.Texcoord)*float4 (0.0f,1.0f,0.0f,1.0f);
+	else return tex2D(diffuseMap, input.Texcoord)*float4 (1.0f,0.0f,0.0f,1.0f);
 }
 
 /*

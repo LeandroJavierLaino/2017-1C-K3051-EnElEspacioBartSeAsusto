@@ -271,9 +271,10 @@ namespace TGC.Examples.Camara
             var cameraRotatedPositionEye = Vector3.TransformNormal(moveVector * elapsedTime, cameraRotation);
             positionEye += cameraRotatedPositionEye;
 
+           
             cameraRotation = Matrix.RotationX(updownRot) * Matrix.RotationY(leftrightRot);
             cameraRotatedPositionEye = Vector3.TransformNormal(moveVector * elapsedTime, cameraRotation);
-
+         
             //Calculamos el target de la camara, segun su direccion inicial y las rotaciones en screen space x,y.
 
             var cameraRotatedTarget = Vector3.TransformNormal( directionView, cameraRotation);

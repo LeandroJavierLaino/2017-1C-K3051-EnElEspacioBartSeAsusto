@@ -911,31 +911,37 @@ namespace TGC.Group.Model
 			botonEscapePod1 = new Boton();           
             botonEscapePod1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonEscapePod1.meshBoton.Position = new Vector3(440, 25, 30);
+            botonEscapePod1.changeColor(Color.Red);
             botones.Add(botonEscapePod1);
 
             botonEscapePod2 = new Boton();
             botonEscapePod2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonEscapePod2.meshBoton.Position = new Vector3(440, 135, 30);
+            botonEscapePod2.changeColor(Color.Red);
             botones.Add(botonEscapePod2);
 
             botonOxigeno = new Boton();
             botonOxigeno.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonOxigeno.meshBoton.Position = new Vector3(305, 135, 730);
+            botonOxigeno.changeColor(Color.Red);
             botones.Add(botonOxigeno);
 
             botonElectricidad = new Boton();
             botonElectricidad.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonElectricidad.meshBoton.Position = new Vector3(490, 25, 1520);
+            botonElectricidad.changeColor(Color.Red);
             botones.Add(botonElectricidad);
 
             botonElectricidad2 = new Boton();
             botonElectricidad2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonElectricidad2.meshBoton.Position = new Vector3(490, 135, 1520);
+            botonElectricidad2.changeColor(Color.Red);
             botones.Add(botonElectricidad2);
 
             botonCombustible = new Boton();
             botonCombustible.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonCombustible.meshBoton.Position = new Vector3(550, 25, 280);
+            botonCombustible.changeColor(Color.Red);
             botones.Add(botonCombustible);
             #endregion
 
@@ -1460,6 +1466,7 @@ namespace TGC.Group.Model
             }
             
             playerPos.Position = Camara.Position;
+
             //Agrega efecto del Shader a los elementos del escenario
             foreach (var mesh in TgcScene.Meshes)
             {
@@ -1498,6 +1505,15 @@ namespace TGC.Group.Model
             foreach (var botiquin in botiquines)
             {
                 botiquin.render();
+            }
+
+            var shaderBoton = TgcShaders.loadEffect(ShadersDir + "RedAndGreenShader.fx"); ;
+
+            foreach(var boton in botones)
+            {
+                shaderBoton.SetValue("isGreen", boton.getColor()==Color.Green);
+                boton.meshBoton.Effect = shaderBoton;
+                boton.meshBoton.Technique = TgcShaders.Instance.getTgcMeshTechnique(boton.meshBoton.RenderType);
             }
 
             //Renderizamos los botones

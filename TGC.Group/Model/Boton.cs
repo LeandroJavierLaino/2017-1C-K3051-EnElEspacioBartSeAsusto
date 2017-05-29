@@ -15,10 +15,17 @@ namespace TGC.Group.Model
     {
         public TgcMesh meshBoton { get; set; }
         public bool isGreen = false;
+        private Color color;
 
         public void changeColor(Color newColor)
         {
             meshBoton.setColor(newColor);
+            color = newColor;
+        }
+
+        public Color getColor()
+        {
+            return color;
         }
 
         public void changePosicion(Vector3 newPosition)
