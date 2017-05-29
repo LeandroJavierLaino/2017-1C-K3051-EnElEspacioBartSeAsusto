@@ -142,7 +142,7 @@ float4 ps_DiffuseMap(PS_DIFFUSE_MAP input) : COLOR0
 {
 	//Modular color de la textura por color del mesh
 	
-	return tex2D(diffuseMap, input.Texcoord)*float4 (0.3f,0.3f,0.3f,1.0f);
+	return tex2D(diffuseMap, input.Texcoord)*float4 (0.0f,1.0f,0.0f,1.0f);
 }
 
 /*

@@ -43,7 +43,18 @@ namespace TGC.Group.Model
         {
             if (estaJugadorEnCelda(positionPlayer))
             {
+                List<TgcMesh> meshesCandidatos = new List<TgcMesh>();
                 foreach (var mesh in meshesDeLaCelda)
+                {
+                    var r = TgcCollisionUtils.classifyFrustumAABB(frustum, mesh.BoundingBox);
+                    if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                    {
+                        meshesCandidatos.Add(mesh);
+                    }
+                    
+                }
+
+                foreach(var mesh in meshesCandidatos)
                 {
                     mesh.render();
                 }
@@ -62,7 +73,7 @@ namespace TGC.Group.Model
 
                 foreach (var candidato in portalesCandidatos)
                 {
-                    candidato.render(positionPlayer);
+                    candidato.render(positionPlayer, frustum);
                 }
             }            
         }

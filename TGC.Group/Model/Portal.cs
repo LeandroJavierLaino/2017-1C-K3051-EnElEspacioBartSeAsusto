@@ -34,7 +34,7 @@ namespace TGC.Group.Model
             return portal;
         }
 
-        public void render(Vector3 positionPlayer)
+        public void render(Vector3 positionPlayer, TgcFrustum frustum)
         {
             //Renderizo ambas celdas si estoy justo en el portal
             if (estaEnPortal(positionPlayer))

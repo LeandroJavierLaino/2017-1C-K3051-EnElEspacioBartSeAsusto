@@ -51,7 +51,7 @@ VS_OUTPUT vs_main(VS_INPUT Input)
 {
 	VS_OUTPUT Output;
 	//Proyectar posicion
-	Output.Position = mul(Input.Position, matWorldViewProj);
+	Output.Position = mul(Input.Position, matWorldViewProj)*time;
 
 	//Propago las coordenadas de textura
 	Output.Texcoord = Input.Texcoord;

@@ -28,6 +28,8 @@ sampler2D diffuseMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
+float time = 0;
+
 //Textura para Lightmap
 texture texLightMap;
 sampler2D lightMap = sampler_state
@@ -141,8 +143,9 @@ struct PS_DIFFUSE_MAP
 float4 ps_DiffuseMap(PS_DIFFUSE_MAP input) : COLOR0
 {
 	//Modular color de la textura por color del mesh
-	
-	return tex2D(diffuseMap, input.Texcoord)*float4 (0.3f,0.3f,0.3f,1.0f);
+	input.Texcoord.y =+ sin(input.Texcoord.y+time);
+	//input.Texcoord.x =+ cos(input.Texcoord.x*time)*0.03;
+	return tex2D(diffuseMap, input.Texcoord); 
 }
 
 /*
