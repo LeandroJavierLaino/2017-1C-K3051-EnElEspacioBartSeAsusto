@@ -203,6 +203,16 @@ namespace TGC.Examples.Camara
                     moveVector += new Vector3(1, 0, 0) * MovementSpeed;
                 }
             }
+
+            if (Position.Y <= 55 )
+            {
+                moveVector.Y += 55 - Position.Y;
+            }
+            if (Position.Y > 110 && Position.Y <= 165)
+            {
+                moveVector.Y += 165 - Position.Y;
+            }
+
             #endregion
 
             #region Modificadores de movimiento

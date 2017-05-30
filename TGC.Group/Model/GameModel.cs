@@ -191,7 +191,10 @@ namespace TGC.Group.Model
         private List<TgcMesh> botiquines = new List<TgcMesh>();
         //Sound and Music
         private TgcMp3Player mp3Player;
-        private TgcStaticSound soundAmbience;
+        private TgcStaticSound soundBoton;
+        private TgcStaticSound soundPuerta;
+        private int startGameMusic = 0;
+
         private float timer;
 
         #region Init
@@ -204,8 +207,10 @@ namespace TGC.Group.Model
         public override void Init()
         {
             mp3Player = new TgcMp3Player();
-            soundAmbience = new TgcStaticSound();
-            soundAmbience.dispose();
+            soundBoton = new TgcStaticSound();
+            soundBoton.dispose();
+            soundPuerta = new TgcStaticSound();
+            soundPuerta.dispose();
 
             #region Fonts
             Fonts = new System.Drawing.Text.PrivateFontCollection();
@@ -216,7 +221,12 @@ namespace TGC.Group.Model
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
-            //soundAmbience.loadSound(MediaDir + "Sounds\\ambience_base.WAV", 100, new TgcDirectSound().DsDevice);
+            soundBoton.loadSound(MediaDir + "Sounds\\button9.wav", DirectSound.DsDevice);
+            soundPuerta.loadSound(MediaDir + "Sounds\\doormove3.wav", DirectSound.DsDevice);
+            if (soundPuerta == null)
+            {
+                throw new System.Exception("Esta vacio! no se cargo el sonido");
+            }
 
             #region Init Menu
             {
@@ -475,13 +485,77 @@ namespace TGC.Group.Model
             #endregion
 
             Celda celdaTwo1Floor = new Celda();
-            celdaTwo1Floor.establecerCelda(new Vector3(550,altura,450),new Vector3(0,centro1Floor,0));
+            celdaTwo1Floor.establecerCelda(new Vector3(550,altura,450),new Vector3(694,centro1Floor,769));
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[0]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[1]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[2]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[4]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[5]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[7]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[9]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[16]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[8]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[107]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[119]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[122]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[120]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[105]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[627]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[110]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[628]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[106]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[109]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[523]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[509]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[104]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[108]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[638]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[633]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[629]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[632]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[630]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[631]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[111]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[113]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[112]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[114]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[115]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[117]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[116]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[118]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[121]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[94]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[96]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[95]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[99]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[634]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[508]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[98]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[624]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[626]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[97]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[528]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[524]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[527]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[525]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[526]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[529]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[638]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[535]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[100]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[102]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[101]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[103]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[15]);
+            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[13]);
             //Meshes 
             celdasEscena.Add(celdaTwo1Floor);
 
             Portal portalOneTwo1Floor = new Portal();
-            portalOneTwo1Floor.establecerPortal(new Vector3(60, altura, 10), new Vector3(0, centro1Floor, 0), celdaOne1Floor, celdaTwo1Floor);
+            portalOneTwo1Floor.establecerPortal(new Vector3(60, altura, 10), new Vector3(946, centro1Floor, 535), celdaOne1Floor, celdaTwo1Floor);
             portalesEscena.Add(portalOneTwo1Floor);
+            celdaTwo1Floor.agregarPortal(portalOneTwo1Floor);
+            celdaOne1Floor.agregarPortal(portalOneTwo1Floor);
 
             Celda celdaThree1Floor = new Celda();
             celdaThree1Floor.establecerCelda(new Vector3(440,altura,450),new Vector3(0,centro1Floor,0));
@@ -976,7 +1050,7 @@ namespace TGC.Group.Model
 
             //Musica ahora reproduce musica pero tira un error de que no se cargo bien
             
-            mp3Player.FileName = this.MediaDir + "hl1_song19.mp3";
+            mp3Player.FileName = this.MediaDir + "Music\\hl1_song19.mp3";
 
             timer = 0;
 			UpdateGame();
@@ -1106,24 +1180,28 @@ namespace TGC.Group.Model
             {
                 botonElectricidad.changeColor(Color.Green);
                 botonElectricidad.isGreen = true;
+                soundBoton.play(false);
             }
 
             if (Input.keyPressed(Key.E) && distance(Camara.Position, botonElectricidad2.meshBoton.Position) < 55)
             {
                 botonElectricidad2.changeColor(Color.Green);
                 botonElectricidad2.isGreen = true;
+                soundBoton.play(false);
             }
 
             if (Input.keyPressed(Key.E) && distance(Camara.Position, botonOxigeno.meshBoton.Position) < 55)
             {
                 botonOxigeno.changeColor(Color.Green);
                 botonOxigeno.isGreen = true;
+                soundBoton.play(false);
             }
 
             if (Input.keyPressed(Key.E) && distance(Camara.Position, botonCombustible.meshBoton.Position) < 55)
             {
                 botonCombustible.changeColor(Color.Green);
                 botonCombustible.isGreen = true;
+                soundBoton.play(false);
             }
 
             //Tiene que estar en verde todos los demas botones
@@ -1131,6 +1209,7 @@ namespace TGC.Group.Model
             {
                 botonEscapePod1.changeColor(Color.Green);
                 botonEscapePod2.changeColor(Color.Green);
+                soundBoton.play(false);
                 //aaaaand We WON!!!
             }
 
@@ -1169,6 +1248,7 @@ namespace TGC.Group.Model
                 puerta26.abrirPuerta(Camara.Position);
                 puerta27.abrirPuerta(Camara.Position);
                 puerta28.abrirPuerta(Camara.Position);
+                soundPuerta.play(false);
             }
 
             #endregion
@@ -1338,8 +1418,13 @@ namespace TGC.Group.Model
 		public void RenderCamaraMenu()
 		{ //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
 			timer += ElapsedTime;
+            mp3Player.FileName = this.MediaDir + "Music\\hl1_song19.mp3";
+            if (mp3Player.getStatus() == TgcMp3Player.States.Open)
+            {
+                mp3Player.play(true);
+            }
 
-			if (this.glowstick.getSelect() || this.lighter.getSelect())
+            if (this.glowstick.getSelect() || this.lighter.getSelect())
 			{
 				Shader = TgcShaders.Instance.TgcMeshPointLightShader;
 			}
@@ -1387,10 +1472,17 @@ namespace TGC.Group.Model
 		public void RenderGame() {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             timer += ElapsedTime;
-            //soundAmbience.play(true);
             
+
             //Si el estado del reproductor de musica es que el archivo esta abierto entonces lo reproducimos
-            if(mp3Player.getStatus() == TgcMp3Player.States.Open)
+            //Primero cerramos el archivo de audio del menu y elegimos uno nuevo.
+            if (startGameMusic == 0)
+            {
+                mp3Player.closeFile();
+                startGameMusic = 1;
+            } 
+            mp3Player.FileName = this.MediaDir + "Music\\Mastermind.mp3";
+            if (mp3Player.getStatus() == TgcMp3Player.States.Open)
             {
                 mp3Player.play(true);
             }
@@ -1507,21 +1599,109 @@ namespace TGC.Group.Model
                 botiquin.render();
             }
 
+            #region Render y shader de botones            
+            //Shader para los botones
             var shaderBoton = TgcShaders.loadEffect(ShadersDir + "RedAndGreenShader.fx"); ;
 
-            foreach(var boton in botones)
+            if (botonEscapePod2.getColor() == Color.Green)
             {
-                shaderBoton.SetValue("isGreen", boton.getColor()==Color.Green);
-                boton.meshBoton.Effect = shaderBoton;
-                boton.meshBoton.Technique = TgcShaders.Instance.getTgcMeshTechnique(boton.meshBoton.RenderType);
+                shaderBoton.SetValue("isGreen", true);
+                botonEscapePod2.applyEffect(shaderBoton);
+                botonEscapePod2.meshBoton.render();
+            }
+            else
+            {
+                if (botonEscapePod2.getColor() == Color.Red)
+                {
+                    shaderBoton.SetValue("isGreen", false);
+                    botonEscapePod2.applyEffect(shaderBoton);
+                    botonEscapePod2.meshBoton.render();
+                }
             }
 
-            //Renderizamos los botones
-            foreach (var boton in botones)
+            if (botonEscapePod1.getColor() == Color.Green)
             {
-                boton.meshBoton.render();
+                shaderBoton.SetValue("isGreen", true);
+                botonEscapePod1.applyEffect(shaderBoton);
+                botonEscapePod1.meshBoton.render();
+            }
+            else
+            {
+                if (botonEscapePod1.getColor() == Color.Red)
+                {
+                    shaderBoton.SetValue("isGreen", false);
+                    botonEscapePod1.applyEffect(shaderBoton);
+                    botonEscapePod1.meshBoton.render();
+                }
             }
 
+            if (botonCombustible.getColor() == Color.Green)
+            {
+                shaderBoton.SetValue("isGreen", true);
+                botonCombustible.applyEffect(shaderBoton);
+                botonCombustible.meshBoton.render();
+            }
+            else
+            {
+                if (botonCombustible.getColor() == Color.Red)
+                {
+                    shaderBoton.SetValue("isGreen", false);
+                    botonCombustible.applyEffect(shaderBoton);
+                    botonCombustible.meshBoton.render();
+                }
+            }
+
+            if (botonOxigeno.getColor() == Color.Green)
+            {
+                shaderBoton.SetValue("isGreen", true);
+                botonOxigeno.applyEffect(shaderBoton);
+                botonOxigeno.meshBoton.render();
+            }
+            else
+            {
+                if (botonOxigeno.getColor() == Color.Red)
+                {
+                    shaderBoton.SetValue("isGreen", false);
+                    botonOxigeno.applyEffect(shaderBoton);
+                    botonOxigeno.meshBoton.render();
+                }
+            }
+
+            if (botonElectricidad2.getColor() == Color.Green)
+            {
+                shaderBoton.SetValue("isGreen", true);
+                botonElectricidad2.applyEffect(shaderBoton);
+                botonElectricidad2.meshBoton.render();
+            }
+            else
+            {
+                if (botonElectricidad2.getColor() == Color.Red)
+                {
+                    shaderBoton.SetValue("isGreen", false);
+                    botonElectricidad2.applyEffect(shaderBoton);
+                    botonElectricidad2.meshBoton.render();
+                }
+            }
+
+            if (botonElectricidad.getColor() == Color.Green)
+            {
+               shaderBoton.SetValue("isGreen", true);
+                botonElectricidad.applyEffect(shaderBoton);
+                botonElectricidad.meshBoton.render();
+            }
+            else
+            {
+                if (botonElectricidad.getColor() == Color.Red)
+                {
+                    shaderBoton.SetValue("isGreen", false);
+                    botonElectricidad.applyEffect(shaderBoton);
+                    botonElectricidad.meshBoton.render();
+                }
+            } 
+          
+            #endregion
+
+            //Aplicamos Shader y renderizamos al mostro D:
             monstruo.mesh.Effect = Shader;
             monstruo.mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(monstruo.mesh.RenderType);
 
@@ -1535,23 +1715,28 @@ namespace TGC.Group.Model
                 + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
                 + " Monster Position : " + TgcParserUtils.printVector3(monstruo.Position) + "\n"
                 + " Camera Bounding Sphere : " + TgcParserUtils.printVector3(camaraPrint.sphereCamara.Position) + "\n"
-                + " Glowstick Stock : " + glowstick.getEnergia() + "\n"
-                + " Lighter Energy : " + lighter.getEnergia() + "\n"
-                + " Flashlight Energy : " + flashlight.getEnergia() + "\n"
-                + " Tamaño en Y: " + TgcScene.Meshes[0].BoundingBox.calculateSize().Y + "\n"
                 + " M para Monstruo D:" + "\n"
                 + " N para activar/desactivar colisiones del Monstruo \n"
                 + " L activa colisiones de la camara"
             , 0, 30, Color.OrangeRed);
-
+            /*
             //render por "Portal" Rendering
-            
+            List<TgcMesh> candidatos = new List<TgcMesh>();
             foreach (var celda in celdasEscena)
             {
-                celda.render(Camara.Position,Frustum);
+                candidatos.AddRange(celda.render(Camara.Position, Frustum));
             }
 
-            /*
+            foreach (var candidato in candidatos)
+            {
+                var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, candidato.BoundingBox);
+                if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                {
+                    candidato.render();
+                }
+            }*/
+
+            
             //Render con Frustum Culling
             foreach(var mesh in TgcScene.Meshes)
             {
@@ -1573,13 +1758,12 @@ namespace TGC.Group.Model
 
                 }
              }
-             */
+             
             //lightMesh.render();
            
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.render(ElapsedTime, objetosColisionables);
 
-            
         }
         public void RenderPause() {
             RenderGame();
@@ -1605,6 +1789,9 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Dispose()
         {
+            soundBoton.dispose();
+            soundPuerta.dispose();
+            mp3Player.stop();
             //Dispose de una escena.          
             glowstickHUD1.Dispose();
             glowstickHUD2.Dispose();
@@ -1813,44 +2000,6 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("materialSpecularExp", 290f);
-                }
-                if (flashlight.getSelect() && System.Math.Truncate(flashlight.getEnergia()) == 0)
-                {
-                    float x;
-                    float y;
-                    float z;
-                    //Si no colisiona contra algo es esto
-                    // lamda * director + coordenada en eje
-                    x = (float)14 * (Camara.LookAt - Camara.Position).X + Camara.LookAt.X;
-                    y = (float)14 * (Camara.LookAt - Camara.Position).Y + Camara.LookAt.Y;
-                    z = (float)14 * (Camara.LookAt - Camara.Position).Z + Camara.LookAt.Z;
-                    lightMesh.Position = new Vector3(x, y, z);
-                    //lightMesh.Position = chocaLuz(lightMesh, Camara.Position, lightMesh.BoundingBox, objetosColisionables);
-                    float a;
-                    float b;
-                    float c;
-                    a = (float)3000.01 * (Camara.LookAt - Camara.Position).X + Camara.Position.X;
-                    b = (float)3000.01 * (Camara.LookAt - Camara.Position).Y + Camara.Position.Y;
-                    c = (float)3000.01 * (Camara.LookAt - Camara.Position).Z + Camara.Position.Z;
-                    var direccion = new Vector3(a, b, c);
-                    direccion.Normalize();
-                    var posLuz = lightMesh.Position;
-
-                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(posLuz));
-                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(direccion));
-                    mesh.Effect.SetValue("lightIntensity", 50f);
-                    mesh.Effect.SetValue("lightAttenuation", 5f);
-                    mesh.Effect.SetValue("spotLightAngleCos", 0.65f);
-                    mesh.Effect.SetValue("spotLightExponent", 10f);
-
-                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
-                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
-                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialSpecularExp", 29f);
                 }
                 if (glowstick.getEnergia() == 0 && System.Math.Truncate(lighter.getEnergia()) == 0 && System.Math.Truncate(flashlight.getEnergia()) == 0)
                 {

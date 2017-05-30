@@ -17,7 +17,7 @@ namespace TGC.Group.Model
         public bool isGreen = false;
         private Color color;
 
-        public void changeColor(Color newColor)
+        internal void changeColor(Color newColor)
         {
             meshBoton.setColor(newColor);
             color = newColor;

@@ -29,6 +29,11 @@ namespace TGC.Group.Model
             celda.Size = size;
         }
 
+        public TgcBox obtenerCelda()
+        {
+            return celda;
+        }
+
         public void agregarPortal(Portal unPortal)
         {
             portales.Add(unPortal);
@@ -39,28 +44,24 @@ namespace TGC.Group.Model
             return celda.BoundingBox.PMax.X >= positionPlayer.X && celda.BoundingBox.PMax.Y >= positionPlayer.Y && celda.BoundingBox.PMax.Z >= positionPlayer.Z && celda.BoundingBox.PMin.X <= positionPlayer.X && celda.BoundingBox.PMin.Y <= positionPlayer.Y && celda.BoundingBox.PMin.Z <= positionPlayer.Z;
         }
 
-        public void render(Vector3 positionPlayer,TgcFrustum frustum)
+        public List<TgcMesh> render(Vector3 positionPlayer,TgcFrustum frustum)
         {
+
+            List<TgcMesh> meshesCandidatos = new List<TgcMesh>();
+            List<Portal> portalesCandidatos = new List<Portal>();
+
             if (estaJugadorEnCelda(positionPlayer))
             {
-                List<TgcMesh> meshesCandidatos = new List<TgcMesh>();
                 foreach (var mesh in meshesDeLaCelda)
                 {
                     var r = TgcCollisionUtils.classifyFrustumAABB(frustum, mesh.BoundingBox);
                     if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
                     {
                         meshesCandidatos.Add(mesh);
-                    }
-                    
-                }
-
-                foreach(var mesh in meshesCandidatos)
-                {
-                    mesh.render();
+                    } 
                 }
                 
-                //Si el portal cae dentro del Frustum o de la vista del jugador renderizamos aquello que pertenezca al jugador
-                List<Portal> portalesCandidatos = new List<Portal>();
+                //Si el portal cae dentro del Frustum o de la vista del jugador renderizamos aquello que pertenezca a la(s) celda(s) contigua
                 
                 foreach (var portal in portales)
                 {
@@ -73,17 +74,45 @@ namespace TGC.Group.Model
 
                 foreach (var candidato in portalesCandidatos)
                 {
-                    candidato.render(positionPlayer, frustum);
+                    meshesCandidatos.AddRange( candidato.render(positionPlayer, frustum));
                 }
-            }            
+
+                return meshesCandidatos;
+            }
+            else
+            {
+                foreach (var portal in portales)
+                {
+                    var r = TgcCollisionUtils.classifyFrustumAABB(frustum, portal.getPortal().BoundingBox);
+                    if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                    {
+                        portalesCandidatos.Add(portal);
+                    }
+                }
+
+                foreach (var candidato in portalesCandidatos)
+                {
+                    meshesCandidatos.AddRange(candidato.render(positionPlayer, frustum));
+                }
+
+                return meshesCandidatos;
+            }
         }
 
-        public void render()
+        public List<TgcMesh> render(TgcFrustum frustum)
         {
-            foreach(var mesh in meshesDeLaCelda)
+            List<TgcMesh> meshesCandidatos = new List<TgcMesh>();
+
+            foreach (var mesh in meshesDeLaCelda)
             {
-                mesh.render();
+                var r = TgcCollisionUtils.classifyFrustumAABB(frustum, mesh.BoundingBox);
+                if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                {
+                    meshesCandidatos.Add(mesh);
+                }
             }
+
+            return meshesCandidatos;            
         }
     }
 }

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TGC.Core.BoundingVolumes;
+using TGC.Core.Collision;
 using TGC.Core.Geometry;
+using TGC.Core.SceneLoader;
 
 namespace TGC.Group.Model
 {
@@ -34,24 +36,39 @@ namespace TGC.Group.Model
             return portal;
         }
 
-        public void render(Vector3 positionPlayer, TgcFrustum frustum)
+        public List<TgcMesh> render(Vector3 positionPlayer, TgcFrustum frustum)
         {
+            List<TgcMesh> meshesCandidatos = new List<TgcMesh>();
             //Renderizo ambas celdas si estoy justo en el portal
             if (estaEnPortal(positionPlayer))
             {
-                celdaA.render();
-                celdaB.render();
+                meshesCandidatos.AddRange( celdaA.render(frustum));
+                meshesCandidatos.AddRange( celdaB.render(frustum));
             }
             //si el jugador esta en la celdaA renderizo la celdaB
             if (celdaA.estaJugadorEnCelda(positionPlayer))
             {
-                celdaB.render();
+                meshesCandidatos.AddRange(celdaB.render(frustum));
             }
             //si el jugador esta en la celdaB renderizo la celdaA
             if (celdaB.estaJugadorEnCelda(positionPlayer))
             {
-                celdaA.render();
+                meshesCandidatos.AddRange(celdaA.render(frustum));
             }
+            var r = TgcCollisionUtils.classifyFrustumAABB(frustum, portal.BoundingBox);
+            if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
+            {
+                if (TgcCollisionUtils.classifyFrustumAABB(frustum, celdaA.obtenerCelda().BoundingBox) != TgcCollisionUtils.FrustumResult.OUTSIDE )
+                {
+                    meshesCandidatos.AddRange(celdaA.render(frustum));
+                }
+                if (TgcCollisionUtils.classifyFrustumAABB(frustum, celdaB.obtenerCelda().BoundingBox) != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                {
+                    meshesCandidatos.AddRange(celdaB.render(frustum));
+                }
+            }
+            return meshesCandidatos;
+
         }
 
         public bool estaEnPortal(Vector3 positionPlayer)
