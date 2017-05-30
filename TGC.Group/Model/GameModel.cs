@@ -193,6 +193,11 @@ namespace TGC.Group.Model
         private TgcMp3Player mp3Player;
         private TgcStaticSound soundBoton;
         private TgcStaticSound soundPuerta;
+        private TgcStaticSound soundHeartBeat;
+        private TgcStaticSound soundAmbience;
+        private TgcStaticSound soundWalk;
+        private TgcStaticSound soundLoseLife;
+        private Tgc3dSound sound3dMotor;
         private int startGameMusic = 0;
 
         private float timer;
@@ -211,7 +216,17 @@ namespace TGC.Group.Model
             soundBoton.dispose();
             soundPuerta = new TgcStaticSound();
             soundPuerta.dispose();
-
+            soundHeartBeat = new TgcStaticSound();
+            soundHeartBeat.dispose();
+            soundAmbience = new TgcStaticSound();
+            soundAmbience.dispose();
+            soundWalk = new TgcStaticSound();
+            soundWalk.dispose();
+            soundLoseLife = new TgcStaticSound();
+            soundLoseLife.dispose();
+            //Convertir de Stereo a Mono, no funciona
+            sound3dMotor = new Tgc3dSound(MediaDir + "Sounds\\lab_loop1.wav", new Vector3(575,50,705),DirectSound.DsDevice);
+            sound3dMotor.MinDistance = 130f;
             #region Fonts
             Fonts = new System.Drawing.Text.PrivateFontCollection();
             Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
@@ -223,10 +238,10 @@ namespace TGC.Group.Model
 
             soundBoton.loadSound(MediaDir + "Sounds\\button9.wav", DirectSound.DsDevice);
             soundPuerta.loadSound(MediaDir + "Sounds\\doormove3.wav", DirectSound.DsDevice);
-            if (soundPuerta == null)
-            {
-                throw new System.Exception("Esta vacio! no se cargo el sonido");
-            }
+            soundHeartBeat.loadSound(MediaDir + "Sounds\\heartbeat1.wav", DirectSound.DsDevice);
+            soundAmbience.loadSound(MediaDir + "Sounds\\ambience_base.wav", DirectSound.DsDevice);
+            soundWalk.loadSound(MediaDir + "Sounds\\hardboot_generic1.wav", DirectSound.DsDevice);
+            soundLoseLife.loadSound(MediaDir + "Sounds\\pl_pain5.wav", DirectSound.DsDevice);
 
             #region Init Menu
             {
@@ -1334,6 +1349,7 @@ namespace TGC.Group.Model
             if (distance(monstruo.Position, Camara.Position) < 50f && vidaPorcentaje > 0)
             {
                 vidaPorcentaje -= 0.2f;
+                soundLoseLife.play(false);
             }
 
             vida.Scaling = new Vector2((vidaPorcentaje / 100) * 8, 0.5f);
@@ -1355,6 +1371,10 @@ namespace TGC.Group.Model
             if (Input.keyPressed(Key.Return))
             {
                 CurrentState = StatePause;
+            }
+            if (vidaPorcentaje <= 15)
+            {
+                soundHeartBeat.play(true);
             }
 
             #endregion
@@ -1418,7 +1438,8 @@ namespace TGC.Group.Model
 		public void RenderCamaraMenu()
 		{ //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
 			timer += ElapsedTime;
-            mp3Player.FileName = this.MediaDir + "Music\\hl1_song19.mp3";
+            //mp3Player.FileName = this.MediaDir + "Music\\hl1_song19.mp3";
+            mp3Player.FileName = this.MediaDir + "Music\\Mastermind.mp3";
             if (mp3Player.getStatus() == TgcMp3Player.States.Open)
             {
                 mp3Player.play(true);
@@ -1472,21 +1493,18 @@ namespace TGC.Group.Model
 		public void RenderGame() {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             timer += ElapsedTime;
-            
 
+            soundAmbience.play(true);
+            
             //Si el estado del reproductor de musica es que el archivo esta abierto entonces lo reproducimos
             //Primero cerramos el archivo de audio del menu y elegimos uno nuevo.
-            if (startGameMusic == 0)
+            if (mp3Player.getStatus() == TgcMp3Player.States.Playing)
             {
-                mp3Player.closeFile();
-                startGameMusic = 1;
-            } 
-            mp3Player.FileName = this.MediaDir + "Music\\Mastermind.mp3";
-            if (mp3Player.getStatus() == TgcMp3Player.States.Open)
-            {
-                mp3Player.play(true);
+                mp3Player.stop();
             }
-            
+
+            sound3dMotor.play(true);
+
             drawer2D.BeginDrawSprite();
             drawer2D.DrawSprite(vida);
             drawer2D.DrawSprite(stamina);
@@ -1763,7 +1781,10 @@ namespace TGC.Group.Model
            
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.render(ElapsedTime, objetosColisionables);
-
+            if (camarita.seMueve())
+            {
+                soundWalk.play();
+            }
         }
         public void RenderPause() {
             RenderGame();
@@ -1789,8 +1810,12 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Dispose()
         {
+            soundWalk.dispose();
+            soundHeartBeat.dispose();
+            soundAmbience.dispose();
             soundBoton.dispose();
             soundPuerta.dispose();
+            soundLoseLife.dispose();
             mp3Player.stop();
             //Dispose de una escena.          
             glowstickHUD1.Dispose();

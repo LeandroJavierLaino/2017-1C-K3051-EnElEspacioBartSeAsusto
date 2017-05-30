@@ -28,7 +28,7 @@ namespace TGC.Examples.Camara
         private Matrix cameraRotation;
 
         //Direction view se calcula a partir de donde se quiere ver con la camara inicialmente. por defecto se ve en -Z.
-        private Vector3 directionView;        
+        private Vector3 directionView;
 
         //No hace falta la base ya que siempre es la misma, la base se arma segun las rotaciones de esto costados y updown.
         private float leftrightRot;
@@ -36,6 +36,7 @@ namespace TGC.Examples.Camara
 
         private bool lockCam;
         private Vector3 positionEye;
+        private bool isMoving = false;
 
         private bool collitionActive = true;
 
@@ -82,13 +83,13 @@ namespace TGC.Examples.Camara
             float z = positionEye.Z;
             MovementSpeed = moveSpeed;
             JumpSpeed = jumpSpeed;
-            cajaLoca.setPositionSize(new Vector3(x, y - 35f, z), new Vector3(5,5,5));
+            cajaLoca.setPositionSize(new Vector3(x, y - 35f, z), new Vector3(5, 5, 5));
             Core.SceneLoader.TgcMesh laCajaLoca = cajaLoca.toMesh("laCajaLoca");
             sphereCamara = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(laCajaLoca);
-            sphereCamara.setValues(new Vector3(x, y - 35f, z),15f);
+            sphereCamara.setValues(new Vector3(x, y - 35f, z), 15f);
             lockCam = true;
             collisionManagerCamara = new TGC.Examples.Collision.SphereCollision.SphereCollisionManager();
-           
+
             //collisionManagerCamara.toggleGravity();
         }
 
@@ -124,6 +125,11 @@ namespace TGC.Examples.Camara
 
         public float JumpSpeed { get; set; }
 
+        public bool seMueve()
+        {
+            return isMoving;
+        }
+
         /// <summary>
         ///     Cuando se elimina esto hay que desbloquear la camera.
         /// </summary>
@@ -139,7 +145,7 @@ namespace TGC.Examples.Camara
             var moveVector = new Vector3(0, 0, 0);
             Vector3 targetDistance = new Vector3(0, 0, 0);
             sphereCamara.setCenter(new Vector3(Position.X, Position.Y -40f, Position.Z));
-
+            isMoving = false;
             #region Movimientos
             //Forward
             if (Input.keyDown(Key.W) && vidaPorcentaje > 0 )
@@ -156,6 +162,7 @@ namespace TGC.Examples.Camara
                 {
                     moveVector += new Vector3(0, 0, -1) * MovementSpeed;
                 }
+                isMoving = true;
             }
 
             //Backward
@@ -171,6 +178,7 @@ namespace TGC.Examples.Camara
                 {
                     moveVector += new Vector3(0, 0, 1) * MovementSpeed;
                 }
+                isMoving = true;
             }
 
             //Strafe right
@@ -187,6 +195,7 @@ namespace TGC.Examples.Camara
                 {
                     moveVector += new Vector3(-1, 0, 0) * MovementSpeed;
                 }
+                isMoving = true;
             }
 
             //Strafe left
@@ -202,6 +211,7 @@ namespace TGC.Examples.Camara
                 {
                     moveVector += new Vector3(1, 0, 0) * MovementSpeed;
                 }
+                isMoving = true;
             }
 
             if (Position.Y <= 55 )
