@@ -89,7 +89,7 @@ namespace TGC.Examples.Camara
             sphereCamara.setValues(new Vector3(x, y - 35f, z), 15f);
             lockCam = true;
             collisionManagerCamara = new TGC.Examples.Collision.SphereCollision.SphereCollisionManager();
-
+            collisionManagerCamara.SlideFactor = 1.5f;
             //collisionManagerCamara.toggleGravity();
         }
 
@@ -153,10 +153,15 @@ namespace TGC.Examples.Camara
                 targetDistance += (new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)) * MovementSpeed;
                 if (collitionActive)
                 {
-                    //newPosition = bounce(targetDistance, obstaculos, sphereCamara);
-                    //sphereCamara.setCenter(newPosition);
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, newPosition.Y + elapsedTime*15f, -newPosition.Length());
+                    if (checkCollision(obstaculos,sphereCamara))
+                    {
+                        moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, -newPosition.Length());
+                    }
+                    else
+                    {
+                        moveVector += new Vector3(0,0,0);//pensar rebote =/
+                    } 
                 }
                 else
                 {
@@ -342,64 +347,19 @@ namespace TGC.Examples.Camara
             sphereCamara.render();
         }
 
-        public Vector3 bounce(Vector3 unaPosicion, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, TgcBoundingSphere characterSphere)
+        public bool checkCollision( List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, TgcBoundingSphere characterSphere)
         {
-            Vector3 retorno = new Vector3(0, 0, 0);
-            Vector3 lastSecurePosition = characterSphere.Position;
-            var halfMovementVec = Vector3.Multiply(unaPosicion, 0.5f);
-            var testSphere = new TgcBoundingSphere(characterSphere.Center + halfMovementVec, halfMovementVec.Length() + characterSphere.Radius);
-            objetosCandidatos.Clear();
-
+            List<TgcBoundingAxisAlignBox> objetosCandidatos = new List<TgcBoundingAxisAlignBox>();
+            
             foreach (var obstaculo in obstaculos)
             {
-                if (TgcCollisionUtils.testSphereAABB(testSphere, obstaculo))
+                if (TgcCollisionUtils.testSphereAABB(characterSphere, obstaculo))
                 {
                     objetosCandidatos.Add(obstaculo);
                 }
             }
 
-            if (unaPosicion.LengthSq() < 0.05f)
-            {
-                return lastSecurePosition; 
-            }
-
-            var originalSphereCenter = characterSphere.Center;
-            var nextSphereCenter = originalSphereCenter + unaPosicion;
-
-            foreach (var obstaculo in objetosCandidatos)
-            {
-                if (TGC.Core.Collision.TgcCollisionUtils.testSphereAABB(characterSphere, obstaculo))
-                {
-                    Vector3 puntoDeColision = TgcCollisionUtils.closestPointAABB(characterSphere.Center, obstaculo);
-                    //fuera
-                    if (distancia(sphereCamara.Center,puntoDeColision) > sphereCamara.Radius)
-                    {
-                        return unaPosicion;
-                    }
-                    //sobre
-                    if (distancia(sphereCamara.Center, puntoDeColision) == sphereCamara.Radius)
-                    {
-                        //Slide?
-                    }
-                    //dentro
-                    if (distancia(sphereCamara.Center, puntoDeColision) < sphereCamara.Radius)
-                    {
-                        return lastSecurePosition;
-                    }
-                }
-            }
-
-            //Validamos que no choque
-            foreach (var obstaculo in objetosCandidatos)
-            {
-                if (TgcCollisionUtils.testSphereAABB(characterSphere, obstaculo))
-                {
-                    //Hubo un error, volver a la posición original
-                    return lastSecurePosition;
-                }
-            }
-
-            return retorno;
+            return objetosCandidatos.Capacity == 0;
         }
 
         public float distancia(Vector3 a,Vector3 b)
