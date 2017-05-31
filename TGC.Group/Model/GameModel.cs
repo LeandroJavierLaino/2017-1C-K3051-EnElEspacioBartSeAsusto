@@ -198,7 +198,8 @@ namespace TGC.Group.Model
         private TgcStaticSound soundWalk;
         private TgcStaticSound soundLoseLife;
         private Tgc3dSound sound3dMotor;
-        private int startGameMusic = 0;
+        private float tiempoPaso = 0;
+        private float tiempoGolpe = 0;
 
         private float timer;
 
@@ -225,8 +226,8 @@ namespace TGC.Group.Model
             soundLoseLife = new TgcStaticSound();
             soundLoseLife.dispose();
             //Convertir de Stereo a Mono, no funciona
-            sound3dMotor = new Tgc3dSound(MediaDir + "Sounds\\lab_loop1.wav", new Vector3(575,50,705),DirectSound.DsDevice);
-            sound3dMotor.MinDistance = 130f;
+            //sound3dMotor = new Tgc3dSound(MediaDir + "Sounds\\lab_loop1.wav", new Vector3(575,50,705),DirectSound.DsDevice);
+            //sound3dMotor.MinDistance = 130f;
             #region Fonts
             Fonts = new System.Drawing.Text.PrivateFontCollection();
             Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
@@ -240,7 +241,7 @@ namespace TGC.Group.Model
             soundPuerta.loadSound(MediaDir + "Sounds\\doormove3.wav", DirectSound.DsDevice);
             soundHeartBeat.loadSound(MediaDir + "Sounds\\heartbeat1.wav", DirectSound.DsDevice);
             soundAmbience.loadSound(MediaDir + "Sounds\\ambience_base.wav", DirectSound.DsDevice);
-            soundWalk.loadSound(MediaDir + "Sounds\\hardboot_generic1.wav", DirectSound.DsDevice);
+            
             soundLoseLife.loadSound(MediaDir + "Sounds\\pl_pain5.wav", DirectSound.DsDevice);
 
             #region Init Menu
@@ -1343,13 +1344,21 @@ namespace TGC.Group.Model
             }
             #endregion
 
+            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje);
+
             #region Logica Personaje
 
             //Vida
+            tiempoGolpe += ElapsedTime;
             if (distance(monstruo.Position, Camara.Position) < 50f && vidaPorcentaje > 0)
             {
                 vidaPorcentaje -= 0.2f;
-                soundLoseLife.play(false);
+                if(tiempoGolpe >= 0.75f)
+                {
+                    soundLoseLife.play(false);
+                    tiempoGolpe = 0;
+                }
             }
 
             vida.Scaling = new Vector2((vidaPorcentaje / 100) * 8, 0.5f);
@@ -1377,6 +1386,15 @@ namespace TGC.Group.Model
                 soundHeartBeat.play(true);
             }
 
+            tiempoPaso += ElapsedTime;
+
+            if (camarita.seMueve() && tiempoPaso >= 0.5f)
+            {
+                soundWalk.dispose();
+                soundWalk.loadSound(MediaDir + "Sounds\\tile3.wav", DirectSound.DsDevice);
+                soundWalk.play(false);
+                tiempoPaso = 0;
+            }
             #endregion
 
 
@@ -1397,8 +1415,7 @@ namespace TGC.Group.Model
             monstruo.Update(Camara.Position, objetosColisionables, ElapsedTime);
             #endregion
 
-            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje);
+            //sound3dMotor.play(true);
 
         }
 
@@ -1503,7 +1520,7 @@ namespace TGC.Group.Model
                 mp3Player.stop();
             }
 
-            sound3dMotor.play(true);
+            
 
             drawer2D.BeginDrawSprite();
             drawer2D.DrawSprite(vida);
@@ -1754,37 +1771,31 @@ namespace TGC.Group.Model
                 }
             }*/
 
-            
+
             //Render con Frustum Culling
-            foreach(var mesh in TgcScene.Meshes)
+
+            List<TgcMesh> candidatos = new List<TgcMesh>();
+
+            foreach (var mesh in TgcScene.Meshes)
             {
                 //Renderizar modelo con FrustumCulling
                 var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, mesh.BoundingBox);
                 if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
                 {
-                    if (mesh.Position.Y < Camara.Position.Y + 60f)
-                    {
-                        mesh.render();
-                    }
-                    else
-                    {
-                        if (mesh.Position.Y > Camara.Position.Y - 50f)
-                        {
-                            mesh.render();
-                        }
-                    }
-
+                    candidatos.Add(mesh);
                 }
              }
+
+            foreach(var candidato in candidatos)
+            {
+                candidato.render();
+            }
              
             //lightMesh.render();
            
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.render(ElapsedTime, objetosColisionables);
-            if (camarita.seMueve())
-            {
-                soundWalk.play();
-            }
+           
         }
         public void RenderPause() {
             RenderGame();
@@ -1810,14 +1821,14 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Dispose()
         {
+            //Dispose de todos los elementos que cargamos en el juego
             soundWalk.dispose();
             soundHeartBeat.dispose();
             soundAmbience.dispose();
             soundBoton.dispose();
             soundPuerta.dispose();
             soundLoseLife.dispose();
-            mp3Player.stop();
-            //Dispose de una escena.          
+            mp3Player.stop();         
             glowstickHUD1.Dispose();
             glowstickHUD2.Dispose();
             glowstickHUD3.Dispose();
@@ -1831,6 +1842,10 @@ namespace TGC.Group.Model
             foreach(var boton in botones)
             {
                 boton.meshBoton.dispose();
+            }
+            foreach(var botiquin in botiquines)
+            {
+                botiquin.dispose();
             }
             if (Shader!=null) Shader.Dispose();
             textoDeLaMuerte.Dispose();

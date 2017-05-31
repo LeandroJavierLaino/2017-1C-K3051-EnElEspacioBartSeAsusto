@@ -279,7 +279,25 @@ namespace TGC.Examples.Camara
             if (lockCam )
             {
                 leftrightRot -= -Input.XposRelative * RotationSpeed;
-                updownRot -= Input.YposRelative * RotationSpeed;
+
+                //Verificamos que la rotacion vertical este dentro de un angulo determinado
+                float anguloLimite = 0.91f;
+                if ( LookAt.Y - Position.Y < anguloLimite && LookAt.Y - Position.Y > -anguloLimite)
+                {
+                    updownRot -= Input.YposRelative * RotationSpeed;
+                }
+                else
+                {
+                    if(LookAt.Y - Position.Y >= anguloLimite)
+                    {
+                        updownRot -= 1 * RotationSpeed;
+                    }
+                    if (LookAt.Y - Position.Y <= -anguloLimite)
+                    {
+                        updownRot += 1 * RotationSpeed;
+                    }
+                }
+
                 //Se actualiza matrix de rotacion, para no hacer este calculo cada vez y solo cuando en verdad es necesario.
                 cameraRotation = Matrix.RotationY(leftrightRot);
             }
