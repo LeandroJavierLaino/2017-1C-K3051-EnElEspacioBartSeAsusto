@@ -198,6 +198,7 @@ namespace TGC.Group.Model
         private TgcStaticSound soundWalk;
         private TgcStaticSound soundLoseLife;
         private Tgc3dSound sound3dMotor;
+        private Tgc3dSound sound3DMonster;
         private float tiempoPaso = 0;
         private float tiempoGolpe = 0;
 
@@ -228,6 +229,8 @@ namespace TGC.Group.Model
             //Convertir de Stereo a Mono, no funciona
             //sound3dMotor = new Tgc3dSound(MediaDir + "Sounds\\lab_loop1.wav", new Vector3(575,50,705),DirectSound.DsDevice);
             //sound3dMotor.MinDistance = 130f;
+            sound3DMonster = new Tgc3dSound(MediaDir + "Sounds\\alert1.wav", new Vector3(), DirectSound.DsDevice);
+            sound3DMonster.MinDistance = 130f;
             #region Fonts
             Fonts = new System.Drawing.Text.PrivateFontCollection();
             Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
@@ -1415,6 +1418,8 @@ namespace TGC.Group.Model
             monstruo.Update(Camara.Position, objetosColisionables, ElapsedTime);
             #endregion
 
+            sound3DMonster.Position = monstruo.Position;
+            sound3DMonster.play(true);
             //sound3dMotor.play(true);
 
         }

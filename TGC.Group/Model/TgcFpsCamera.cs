@@ -145,8 +145,10 @@ namespace TGC.Examples.Camara
             var moveVector = new Vector3(0, 0, 0);
             Vector3 targetDistance = new Vector3(0, 0, 0);
             sphereCamara.setCenter(new Vector3(Position.X, Position.Y -40f, Position.Z));
+            float eposilon = 0.05f;
             isMoving = false;
             #region Movimientos
+
             //Forward
             if (Input.keyDown(Key.W) && vidaPorcentaje > 0 )
             {
@@ -154,13 +156,13 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    if (checkCollision(obstaculos,sphereCamara))
+                    if (checkCollision(obstaculos, sphereCamara))
                     {
                         moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, -newPosition.Length());
                     }
                     else
                     {
-                        moveVector += new Vector3(0,0,0);//pensar rebote =/
+                        moveVector += new Vector3(0, 0, targetDistance.Length()*eposilon);//hace un rebote nunca llega a collisionar
                     } 
                 }
                 else
@@ -177,7 +179,15 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, newPosition.Length());
+                    
+                    if (checkCollision(obstaculos, sphereCamara))
+                    {
+                        moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, newPosition.Length());
+                    }
+                    else
+                    {
+                        moveVector += new Vector3(0, 0, targetDistance.Length() * eposilon);//hace un rebote nunca llega a collisionar
+                    }
                 }
                 else
                 {
@@ -189,12 +199,18 @@ namespace TGC.Examples.Camara
             //Strafe right
             if (Input.keyDown(Key.D) && vidaPorcentaje > 0)
             {
-                //Hay que ver si se puede obtener un vector ortogonal al targetDistance de W o S
-                targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(-FastMath.PI_HALF)) * MovementSpeed;
                 if (collitionActive)
                 {
+                    targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * MovementSpeed;
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
+                    if (checkCollision(obstaculos, sphereCamara))
+                    {
+                        moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
+                    }
+                    else
+                    {
+                        moveVector += new Vector3(targetDistance.Length() * eposilon, 0, 0);//hace un rebote nunca llega a collisionar
+                    }
                 }
                 else
                 {
@@ -210,7 +226,15 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0) ;
+                    
+                    if (checkCollision(obstaculos, sphereCamara))
+                    {
+                        moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
+                    }
+                    else
+                    {
+                        moveVector += new Vector3(-targetDistance.Length() * eposilon, 0, 0);//hace un rebote nunca llega a collisionar
+                    }
                 }
                 else
                 {
@@ -221,11 +245,11 @@ namespace TGC.Examples.Camara
 
             if (Position.Y <= 55 )
             {
-                moveVector.Y += 55 - Position.Y;
+                moveVector.Y = 56;
             }
             if (Position.Y > 110 && Position.Y <= 165)
             {
-                moveVector.Y += 165 - Position.Y;
+                moveVector.Y = 166;
             }
 
             #endregion
@@ -252,11 +276,6 @@ namespace TGC.Examples.Camara
                     moveVector += new Vector3(0, 1, 0) * JumpSpeed;
                 }               
             }
-            /*
-            if(sphereCamara.Center.Y < 55)
-            { 
-                sphereCamara.setCenter(new Vector3(sphereCamara.Center.X,sphereCamara.Center.Y+1,sphereCamara.Center.Z));
-            }*/
 
             //Crouch
             if (Input.keyDown(Key.LeftControl))
