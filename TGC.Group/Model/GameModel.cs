@@ -230,7 +230,7 @@ namespace TGC.Group.Model
             //sound3dMotor = new Tgc3dSound(MediaDir + "Sounds\\lab_loop1.wav", new Vector3(575,50,705),DirectSound.DsDevice);
             //sound3dMotor.MinDistance = 130f;
             sound3DMonster = new Tgc3dSound(MediaDir + "Sounds\\alert1.wav", new Vector3(), DirectSound.DsDevice);
-            sound3DMonster.MinDistance = 130f;
+            sound3DMonster.MinDistance = 50f;
             #region Fonts
             Fonts = new System.Drawing.Text.PrivateFontCollection();
             Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
@@ -1418,8 +1418,6 @@ namespace TGC.Group.Model
             monstruo.Update(Camara.Position, objetosColisionables, ElapsedTime);
             #endregion
 
-            sound3DMonster.Position = monstruo.Position;
-            sound3DMonster.play(true);
             //sound3dMotor.play(true);
 
         }
@@ -1525,7 +1523,8 @@ namespace TGC.Group.Model
                 mp3Player.stop();
             }
 
-            
+            sound3DMonster.Position = monstruo.Position;
+            sound3DMonster.play(true);
 
             drawer2D.BeginDrawSprite();
             drawer2D.DrawSprite(vida);
@@ -1798,8 +1797,8 @@ namespace TGC.Group.Model
              
             //lightMesh.render();
            
-            TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.render(ElapsedTime, objetosColisionables);
+            //TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            //camarita.render(ElapsedTime, objetosColisionables);
            
         }
         public void RenderPause() {
@@ -1963,7 +1962,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("lightIntensity", 3500f *FastMath.Sqrt( ElapsedTime));
+                    mesh.Effect.SetValue("lightIntensity", 35f  / (ElapsedTime));
                     mesh.Effect.SetValue("lightAttenuation", 20f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
@@ -1980,8 +1979,8 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("lightIntensity", 250f * FastMath.Sqrt(ElapsedTime));
-                    mesh.Effect.SetValue("lightAttenuation", 1f);
+                    mesh.Effect.SetValue("lightIntensity", 12f / (ElapsedTime));
+                    mesh.Effect.SetValue("lightAttenuation", 10f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));

@@ -162,7 +162,7 @@ namespace TGC.Examples.Camara
                     }
                     else
                     {
-                        moveVector += new Vector3(0, 0, targetDistance.Length()*eposilon);//hace un rebote nunca llega a collisionar
+                        moveVector += new Vector3(0, 0, targetDistance.Length() * eposilon);//hace un rebote nunca llega a collisionar
                     } 
                 }
                 else
@@ -201,7 +201,7 @@ namespace TGC.Examples.Camara
             {
                 if (collitionActive)
                 {
-                    targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * MovementSpeed;
+                    targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed/8f) ;
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
                     if (checkCollision(obstaculos, sphereCamara))
                     {
@@ -222,7 +222,7 @@ namespace TGC.Examples.Camara
             //Strafe left
             if (Input.keyDown(Key.A) && vidaPorcentaje > 0)
             {
-                targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * MovementSpeed;
+                targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed / 8f);
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
@@ -365,7 +365,7 @@ namespace TGC.Examples.Camara
             
             sphereCamara.render();
         }
-
+        //Si da true quiere decir que no estamos chocando con nada.
         public bool checkCollision( List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, TgcBoundingSphere characterSphere)
         {
             List<TgcBoundingAxisAlignBox> objetosCandidatos = new List<TgcBoundingAxisAlignBox>();
