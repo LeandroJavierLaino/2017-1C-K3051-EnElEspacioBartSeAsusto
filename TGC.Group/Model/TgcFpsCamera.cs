@@ -186,7 +186,7 @@ namespace TGC.Examples.Camara
                     }
                     else
                     {
-                        moveVector += new Vector3(0, 0, targetDistance.Length() * eposilon);//hace un rebote nunca llega a collisionar
+                        moveVector += new Vector3(0, 0, -targetDistance.Length() * eposilon);//hace un rebote nunca llega a collisionar
                     }
                 }
                 else

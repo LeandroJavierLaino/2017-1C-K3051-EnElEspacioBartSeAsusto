@@ -21,6 +21,8 @@ using TGC.Examples.Engine2D.Spaceship.Core;
 using TGC.Core.Text;
 using TGC.Core.PortalRendering;
 using TGC.Core.Sound;
+using TGC.Core.Particle;
+using System;
 
 namespace TGC.Group.Model
 {
@@ -168,6 +170,8 @@ namespace TGC.Group.Model
 
         private Monstruo monstruo { get; set; }
         private SphereCollisionManager collisionManager;
+        private ParticleEmitter emitter;// Algo como para sumarle mas miedo al mostro xD
+        protected Random random;
         private TgcBoundingSphere esferaDeLinterna;
 
         //Boleano para ver si dibujamos el boundingbox
@@ -230,7 +234,7 @@ namespace TGC.Group.Model
             //sound3dMotor = new Tgc3dSound(MediaDir + "Sounds\\lab_loop1.wav", new Vector3(575,50,705),DirectSound.DsDevice);
             //sound3dMotor.MinDistance = 130f;
             sound3DMonster = new Tgc3dSound(MediaDir + "Sounds\\alert1.wav", new Vector3(), DirectSound.DsDevice);
-            sound3DMonster.MinDistance = 50f;
+            sound3DMonster.MinDistance = 20f;
             #region Fonts
             Fonts = new System.Drawing.Text.PrivateFontCollection();
             Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
@@ -917,7 +921,19 @@ namespace TGC.Group.Model
             #endregion
             monstruo = new Monstruo();
             monstruo.Init(MonstruoModelo.createMeshInstance("Monstruo"),/*new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints,*/ recorrido);
-            
+
+            //Particula que acompaña al monstruo por todo el juego
+            emitter = new ParticleEmitter(MediaDir + "Textures\\pisada.png", 40);
+            emitter.CreationFrecuency = 1f;
+            emitter.MinSizeParticle = 46f;
+            emitter.MaxSizeParticle = 56f;
+            emitter.Position = new Vector3(463, 55.2f, 83);
+            emitter.Speed = new Vector3(3,-20,2);
+            emitter.ParticleTimeToLive = 4f;
+            emitter.Dispersion = 1000;
+            emitter.Enabled = true;
+            emitter.Playing = true;
+
             objetosColisionables.Clear();
 
             foreach (var mesh in TgcScene.Meshes)
@@ -1413,13 +1429,10 @@ namespace TGC.Group.Model
             {
                 monstruo.Colisiones = !monstruo.Colisiones;
             }
-
+                        
             //Logica del monstruo
             monstruo.Update(Camara.Position, objetosColisionables, ElapsedTime);
             #endregion
-
-            //sound3dMotor.play(true);
-
         }
 
         public void UpdateMenu() {
@@ -1511,6 +1524,7 @@ namespace TGC.Group.Model
 		}
 
 		public void RenderGame() {
+            
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             timer += ElapsedTime;
 
@@ -1794,12 +1808,28 @@ namespace TGC.Group.Model
             {
                 candidato.render();
             }
-             
+
+            //Renderizamos las particulas del monstruo
+            D3DDevice.Instance.ParticlesEnabled = true;
+            D3DDevice.Instance.EnableParticles();
+            emitter.Enabled = true;
+            emitter.CreationFrecuency = 0.2f;
+            emitter.MinSizeParticle = 106f;
+            emitter.MaxSizeParticle = 106f;
+            //Se ajusta la posicion del emisor a la posicion del monstruo
+            //dado que el centro del mismo esta desplazado hay que ajustarlo
+            emitter.Position = new Vector3(monstruo.Position.X + monstruo.Position.X * ElapsedTime, monstruo.Position.Y + 25, monstruo.Position.Z + monstruo.Position.Z * ElapsedTime-9);
+            emitter.Speed = new Vector3(0, -20, 0);
+            emitter.ParticleTimeToLive = 1f;
+            emitter.Dispersion = 350;
+            emitter.Playing = true;
+            emitter.render(ElapsedTime);
+
             //lightMesh.render();
-           
+
             //TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             //camarita.render(ElapsedTime, objetosColisionables);
-           
+
         }
         public void RenderPause() {
             RenderGame();
