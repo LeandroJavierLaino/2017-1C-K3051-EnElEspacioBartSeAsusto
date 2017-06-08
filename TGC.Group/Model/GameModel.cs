@@ -1818,7 +1818,7 @@ namespace TGC.Group.Model
             emitter.MaxSizeParticle = 106f;
             //Se ajusta la posicion del emisor a la posicion del monstruo
             //dado que el centro del mismo esta desplazado hay que ajustarlo
-            emitter.Position = new Vector3(monstruo.Position.X + monstruo.Position.X * ElapsedTime, monstruo.Position.Y + 25, monstruo.Position.Z + monstruo.Position.Z * ElapsedTime-9);
+            emitter.Position = new Vector3(monstruo.Position.X + monstruo.Position.X * ElapsedTime - 35, monstruo.Position.Y + 25, monstruo.Position.Z + monstruo.Position.Z * ElapsedTime-9);
             emitter.Speed = new Vector3(0, -20, 0);
             emitter.ParticleTimeToLive = 1f;
             emitter.Dispersion = 350;
@@ -1966,23 +1966,6 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("materialSpecularExp", 2000f);
-                }
-                if (glowstick.getSelect() && glowstick.getEnergia() <= 0)
-                {
-                    lightMesh.Position = Camara.Position;
-                    //Cargar variables shader de la luz
-                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
-                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("lightIntensity", 5f);
-                    mesh.Effect.SetValue("lightAttenuation", 2f);
-
-                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
-                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.Gainsboro));
-                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
-                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.Black));
                     mesh.Effect.SetValue("materialSpecularExp", 2000f);
                 }
                 if (lighter.getSelect() && lighter.getEnergia() > 20)

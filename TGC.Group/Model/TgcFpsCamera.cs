@@ -247,7 +247,7 @@ namespace TGC.Examples.Camara
             {
                 moveVector.Y = 56;
             }
-            if (Position.Y > 110 && Position.Y <= 165)
+            if (Position.Y > 110 && Position.Y <= 165 && !(Position.X >= 1005 && Position.X <= 1234 && Position.Z >= 225 && Position.Z <= 335) && !(Position.X >= 35 && Position.X <= 187 && Position.Z >= 1045 && Position.Z <= 1281))
             {
                 moveVector.Y = 166;
             }
@@ -259,7 +259,7 @@ namespace TGC.Examples.Camara
             if (!Input.keyDown(Key.W) || !Input.keyDown(Key.A) || !Input.keyDown(Key.D) || !Input.keyDown(Key.S) || !Input.keyDown(Key.Space) )
             {
                 newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                moveVector += new Vector3(0, newPosition.Y, 0);
+                moveVector += new Vector3(0, newPosition.Y*2.8f, 0);
             }
 
             //Jump
