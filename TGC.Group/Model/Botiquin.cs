@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TGC.Core.SceneLoader;
+using TGC.Core.Sound;
 using TGC.Core.Utils;
 
 namespace TGC.Group.Model
@@ -13,10 +14,17 @@ namespace TGC.Group.Model
     {
         public TgcMesh meshBotiquin { get; set; }
         public Vector3 Position;
+        private TgcStaticSound soundBotiquin;
 
         public void setMesh(TgcMesh newMesh)
         {
             meshBotiquin = newMesh;
+        }
+
+        public void setSoundBotiquin(string path, Microsoft.DirectX.DirectSound.Device device)
+        {
+            soundBotiquin = new TgcStaticSound();
+            soundBotiquin.loadSound(path, device);
         }
 
         public void changePosicion(Vector3 newPosition)
@@ -27,7 +35,8 @@ namespace TGC.Group.Model
 
         public void consumir(Vector3 posicion)
         {
-                changePosicion(new Vector3(0, 0, 0)); 
+            soundBotiquin.play(false);
+            changePosicion(new Vector3(0, 0, 0)); 
         }
 
         public float distance(Vector3 a, Vector3 b)

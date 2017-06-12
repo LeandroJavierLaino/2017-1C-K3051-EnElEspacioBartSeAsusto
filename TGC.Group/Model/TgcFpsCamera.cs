@@ -138,19 +138,23 @@ namespace TGC.Examples.Camara
             LockCam = false;
         }
 
-        public void UpdateCamera(float elapsedTime, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float vidaPorcentaje,float staminaPorcentaje)
+        public void UpdateCamera(float elapsedTime, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float vidaPorcentaje,float staminaPorcentaje, bool playerHide)
         {
             //Para el menu deberia ser Cursor.Show(); sino no ves donde haces click :P
             Cursor.Hide();
             var moveVector = new Vector3(0, 0, 0);
             Vector3 targetDistance = new Vector3(0, 0, 0);
             sphereCamara.setCenter(new Vector3(Position.X, Position.Y -40f, Position.Z));
-            float eposilon = 0.05f;
+            float eposilon = 0.07f;
             isMoving = false;
+
+            if (playerHide == false)
+            {
+            
             #region Movimientos
 
             //Forward
-            if (Input.keyDown(Key.W) && vidaPorcentaje > 0 )
+            if (Input.keyDown(Key.W) && vidaPorcentaje > 0)
             {
                 targetDistance += (new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)) * MovementSpeed;
                 if (collitionActive)
@@ -163,7 +167,7 @@ namespace TGC.Examples.Camara
                     else
                     {
                         moveVector += new Vector3(0, 0, targetDistance.Length() * eposilon);//hace un rebote nunca llega a collisionar
-                    } 
+                    }
                 }
                 else
                 {
@@ -173,7 +177,7 @@ namespace TGC.Examples.Camara
             }
 
             //Backward
-            if (Input.keyDown(Key.S) && vidaPorcentaje > 0)
+            if (Input.keyDown(Key.S) && vidaPorcentaje > 0 )
             {
                 targetDistance -= (new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)) * MovementSpeed;
                 if (collitionActive)
@@ -220,7 +224,7 @@ namespace TGC.Examples.Camara
             }
 
             //Strafe left
-            if (Input.keyDown(Key.A) && vidaPorcentaje > 0)
+            if (Input.keyDown(Key.A) && vidaPorcentaje > 0 )
             {
                 targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed / 8f);
                 if (collitionActive)
@@ -243,7 +247,7 @@ namespace TGC.Examples.Camara
                 isMoving = true;
             }
 
-            if (Position.Y <= 55 )
+            if (Position.Y <= 55)
             {
                 moveVector.Y = 56;
             }
@@ -256,7 +260,7 @@ namespace TGC.Examples.Camara
 
             #region Modificadores de movimiento
             //Fall
-            if (!Input.keyDown(Key.W) || !Input.keyDown(Key.A) || !Input.keyDown(Key.D) || !Input.keyDown(Key.S) || !Input.keyDown(Key.Space) )
+            if (!Input.keyDown(Key.W) || !Input.keyDown(Key.A) || !Input.keyDown(Key.D) || !Input.keyDown(Key.S) || !Input.keyDown(Key.Space))
             {
                 newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
                 moveVector += new Vector3(0, newPosition.Y*2.8f, 0);
@@ -297,9 +301,10 @@ namespace TGC.Examples.Camara
             {
                 MovementSpeed = 100f;
             }
-#endregion
+                #endregion
 
-            //Solo rotar si se esta aprentando el boton izq del mouse
+            }
+            //Rotacion de la camara
             if (lockCam )
             {
                 leftrightRot -= -Input.XposRelative * RotationSpeed;
@@ -326,13 +331,11 @@ namespace TGC.Examples.Camara
                 cameraRotation = Matrix.RotationY(leftrightRot);
             }
 
-            if (lockCam)
-                Cursor.Position = mouseCenter;
-
+            if (lockCam) Cursor.Position = mouseCenter;
+            
             //Calculamos la nueva posicion del ojo segun la rotacion actual de la camara.
             var cameraRotatedPositionEye = Vector3.TransformNormal(moveVector * elapsedTime, cameraRotation);
             positionEye += cameraRotatedPositionEye;
-
            
             cameraRotation = Matrix.RotationX(updownRot) * Matrix.RotationY(leftrightRot);
             cameraRotatedPositionEye = Vector3.TransformNormal(moveVector * elapsedTime, cameraRotation);
@@ -345,8 +348,7 @@ namespace TGC.Examples.Camara
             var cameraOriginalUpVector = DEFAULT_UP_VECTOR;
             var cameraRotatedUpVector = Vector3.TransformNormal(cameraOriginalUpVector, cameraRotation);
 
-            base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector);
-            
+            base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector); 
         }
 
         /// <summary>

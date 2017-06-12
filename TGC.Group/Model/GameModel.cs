@@ -48,14 +48,14 @@ namespace TGC.Group.Model
 
         private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionables = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
 
-		//Coleccion de fuentes privadas (se cargan desde archivos)
-		private System.Drawing.Text.PrivateFontCollection Fonts;
+        //Coleccion de fuentes privadas (se cargan desde archivos)
+        private System.Drawing.Text.PrivateFontCollection Fonts;
 
         //Estados del juego
         private GameState StateGame;
         private GameState StateMenu;
         private GameState StatePause;
-		private GameState StateHowToPlay;
+        private GameState StateHowToPlay;
 
         private GameState CurrentState;
 
@@ -65,9 +65,8 @@ namespace TGC.Group.Model
 
         //Escena
         private TgcScene TgcScene { get; set; }
-        
-        List<Celda> celdasEscena = new List<Celda>();
-        List<Portal> portalesEscena = new List<Portal>();
+
+        List<HideCell> celdasEscena = new List<HideCell>();
 
         //Estado
 
@@ -80,24 +79,22 @@ namespace TGC.Group.Model
 
         //Redundancia FTW
         Menu.Menu menu;
-		Menu.Menu menuHowToPlay;
+        Menu.Menu menuHowToPlay;
 
-		private TgcText2D textoPausa;
-		private TgcText2D textoHowToPlay;
-		#endregion
+        private TgcText2D textoPausa;
+        private TgcText2D textoHowToPlay;
+        #endregion
 
+        #region HUD
+        //HUD
 
+        //Dibujador o dibujante??? 
+        private Drawer2D drawer2D;
 
-		#region HUD
-		//HUD
-
-		//Dibujador o dibujante??? 
-		private Drawer2D drawer2D;
-        
         //Vida
         private CustomSprite vida;
         private float vidaPorcentaje = 100.1f;
-        
+
         //Punto de Mira
         private CustomSprite centerPoint;
 
@@ -122,6 +119,9 @@ namespace TGC.Group.Model
         private CustomSprite glowstickHand;
         private CustomSprite lighterHand;
         private CustomSprite flashlightHand;
+
+        //Monster Jump Scare
+        private CustomSprite monster;
 
         #endregion
         private TgcText2D textoDeLaMuerte;
@@ -157,6 +157,7 @@ namespace TGC.Group.Model
         private Puerta puerta26;
         private Puerta puerta27;
         private Puerta puerta28;
+        private List<Puerta> puertasClass = new List<Puerta>();
 
         private Boton botonEscapePod1;
         private Boton botonEscapePod2;
@@ -196,15 +197,29 @@ namespace TGC.Group.Model
         //Sound and Music
         private TgcMp3Player mp3Player;
         private TgcStaticSound soundBoton;
-        private TgcStaticSound soundPuerta;
         private TgcStaticSound soundHeartBeat;
         private TgcStaticSound soundAmbience;
         private TgcStaticSound soundWalk;
         private TgcStaticSound soundLoseLife;
-        private Tgc3dSound sound3dMotor;
+        private TgcStaticSound soundFlashlight;
+        private TgcStaticSound soundLighterLoop;
         private Tgc3dSound sound3DMonster;
+        private TriggerSound soundLlanto1;
+        private TriggerSound soundLlanto2;
+        private TriggerSound soundLlanto3;
+        private TriggerSound soundLlanto4;
         private float tiempoPaso = 0;
         private float tiempoGolpe = 0;
+
+        //Hide & Seek
+        private bool playerHide = false;
+        private Vector3 escapeVector = new Vector3(0, 0, 0);
+        private HideCell HideOne1stFloor;
+        private HideCell HideTwo1stFloor;
+        private HideCell HideThree1stFloor;
+        private HideCell HideOne2ndFloor;
+        private HideCell HideTwo2ndFloor;
+        private HideCell HideThree2ndFloor;
 
         private float timer;
 
@@ -217,11 +232,11 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Init()
         {
+            #region Sound & Music
+            //Sound & Music
             mp3Player = new TgcMp3Player();
             soundBoton = new TgcStaticSound();
             soundBoton.dispose();
-            soundPuerta = new TgcStaticSound();
-            soundPuerta.dispose();
             soundHeartBeat = new TgcStaticSound();
             soundHeartBeat.dispose();
             soundAmbience = new TgcStaticSound();
@@ -230,11 +245,25 @@ namespace TGC.Group.Model
             soundWalk.dispose();
             soundLoseLife = new TgcStaticSound();
             soundLoseLife.dispose();
-            //Convertir de Stereo a Mono, no funciona
-            //sound3dMotor = new Tgc3dSound(MediaDir + "Sounds\\lab_loop1.wav", new Vector3(575,50,705),DirectSound.DsDevice);
-            //sound3dMotor.MinDistance = 130f;
-            sound3DMonster = new Tgc3dSound(MediaDir + "Sounds\\alert1.wav", new Vector3(), DirectSound.DsDevice);
-            sound3DMonster.MinDistance = 20f;
+            soundLighterLoop = new TgcStaticSound();
+            soundLighterLoop.dispose();
+            soundFlashlight = new TgcStaticSound();
+            soundFlashlight.dispose();
+            //Convertir de Stereo a Mono, sino no funciona ningun sonido
+            sound3DMonster = new Tgc3dSound(MediaDir + "Sounds\\breathing3.wav", new Vector3(), DirectSound.DsDevice);
+            sound3DMonster.MinDistance = 55f;
+            soundLlanto1 = new TriggerSound(new Vector3(420, 50, 420),MediaDir + "Sounds\\town_scared_sob1.wav", DirectSound.DsDevice);
+            soundLlanto2 = new TriggerSound(new Vector3(487, 50, 924), MediaDir + "Sounds\\town_scared_sob2.wav", DirectSound.DsDevice);
+            soundLlanto3 = new TriggerSound(new Vector3(650, 50, 1543), MediaDir + "Sounds\\town_scared_sob1.wav", DirectSound.DsDevice);
+            soundLlanto4 = new TriggerSound(new Vector3(847, 160, 413), MediaDir + "Sounds\\town_scared_sob2.wav", DirectSound.DsDevice);
+            soundBoton.loadSound(MediaDir + "Sounds\\button9.wav", DirectSound.DsDevice);
+            soundHeartBeat.loadSound(MediaDir + "Sounds\\heartbeat1.wav", DirectSound.DsDevice);
+            soundAmbience.loadSound(MediaDir + "Sounds\\ambience_base.wav", DirectSound.DsDevice);
+            soundLoseLife.loadSound(MediaDir + "Sounds\\pl_pain5.wav", DirectSound.DsDevice);
+            soundLighterLoop.loadSound(MediaDir + "Sounds\\fire_small_loop2.wav", DirectSound.DsDevice);
+            soundFlashlight.loadSound(MediaDir + "Sounds\\flashlight1.wav", DirectSound.DsDevice);
+            #endregion
+
             #region Fonts
             Fonts = new System.Drawing.Text.PrivateFontCollection();
             Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
@@ -243,13 +272,6 @@ namespace TGC.Group.Model
 
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
-
-            soundBoton.loadSound(MediaDir + "Sounds\\button9.wav", DirectSound.DsDevice);
-            soundPuerta.loadSound(MediaDir + "Sounds\\doormove3.wav", DirectSound.DsDevice);
-            soundHeartBeat.loadSound(MediaDir + "Sounds\\heartbeat1.wav", DirectSound.DsDevice);
-            soundAmbience.loadSound(MediaDir + "Sounds\\ambience_base.wav", DirectSound.DsDevice);
-            
-            soundLoseLife.loadSound(MediaDir + "Sounds\\pl_pain5.wav", DirectSound.DsDevice);
 
             #region Init Menu
             {
@@ -327,6 +349,9 @@ namespace TGC.Group.Model
             flashlightHand = new CustomSprite();
             flashlightHand.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\handAndFlashlight.png", D3DDevice.Instance.Device);
 
+            monster = new CustomSprite();
+            monster.Bitmap = new CustomBitmap(MediaDir + "\\Textures\\foto-calavera.png", D3DDevice.Instance.Device);
+
             #endregion
 
             //Seteamos las acciones que se realizan dependiendo del estado del juego
@@ -354,345 +379,31 @@ namespace TGC.Group.Model
             StatePause.Render = RenderPause;
             #endregion
 
+            #region Hide & Seek Init
+            HideOne1stFloor = new HideCell();
+            HideOne1stFloor.setCell(new Vector2(90,90), new Vector3(850,50,320));
+
+            HideTwo1stFloor = new HideCell();
+            HideTwo1stFloor.setCell(new Vector2(90, 90), new Vector3(130, 50, 775));
+
+            HideThree1stFloor = new HideCell();
+            HideThree1stFloor.setCell(new Vector2(90, 90), new Vector3(875, 50, 650));
+
+            HideOne2ndFloor = new HideCell();
+            HideOne2ndFloor.setCell(new Vector2(90, 90), new Vector3(405, 160, 875));
+
+            HideTwo2ndFloor = new HideCell();
+            HideTwo2ndFloor.setCell(new Vector2(90, 90), new Vector3(253, 160, 1620));
+
+            HideThree2ndFloor = new HideCell();
+            HideThree2ndFloor.setCell(new Vector2(90, 90), new Vector3(127, 160, 382));
+            #endregion
+
             CurrentState = StateMenu;
 
             //Carga de nivel
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene = loader.loadSceneFromFile(this.MediaDir + "FullLevel-TgcScene.xml", this.MediaDir + "\\");
-
-            #region Portal Rendering
-
-            float centro1Floor = 50;
-            float altura = 100;
-            float centro2Floor = 160;
-            float alturaEscalera = 210;
-            float centroEscalera = 105;
-
-            #region Celda Escape Pod 1er Piso
-            //Creamos y seteamos la celda
-            Celda celdaEscapePod1 = new Celda();
-            celdaEscapePod1.establecerCelda(new Vector3(210, altura, 180), new Vector3(460, centro1Floor, 105));//Al fin posicion y dimension OK 
-            //Meshes asociados a la celda
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[211]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[212]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[213]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[214]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[215]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[216]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[217]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[531]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[210]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[209]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[208]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[207]);
-            celdaEscapePod1.agregarMesh(TgcScene.Meshes[578]);
-            #endregion
-
-            #region Celda 1 Primer Piso
-            //Creamos y seteamos la celda
-            Celda celdaOne1Floor = new Celda();
-            celdaOne1Floor.establecerCelda(new Vector3(970, altura, 350), new Vector3(490, centro1Floor, 352));
-            //Meshes de la celda
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[0]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[1]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[2]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[3]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[4]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[6]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[17]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[18]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[19]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[20]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[21]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[22]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[23]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[24]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[25]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[26]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[37]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[38]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[39]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[40]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[41]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[42]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[43]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[44]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[45]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[46]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[47]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[48]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[49]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[50]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[51]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[52]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[53]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[54]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[55]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[56]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[57]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[58]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[59]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[60]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[61]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[62]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[63]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[64]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[65]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[66]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[67]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[68]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[69]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[70]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[71]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[72]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[73]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[74]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[75]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[76]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[77]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[78]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[79]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[218]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[219]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[220]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[221]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[222]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[223]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[224]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[225]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[226]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[227]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[316]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[501]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[502]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[503]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[504]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[505]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[506]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[507]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[532]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[539]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[540]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[541]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[542]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[543]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[544]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[545]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[546]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[547]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[548]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[549]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[550]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[551]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[552]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[553]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[554]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[555]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[558]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[559]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[560]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[561]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[587]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[588]);
-            celdaOne1Floor.agregarMesh(TgcScene.Meshes[623]);
-            #endregion
-
-            #region Portal entre la Celda 1 del 1er Piso y el Escape Pod del 1er Piso
-            Portal portalEscapeOne = new Portal();
-            portalEscapeOne.establecerPortal(new Vector3(60, altura, 10), new Vector3(462,centro1Floor,202), celdaEscapePod1, celdaOne1Floor);
-            celdaEscapePod1.agregarPortal(portalEscapeOne);
-            celdaOne1Floor.agregarPortal(portalEscapeOne);
-            portalesEscena.Add(portalEscapeOne);
-            celdasEscena.Add(celdaEscapePod1);
-            celdasEscena.Add(celdaOne1Floor);
-            #endregion
-
-            Celda celdaTwo1Floor = new Celda();
-            celdaTwo1Floor.establecerCelda(new Vector3(550,altura,450),new Vector3(694,centro1Floor,769));
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[0]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[1]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[2]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[4]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[5]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[7]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[9]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[16]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[8]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[107]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[119]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[122]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[120]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[105]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[627]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[110]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[628]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[106]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[109]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[523]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[509]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[104]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[108]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[638]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[633]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[629]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[632]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[630]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[631]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[111]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[113]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[112]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[114]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[115]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[117]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[116]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[118]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[121]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[94]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[96]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[95]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[99]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[634]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[508]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[98]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[624]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[626]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[97]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[528]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[524]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[527]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[525]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[526]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[529]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[638]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[535]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[100]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[102]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[101]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[103]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[15]);
-            celdaTwo1Floor.agregarMesh(TgcScene.Meshes[13]);
-            //Meshes 
-            celdasEscena.Add(celdaTwo1Floor);
-
-            Portal portalOneTwo1Floor = new Portal();
-            portalOneTwo1Floor.establecerPortal(new Vector3(60, altura, 10), new Vector3(946, centro1Floor, 535), celdaOne1Floor, celdaTwo1Floor);
-            portalesEscena.Add(portalOneTwo1Floor);
-            celdaTwo1Floor.agregarPortal(portalOneTwo1Floor);
-            celdaOne1Floor.agregarPortal(portalOneTwo1Floor);
-
-            Celda celdaThree1Floor = new Celda();
-            celdaThree1Floor.establecerCelda(new Vector3(440,altura,450),new Vector3(0,centro1Floor,0));
-            //Meshes
-            celdasEscena.Add(celdaThree1Floor);
-
-            Portal portalOneThree1Floor = new Portal();
-            portalOneThree1Floor.establecerPortal(new Vector3(60, altura, 10), new Vector3(0, centro1Floor, 0), celdaOne1Floor, celdaThree1Floor);
-            portalesEscena.Add(portalOneThree1Floor);
-
-            Portal portalTwoThree1Floor = new Portal();
-            portalTwoThree1Floor.establecerPortal(new Vector3(10, altura, 60), new Vector3(0, centro1Floor, 0), celdaOne1Floor, celdaThree1Floor);
-            portalesEscena.Add(portalTwoThree1Floor);
-
-            Celda celdaFour1Floor = new Celda();
-            celdaFour1Floor.establecerCelda(new Vector3(420,altura,310),new Vector3(0,centro1Floor,0));
-            //Meshes
-            celdasEscena.Add(celdaFour1Floor);
-
-            Celda celdaFive1Floor = new Celda();
-            celdaFive1Floor.establecerCelda(new Vector3(660,altura,440),new Vector3(0,centro1Floor,0));
-            //Meshes
-            celdasEscena.Add(celdaFive1Floor);
-
-            Celda celdaEscalera7 = new Celda();
-            celdaEscalera7.establecerCelda(new Vector3(180,alturaEscalera,270),new Vector3(0,centroEscalera,0));
-            //Meshes
-            celdasEscena.Add(celdaEscalera7);
-
-            Portal portal1FloorEscalera7 = new Portal();
-            portal1FloorEscalera7.establecerPortal(new Vector3(60, altura, 10), new Vector3(0, centro1Floor, 0), celdaFive1Floor, celdaEscalera7);
-            portalesEscena.Add(portal1FloorEscalera7);
-
-            #region Celda Escalera 8
-            //Creamos y seteamos la Celda
-            Celda celdaEscalera8 = new Celda();
-            celdaEscalera8.establecerCelda(new Vector3(270,alturaEscalera,180),new Vector3(1135,centroEscalera,275));
-            //Meshes asociados a la celda
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[228]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[229]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[230]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[231]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[232]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[233]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[234]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[235]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[236]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[474]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[475]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[476]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[477]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[478]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[479]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[480]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[481]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[482]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[579]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[596]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[597]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[598]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[599]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[600]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[601]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[602]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[603]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[604]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[605]);
-            celdaEscalera8.agregarMesh(TgcScene.Meshes[537]);
-            celdasEscena.Add(celdaEscalera8);
-            #endregion
-
-            #region Portal 1er Piso y Escalera 8
-            Portal portal1FloorEscalera8 = new Portal();
-            portal1FloorEscalera8.establecerPortal(new Vector3(10, altura, 60), new Vector3(980, centro1Floor, 238), celdaOne1Floor, celdaEscalera8);
-            portalesEscena.Add(portal1FloorEscalera8);
-            celdaOne1Floor.agregarPortal(portal1FloorEscalera8);
-            celdaEscalera8.agregarPortal(portal1FloorEscalera8);
-            #endregion
-
-            Celda celdaEscapePod2 = new Celda();
-            celdaEscapePod2.establecerCelda(new Vector3(210, altura, 180), new Vector3(460, centro2Floor, 105));//Al fin posicion y dimension OK 
-            celdaEscapePod2.agregarMesh(TgcScene.Meshes[0]);
-            //Meshes
-            celdasEscena.Add(celdaEscapePod2);
-
-            Celda celdaOne2Floor = new Celda();
-            celdaOne2Floor.establecerCelda(new Vector3(970, altura, 330), new Vector3(0, centro2Floor, 0));//falta centro XZ
-            //Meshes 
-            celdasEscena.Add(celdaOne2Floor);
-
-            Portal portalEscapeOne2 = new Portal();
-            portalEscapeOne2.establecerPortal(new Vector3(60,altura,10), new Vector3(0,centro2Floor,0), celdaEscapePod1, celdaOne1Floor);
-            portalesEscena.Add(portalEscapeOne2);
-
-            Celda celdaTwo2Floor = new Celda();
-            celdaTwo2Floor.establecerCelda(new Vector3(550, altura, 450), new Vector3(0, centro2Floor, 0));
-            //Meshes 
-            celdasEscena.Add(celdaTwo2Floor);
-
-            Celda celdaThree2Floor = new Celda();
-            celdaThree2Floor.establecerCelda(new Vector3(440, altura, 450), new Vector3(0, centro2Floor, 0));
-            //Meshes
-            celdasEscena.Add(celdaThree2Floor);
-
-            Celda celdaFour2Floor = new Celda();
-            celdaFour2Floor.establecerCelda(new Vector3(420, altura, 310), new Vector3(0, centro2Floor, 0));
-            //Meshes
-            celdasEscena.Add(celdaFour2Floor);
-
-            Celda celdaFive2Floor = new Celda();
-            celdaFive2Floor.establecerCelda(new Vector3(660, altura, 440), new Vector3(0, centro2Floor, 0));
-            //Meshes
-            celdasEscena.Add(celdaFive2Floor);
-            #endregion
 
             //se recalculan las normales
             foreach (var mesh in TgcScene.Meshes)
@@ -711,157 +422,191 @@ namespace TGC.Group.Model
             puerta1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta1.changePosition(new Vector3(89f, 32f, 275f));
             puertas.Add(puerta1.getMesh());
+            puertasClass.Add(puerta1);
 
             puerta2 = new Puerta();
             puerta2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta2.changePosition(new Vector3(439f, 32f, 203f));
             puertas.Add(puerta2.getMesh());
+            puertasClass.Add(puerta2);
 
             puerta3 = new Puerta();
             puerta3.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta3.getMesh().move(new Vector3(201f-15f, 32f, 1570f-22f));
             puerta3.getMesh().UpdateMeshTransform();
             puertas.Add(puerta3.getMesh());
+            puertasClass.Add(puerta3);
 
             puerta4 = new Puerta();
             puerta4.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta4.getMesh().move(new Vector3(452f-15f, 32f, 1221f-22f));
             puerta4.getMesh().UpdateMeshTransform();
             puertas.Add(puerta4.getMesh());
+            puertasClass.Add(puerta4);
 
             puerta5 = new Puerta();
             puerta5.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta5.changePosition(new Vector3(459f, 32f, 1675f));
             puertas.Add(puerta5.getMesh());
+            puertasClass.Add(puerta5);
 
             puerta6 = new Puerta();
             puerta6.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta6.getMesh().move(new Vector3(734f-15f, 32f, 1570f-22f));
             puerta6.getMesh().UpdateMeshTransform();
             puertas.Add(puerta6.getMesh());
+            puertasClass.Add(puerta6);
 
             puerta7 = new Puerta();
             puerta7.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta7.getMesh().move(new Vector3(915f-20f, 32f, 751f-22f));
             puerta7.getMesh().UpdateMeshTransform();
             puertas.Add(puerta7.getMesh());
-            
+            puertasClass.Add(puerta7);
+
             puerta8 = new Puerta();
             puerta8.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta8.getMesh().move(new Vector3(695f-20f, 32f, 578f));
             puerta8.getMesh().UpdateMeshTransform();
             puertas.Add(puerta8.getMesh());
-            
+            puertasClass.Add(puerta8);
+
             puerta9 = new Puerta();
             puerta9.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta9.changePosition(new Vector3(469f, 32f, 921f));
             puertas.Add(puerta9.getMesh());
-            
+            puertasClass.Add(puerta9);
+
             puerta10 = new Puerta();
             puerta10.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta10.getMesh().move(new Vector3(695f-20f, 32f, 886f));
             puerta10.getMesh().UpdateMeshTransform();
             puertas.Add(puerta10.getMesh());
-            
+            puertasClass.Add(puerta10);
+
             puerta11 = new Puerta();
             puerta11.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta11.changePosition(new Vector3(399f, 32f, 724f));
             puertas.Add(puerta11.getMesh());
+            puertasClass.Add(puerta11);
 
             puerta12 = new Puerta();
             puerta12.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta12.getMesh().move(new Vector3(454f-15f, 32f, 331f-22f));
             puerta12.getMesh().UpdateMeshTransform();
             puertas.Add(puerta12.getMesh());
+            puertasClass.Add(puerta12);
 
             puerta13 = new Puerta();
             puerta13.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta13.changePosition(new Vector3(399f, 32f, 1292f));
             puertas.Add(puerta13.getMesh());
+            puertasClass.Add(puerta13);
 
             puerta14 = new Puerta();
             puerta14.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta14.changePosition(new Vector3(89f, 32f, 922f));
             puertas.Add(puerta14.getMesh());
+            puertasClass.Add(puerta14);
 
             puerta15 = new Puerta();
             puerta15.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta15.changePosition(new Vector3(89f, 142f, 275f));
             puertas.Add(puerta15.getMesh());
+            puertasClass.Add(puerta15);
 
             puerta16 = new Puerta();
             puerta16.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta16.changePosition(new Vector3(439f, 142f, 203f));
             puertas.Add(puerta16.getMesh());
+            puertasClass.Add(puerta16);
 
             puerta17 = new Puerta();
             puerta17.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta17.getMesh().move(new Vector3(201f-15f, 142f, 1570f-22f));
             puerta17.getMesh().UpdateMeshTransform();
             puertas.Add(puerta17.getMesh());
+            puertasClass.Add(puerta17);
 
             puerta18 = new Puerta();
             puerta18.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta18.getMesh().move(new Vector3(452f-15f, 142f, 1221f-22f));
             puerta18.getMesh().UpdateMeshTransform();
             puertas.Add(puerta18.getMesh());
+            puertasClass.Add(puerta18);
 
             puerta19 = new Puerta();
             puerta19.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta19.changePosition(new Vector3(459f, 142f, 1675f));
             puertas.Add(puerta19.getMesh());
+            puertasClass.Add(puerta19);
 
             puerta20 = new Puerta();
             puerta20.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta20.getMesh().move(new Vector3(734f-15f, 142f, 1570f-22f));
             puerta20.getMesh().UpdateMeshTransform();
             puertas.Add(puerta20.getMesh());
+            puertasClass.Add(puerta20);
 
             puerta21 = new Puerta();
             puerta21.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta21.getMesh().move(new Vector3(915f-15f, 142f, 751f-22f));
             puerta21.getMesh().UpdateMeshTransform();
             puertas.Add(puerta21.getMesh());
+            puertasClass.Add(puerta21);
 
             puerta22 = new Puerta();
             puerta22.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta22.getMesh().move(new Vector3(695f-15f, 142f, 600f-22f));
             puerta22.getMesh().UpdateMeshTransform();
             puertas.Add(puerta22.getMesh());
+            puertasClass.Add(puerta22);
 
             puerta23 = new Puerta();
             puerta23.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta23.changePosition(new Vector3(469f, 142f, 921f));
             puertas.Add(puerta23.getMesh());
+            puertasClass.Add(puerta23);
 
             puerta24 = new Puerta();
             puerta24.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta24.getMesh().move(new Vector3(695f-15f, 142f, 912f-22f));
             puerta24.getMesh().UpdateMeshTransform();
             puertas.Add(puerta24.getMesh());
+            puertasClass.Add(puerta24);
 
             puerta25 = new Puerta();
             puerta25.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta25.changePosition(new Vector3(399f, 142f, 724f));
             puertas.Add(puerta25.getMesh());
+            puertasClass.Add(puerta25);
 
             puerta26 = new Puerta();
             puerta26.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2a90-TgcScene.xml").Meshes[0]);
             puerta26.getMesh().move(new Vector3(454f-15f, 142f, 331f-22f));
             puerta26.getMesh().UpdateMeshTransform();
             puertas.Add(puerta26.getMesh());
+            puertasClass.Add(puerta26);
 
             puerta27 = new Puerta();
             puerta27.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta27.changePosition(new Vector3(399f, 142f, 1292f));
             puertas.Add(puerta27.getMesh());
+            puertasClass.Add(puerta27);
 
             puerta28 = new Puerta();
             puerta28.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\PUERTA2-TgcScene.xml").Meshes[0]);
             puerta28.changePosition(new Vector3(89f, 142f, 922f));
             puertas.Add(puerta28.getMesh());
+            puertasClass.Add(puerta28);
+
+            foreach(var puerta in puertasClass)
+            {
+                puerta.setSound(MediaDir + "Sounds\\doormove3.wav", DirectSound.DsDevice);
+            }
 
             #endregion
+           
             /*
             #region TriggerMonstruoInit
             //Se declaran y definen las zonas que al ser ingresadas activan al monstruo
@@ -900,6 +645,7 @@ namespace TGC.Group.Model
             monsterSpawnPoints.Add(new Vector3(766f, 30f + 110f, 1335f));
             #endregion
             */
+
             #region Recorrido Monstruo
             var recorrido = new List<Vector3> ();
             recorrido.Add(new Vector3(944, 30, 242 ));
@@ -949,41 +695,41 @@ namespace TGC.Group.Model
 
             #region Botiquines Init
             
-            //Falta mesh y ubicaciones de cada botiquin
+            //Carga de los botiquines
             botiquin1 = new Botiquin();
             botiquin1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
             botiquin1.changePosicion(new Vector3(463,0,490));
+            botiquin1.setSoundBotiquin(MediaDir + "Sounds\\medshot4.wav", DirectSound.DsDevice);
             botiquines.Add(botiquin1.meshBotiquin);
 
-
-            botiquin2 = new Botiquin();
             botiquin2 = new Botiquin();
             botiquin2.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
             botiquin2.changePosicion(new Vector3(463, 110, 490));
+            botiquin2.setSoundBotiquin(MediaDir + "Sounds\\medshot4.wav", DirectSound.DsDevice);
             botiquines.Add(botiquin2.meshBotiquin);
 
             botiquin3 = new Botiquin();
-            botiquin3 = new Botiquin();
             botiquin3.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
             botiquin3.changePosicion(new Vector3(400, 0, 890));
+            botiquin3.setSoundBotiquin(MediaDir + "Sounds\\medshot4.wav", DirectSound.DsDevice);
             botiquines.Add(botiquin3.meshBotiquin);
 
             botiquin4 = new Botiquin();
-            botiquin4 = new Botiquin();
             botiquin4.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
-            botiquin4.changePosicion(new Vector3(400, 110, 890));
+            botiquin4.changePosicion(new Vector3(320, 110, 893));
+            botiquin4.setSoundBotiquin(MediaDir + "Sounds\\medshot4.wav", DirectSound.DsDevice);
             botiquines.Add(botiquin4.meshBotiquin);
 
             botiquin5 = new Botiquin();
-            botiquin5 = new Botiquin();
             botiquin5.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
             botiquin5.changePosicion(new Vector3(225, 0, 1600));
+            botiquin5.setSoundBotiquin(MediaDir + "Sounds\\medshot4.wav", DirectSound.DsDevice);
             botiquines.Add(botiquin5.meshBotiquin);
 
             botiquin6 = new Botiquin();
-            botiquin6 = new Botiquin();
             botiquin6.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\botiquin-TgcScene.xml").Meshes[0]);
-            botiquin6.changePosicion(new Vector3(225, 0, 1600));
+            botiquin6.changePosicion(new Vector3(225, 110, 1550));
+            botiquin6.setSoundBotiquin(MediaDir + "Sounds\\medshot4.wav", DirectSound.DsDevice);
             botiquines.Add(botiquin6.meshBotiquin);
 
             #endregion
@@ -1008,7 +754,7 @@ namespace TGC.Group.Model
 			#region Texto de ComoJugar
 			textoHowToPlay = new TgcText2D()
 			{
-				Text = "Hay un monstruo en el edificio! No sabemos qué es y no importa cómo llegó. La prioridad es salir con vida. Arreglándotelas con escasa iluminación, deberás pulsar los varios botones rojos que se encuentran para poder escapar. Pero ojo, que no te agarre el cuco porque sos boleta!!! Te movés con WASD, con el mouse manejás la cámara.Con E abrís puertas y apretás botones.Con FGH aternás entre tus diferentes recursos de iluminación.Con Shift corrés.",
+				Text = "Hay un monstruo en el edificio! No sabemos qué es y no importa cómo llegó. La prioridad es salir con vida. Arreglándotelas con escasa iluminación, deberás pulsar los varios botones rojos que se encuentran para poder escapar. Pero ojo, que no te agarre el cuco porque sos boleta!!! Te movés con WASD, con el mouse manejás la cámara.Con E abrís puertas, agarras botiquines (si el cuco te hizo daño), apretás botones y en las esquinas de algunas habitaciones te podes esconder en unas cajas. Con F,G o H alternás entre tus diferentes recursos de iluminación(glowstick, encendedor y linterna). Con Shift corrés.",
 				Color = Color.White,
 				Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2),
 				Size = new Size((int)(D3DDevice.Instance.Width * (5f / 6f)), D3DDevice.Instance.Height),
@@ -1083,10 +829,6 @@ namespace TGC.Group.Model
             esferaDeLinterna.setValues(lightMesh.Position,10f);
             #endregion
 
-            //Musica ahora reproduce musica pero tira un error de que no se cargo bien
-            
-            mp3Player.FileName = this.MediaDir + "Music\\hl1_song19.mp3";
-
             timer = 0;
 			UpdateGame();
 			
@@ -1136,8 +878,10 @@ namespace TGC.Group.Model
             lighterHand.Scaling = new Vector2(0.167f, 0.125f);
             flashlightHand.Position = new Vector2(D3DDevice.Instance.Width / 2 - 100f, D3DDevice.Instance.Height - 400f);
             flashlightHand.Scaling = new Vector2(0.167f, 0.125f);
+            monster.Position = new Vector2(D3DDevice.Instance.Width/4,D3DDevice.Instance.Height/4 - 150);
+            monster.Scaling = new Vector2(0.65f,0.65f);
             #endregion
-                        
+
             #region Logica Luces
             //Switch entre glowstick(F), encendedor(G) y linterna(H)
             if (Input.keyPressed(Key.F) && vidaPorcentaje > 0)
@@ -1146,6 +890,7 @@ namespace TGC.Group.Model
                 this.glowstick.setSelect(true);
                 this.lighter.setSelect(false);
                 this.flashlight.setSelect(false);
+                soundLighterLoop.stop();
                 timer = 0;
             }
             if (Input.keyPressed(Key.G) && vidaPorcentaje > 0)
@@ -1154,6 +899,14 @@ namespace TGC.Group.Model
                 this.lighter.setSelect(true);
                 this.flashlight.setSelect(false);
                 lightMesh.Color = Color.Yellow;
+                if (Math.Truncate( lighter.getEnergia()) > 0)
+                {
+                    soundLighterLoop.play(true);
+                }
+                if(Math.Truncate(lighter.getEnergia())==0)
+                {
+                    soundLighterLoop.stop();
+                }
                 timer = 0;
             }
             if (Input.keyPressed(Key.H) && vidaPorcentaje > 0)
@@ -1162,6 +915,8 @@ namespace TGC.Group.Model
                 this.lighter.setSelect(false);
                 this.flashlight.setSelect(true);
                 lightMesh.Color = Color.WhiteSmoke;
+                soundLighterLoop.stop();
+                soundFlashlight.play(false);
                 timer = 0;
             }
             //Logica de seleccion de luces
@@ -1283,7 +1038,6 @@ namespace TGC.Group.Model
                 puerta26.abrirPuerta(Camara.Position);
                 puerta27.abrirPuerta(Camara.Position);
                 puerta28.abrirPuerta(Camara.Position);
-                soundPuerta.play(false);
             }
 
             #endregion
@@ -1363,8 +1117,77 @@ namespace TGC.Group.Model
             }
             #endregion
 
+           
+            #region Hide & Seek update
+            //Ingreso al escondite hay que mantener E para estar escondido
+            if (Input.keyDown(Key.E) && HideOne1stFloor.isPlayerInCell(Camara.Position))
+            {
+                if (!playerHide)
+                {
+                    playerHide = true;
+                    escapeVector = Camara.Position;
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(883, 40, 350), 125f, 100f, Input);
+                }
+            }
+            if (Input.keyDown(Key.E) && HideOne2ndFloor.isPlayerInCell(Camara.Position))
+            {
+                if (!playerHide)
+                {
+                    playerHide = true;
+                    escapeVector = Camara.Position;
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(436, 150, 904), 125f, 100f, Input);
+                }
+            }
+            if (Input.keyDown(Key.E) && HideTwo1stFloor.isPlayerInCell(Camara.Position))
+            {
+                if (!playerHide)
+                {
+                    playerHide = true;
+                    escapeVector = Camara.Position;
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(95, 40, 748), 125f, 100f, Input);
+                }
+            }
+            if (Input.keyDown(Key.E) && HideTwo2ndFloor.isPlayerInCell(Camara.Position))
+            {
+                if (!playerHide)
+                {
+                    playerHide = true;
+                    escapeVector = Camara.Position;
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(228, 150, 1650), 125f, 100f, Input);
+                }
+            }
+            if (Input.keyDown(Key.E) && HideThree1stFloor.isPlayerInCell(Camara.Position))
+            {
+                if (!playerHide)
+                {
+                    playerHide = true;
+                    escapeVector = Camara.Position;
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(896, 40, 646), 125f, 100f, Input);
+                }
+            }
+            if (Input.keyDown(Key.E) && HideThree2ndFloor.isPlayerInCell(Camara.Position))
+            {
+                if (!playerHide)
+                {
+                    playerHide = true;
+                    escapeVector = Camara.Position;
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(94, 150, 418), 125f, 100f, Input);
+                }
+            }
+            //Condicion de salida del escondite
+            if ( playerHide)
+            {
+                if (Input.keyUp(Key.E))
+                {
+                    playerHide = false;
+                    Camara = new Examples.Camara.TgcFpsCamera(escapeVector, 125f, 100f, Input);
+                }
+                
+            }
+            #endregion
+
             var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje);
+            camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide);
 
             #region Logica Personaje
 
@@ -1404,6 +1227,10 @@ namespace TGC.Group.Model
             {
                 soundHeartBeat.play(true);
             }
+            else
+            {
+                soundHeartBeat.stop();
+            }
 
             tiempoPaso += ElapsedTime;
 
@@ -1416,6 +1243,10 @@ namespace TGC.Group.Model
             }
             #endregion
 
+            soundLlanto1.throwSound(camarita.Position);
+            soundLlanto2.throwSound(camarita.Position);
+            soundLlanto3.throwSound(camarita.Position);
+            soundLlanto4.throwSound(camarita.Position);
 
             #region Logica Monstruo
             //Para activar o desactivar al monstruo
@@ -1454,6 +1285,7 @@ namespace TGC.Group.Model
 			((TGC.Examples.Camara.TgcFpsCamera)this.Camara).LockCam = false;
 			menuHowToPlay.Update(ElapsedTime);
 		}
+        
         #region Render
         /// <summary>
         ///     Se llama cada vez que hay que refrescar la pantalla.
@@ -1469,9 +1301,11 @@ namespace TGC.Group.Model
 		#endregion
 
 		public void RenderCamaraMenu()
-		{ //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
+		{ 
+            //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
 			timer += ElapsedTime;
-            //mp3Player.FileName = this.MediaDir + "Music\\hl1_song19.mp3";
+
+            //Carga y reproduccion de musica para el menu
             mp3Player.FileName = this.MediaDir + "Music\\Mastermind.mp3";
             if (mp3Player.getStatus() == TgcMp3Player.States.Open)
             {
@@ -1485,11 +1319,6 @@ namespace TGC.Group.Model
 			if (this.flashlight.getSelect())
 			{
 				Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
-			}
-
-			if (glowstick.getEnergia() == 0 && System.Math.Truncate(lighter.getEnergia()) == 0 && System.Math.Truncate(flashlight.getEnergia()) == 0)
-			{
-				//TODO: Poner un Shader que distorsione todo D:
 			}
 
 			playerPos.Position = Camara.Position;
@@ -1537,9 +1366,6 @@ namespace TGC.Group.Model
                 mp3Player.stop();
             }
 
-            sound3DMonster.Position = monstruo.Position;
-            sound3DMonster.play(true);
-
             drawer2D.BeginDrawSprite();
             drawer2D.DrawSprite(vida);
             drawer2D.DrawSprite(stamina);
@@ -1559,14 +1385,22 @@ namespace TGC.Group.Model
             }
             if (glowstick.getSelect())
             {
+                if (Input.keyDown(Key.W))
+                {
+                    glowstickHand.Position = new Vector2(glowstickHand.Position.X , glowstickHand.Position.Y + 30*FastMath.Sin(glowstickHand.Position.Y + (0.00005f / ElapsedTime)));
+                }
+                
                 drawer2D.DrawSprite(glowstickHand);
             }
             if (lighter.getSelect())
             {
+                if (Input.keyDown(Key.W))
+                {
+                    lighterHand.Position = new Vector2(lighterHand.Position.X, lighterHand.Position.Y + 30 * FastMath.Sin(lighterHand.Position.Y + (0.00005f / ElapsedTime)));
+                }
+
                 drawer2D.DrawSprite(lighterHUD);
-            }
-            if (lighter.getSelect())
-            {
+                
                 drawer2D.DrawSprite(lighterHand);
             }
             if (lighter.getSelect() && lighter.getEnergia() > 0)
@@ -1575,15 +1409,28 @@ namespace TGC.Group.Model
             }
             if (flashlight.getEnergia() > 0 && flashlight.getSelect())
             {
-                drawer2D.DrawSprite(flashlightHUD);
+                
                 drawer2D.DrawSprite(flashlightLiveHUD);
             }
             if (flashlight.getSelect())
             {
+                if (Input.keyDown(Key.W))
+                {
+                    flashlightHand.Position = new Vector2(flashlightHand.Position.X, flashlightHand.Position.Y + 30 * FastMath.Sin(glowstickHand.Position.Y + (0.00005f / ElapsedTime)));
+                }
+                drawer2D.DrawSprite(flashlightHUD);
                 drawer2D.DrawSprite(flashlightHand);
+            }
+            if ( soundLlanto1.isInArea(Camara.Position) || soundLlanto2.isInArea(Camara.Position) || soundLlanto3.isInArea(Camara.Position) || soundLlanto4.isInArea(Camara.Position))
+            {
+                drawer2D.DrawSprite(monster);
             }
 
             drawer2D.EndDrawSprite();
+
+            //Sonido del monstruo y ubicacion del mismo
+            sound3DMonster.Position = monstruo.Position;
+            sound3DMonster.play(true);
 
             //Aplicamos un Shader especifico a cada tipo de luz
             if (this.glowstick.getSelect() || this.lighter.getSelect() && vidaPorcentaje > 0)
@@ -1761,6 +1608,8 @@ namespace TGC.Group.Model
             monstruo.Render();
 
             //Dibuja un texto por pantalla
+            string hidden = "No";
+            if (playerHide) { hidden = "Si"; } else { hidden = "No"; }
             TGC.Examples.Camara.TgcFpsCamera camaraPrint = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n "
                 + "Position : " + TgcParserUtils.printVector3(Camara.Position) + "\n"
@@ -1768,27 +1617,12 @@ namespace TGC.Group.Model
                 + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
                 + " Monster Position : " + TgcParserUtils.printVector3(monstruo.Position) + "\n"
                 + " Camera Bounding Sphere : " + TgcParserUtils.printVector3(camaraPrint.sphereCamara.Position) + "\n"
+                + " Player Hidden : " + hidden + "\n"
+                + " Energia Encendedor : " + TgcParserUtils.printFloat(lighter.getEnergia()) + "\n"
                 + " M para Monstruo D:" + "\n"
                 + " N para activar/desactivar colisiones del Monstruo \n"
                 + " L activa colisiones de la camara"
             , 0, 30, Color.OrangeRed);
-            /*
-            //render por "Portal" Rendering
-            List<TgcMesh> candidatos = new List<TgcMesh>();
-            foreach (var celda in celdasEscena)
-            {
-                candidatos.AddRange(celda.render(Camara.Position, Frustum));
-            }
-
-            foreach (var candidato in candidatos)
-            {
-                var r = TgcCollisionUtils.classifyFrustumAABB(Frustum, candidato.BoundingBox);
-                if (r != TgcCollisionUtils.FrustumResult.OUTSIDE)
-                {
-                    candidato.render();
-                }
-            }*/
-
 
             //Render con Frustum Culling
 
@@ -1808,7 +1642,7 @@ namespace TGC.Group.Model
             {
                 candidato.render();
             }
-
+           
             //Renderizamos las particulas del monstruo
             D3DDevice.Instance.ParticlesEnabled = true;
             D3DDevice.Instance.EnableParticles();
@@ -1860,7 +1694,6 @@ namespace TGC.Group.Model
             soundHeartBeat.dispose();
             soundAmbience.dispose();
             soundBoton.dispose();
-            soundPuerta.dispose();
             soundLoseLife.dispose();
             mp3Player.stop();         
             glowstickHUD1.Dispose();
@@ -1869,7 +1702,9 @@ namespace TGC.Group.Model
             flashlightHUD.Dispose();
             monstruo.mesh.dispose();
             TgcScene.disposeAll();
-            foreach (var puerta in puertas)
+            soundLighterLoop.dispose();
+            soundFlashlight.dispose();
+            foreach (var puerta in puertasClass)
             {
                 puerta.dispose();
             }

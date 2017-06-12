@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TGC.Core.SceneLoader;
+using TGC.Core.Sound;
 using TGC.Core.Utils;
 
 namespace TGC.Group.Model
@@ -14,7 +15,8 @@ namespace TGC.Group.Model
     {
         private TgcMesh modeloPuerta { get; set; }
         private bool puertaAbierta = false;
-
+        private TgcStaticSound soundPuerta;
+        
         public void changePosition(Vector3 newPosition)
         {
             modeloPuerta.Position = newPosition;
@@ -36,19 +38,27 @@ namespace TGC.Group.Model
             return modeloPuerta.Position;
         }
 
+        public void setSound(string path,Microsoft.DirectX.DirectSound.Device device)
+        {
+            soundPuerta = new TgcStaticSound();
+            soundPuerta.loadSound(path, device);
+        }
+
         internal void abrirPuerta(Vector3 position)
         {
             if ( (distance(position, modeloPuerta.Position)) < 55 && !puertaAbierta)
             {
                 changePosition(new Vector3(modeloPuerta.Position.X, 210f + modeloPuerta.Position.Y, modeloPuerta.Position.Z));
-                puertaAbierta = !puertaAbierta;
+                puertaAbierta = true;
+                soundPuerta.play(false);
             }
             else
             {
                 if ((distance(position, modeloPuerta.Position)) < 255 && puertaAbierta)
                 {
                     changePosition(new Vector3(modeloPuerta.Position.X, modeloPuerta.Position.Y - 210f, modeloPuerta.Position.Z));
-                    puertaAbierta = !puertaAbierta;
+                    puertaAbierta = false;
+                    soundPuerta.play(false);
                 }
             }
         }
@@ -56,6 +66,12 @@ namespace TGC.Group.Model
         public float distance(Vector3 a, Vector3 b)
         {
             return (FastMath.Sqrt(FastMath.Pow2(a.X - b.X) + FastMath.Pow2(a.Y - b.Y) + FastMath.Pow2(a.Z - b.Z)));
+        }
+
+        public void dispose()
+        {
+            modeloPuerta.dispose();
+            soundPuerta.dispose();
         }
     }
 }
