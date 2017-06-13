@@ -40,9 +40,13 @@ namespace TGC.Group.Model
         //Posicion
         public Vector3 Position { get { return mesh.Position; } set { mesh.Position = value; this.sphere.setCenter(value); } }
 
+		public Vector2 LookAt { get { return new Vector2(FastMath.Sin(mesh.Rotation.Y - FastMath.PI), FastMath.Cos(mesh.Rotation.Y - FastMath.PI)); } }
+
         //Nodos de recorrido
         private List<Vector3> recorrido;
 		private int nextNode;
+
+		private float rangoInmediatoSq;
 
         //Si la camara colisiona con un trigger el monstruo aparece en el spawnpoint de igual indice
         /*
@@ -96,6 +100,7 @@ namespace TGC.Group.Model
         //La lista de triggers y la de spawnPoints deben ser del mismo tamaño
         public void Init(TgcMesh mesh,/*Vector3 startPos, List<Core.BoundingVolumes.TgcBoundingSphere> triggers, List<Vector3> spawnPoints,*/ List<Vector3> recorrido) {
             this.mesh = mesh;
+			this.rangoInmediatoSq = 1000.0f;
             sphere = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(mesh);
 			sphere.setValues(sphere.Center, 20);
 			Position = recorrido[0];
@@ -121,7 +126,7 @@ namespace TGC.Group.Model
             //Obtener movimiento
             var movement = targetDirection * velocidad * ElapsedTime;
 
-            //Si el movimiento es mayor que la distancia al objetivo lo reemplazamos por la misma
+            //Si el movimiento es mayor que la distancia al objetivo lo reemplazamos por la misma para no pasarnos
             if(movement.LengthSq() > targetDistance.LengthSq())
             {
                 movement = targetDistance;
@@ -138,7 +143,7 @@ namespace TGC.Group.Model
 
             var originalPos = Position;
             
-            //Rotamos el mesh
+            //Rotamos el mesh, se suma PI para que de la cara y no la espalda
             mesh.Rotation = new Vector3(0, targetAngleH + FastMath.PI, 0);
 
 			move(movement, obstaculos);
@@ -146,18 +151,29 @@ namespace TGC.Group.Model
         }
         public void Update(Vector3 targetPos, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float ElapsedTime) {
 			if (!activo) return;
-			//chequear si veo al jugador
-			
 			var Distance = targetPos - Position;
-			Core.Geometry.TgcRay ray = new Core.Geometry.TgcRay(Position, Distance);
-			bool target_visible = true;
-			foreach (var mesh in obstaculos) {
 
-				if (TgcCollisionUtils.intersectRayAABB(ray, mesh, out Vector3 interseccion)) {
-					if ((interseccion-Position).LengthSq() < Distance.LengthSq()) {
-						target_visible = false;
+			//get LookAt Vector del Monstruo
+
+			var LookAt = this.LookAt;
+			var DistanceDir2D = new Vector2(Distance.X, Distance.Z);
+			DistanceDir2D.Normalize();
+			//chequear si el jugador está en el rango de visión
+			bool target_visible = Distance.LengthSq() < rangoInmediatoSq;
+
+			if (!target_visible && Vector2.Dot(LookAt, DistanceDir2D) >= 0f) {
+				target_visible = true;
+				//chequear si nada se interpone entre el jugador y el monstruo
+				Core.Geometry.TgcRay ray = new Core.Geometry.TgcRay(Position, Distance);
+				foreach (var mesh in obstaculos) {
+					if (TgcCollisionUtils.intersectRayAABB(ray, mesh, out Vector3 interseccion)) {
+						if ((interseccion - Position).LengthSq() < Distance.LengthSq()) {
+							//si hay algun objeto en el medio el target no es visible y dejamos de queryar
+							target_visible = false;
+							break;
+						};
 					};
-				};
+				}
 			}
 			//SI LO VEO LO HAGO PELOTAAA
 			if (target_visible) { target = targetPos; chasingPlayer = true; }
@@ -171,7 +187,7 @@ namespace TGC.Group.Model
 				
 			}
 			//si estoy persiguiendo al jugador pero ya no lo veo y estoy cerca del ultimo punto donde lo vi
-			if (chasingPlayer == true && !target_visible && Core.Collision.TgcCollisionUtils.testPointSphere(new TgcBoundingSphere(sphere.Center,sphere.Radius+20), target))
+			if (chasingPlayer && !target_visible && Core.Collision.TgcCollisionUtils.testPointSphere(new TgcBoundingSphere(sphere.Center,sphere.Radius+20), target))
 			{
 				//dejo de perseguir y regreso a mi recorrido
 				chasingPlayer = false;
