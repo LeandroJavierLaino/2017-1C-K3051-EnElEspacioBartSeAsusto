@@ -1187,7 +1187,19 @@ namespace TGC.Group.Model
             #endregion
 
             var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            //TODO: una lista de las ultimas posiciones que no tuvieron colision, ya que con una sola no sirve
+            Vector3 lastSecurePos = new Vector3();
+
+            if (camarita.checkCollision(objetosColisionables, camarita.sphereCamara)) lastSecurePos = camarita.Position;
+            
             camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide);
+
+            //Verificar la primera que no tenga colisiones
+            //foreach(var lastPos in securePositions){
+            //  if (!camarita.checkCollision(objetosColisionables, camarita.sphereCamara)) camarita = new Examples.Camara.TgcFpsCamera(lastSecurePos, 125f, 100f, Input);
+            //  else break;
+            //}
+            if (!camarita.checkCollision(objetosColisionables, camarita.sphereCamara)) camarita = new Examples.Camara.TgcFpsCamera(lastSecurePos, 125f, 100f, Input);
 
             #region Logica Personaje
 
@@ -1661,8 +1673,8 @@ namespace TGC.Group.Model
 
             //lightMesh.render();
 
-            //TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            //camarita.render(ElapsedTime, objetosColisionables);
+            TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            camarita.render(ElapsedTime, objetosColisionables);
 
         }
         public void RenderPause() {

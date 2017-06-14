@@ -145,7 +145,7 @@ namespace TGC.Examples.Camara
             var moveVector = new Vector3(0, 0, 0);
             Vector3 targetDistance = new Vector3(0, 0, 0);
             sphereCamara.setCenter(new Vector3(Position.X, Position.Y -40f, Position.Z));
-            float eposilon = 0.07f;
+            
             isMoving = false;
 
             if (playerHide == false)
@@ -160,14 +160,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    if (checkCollision(obstaculos, sphereCamara))
-                    {
-                        moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, -newPosition.Length());
-                    }
-                    else
-                    {
-                        moveVector += new Vector3(0, 0, targetDistance.Length() * eposilon);//hace un rebote nunca llega a collisionar
-                    }
+                    moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, -newPosition.Length());
                 }
                 else
                 {
@@ -183,15 +176,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    
-                    if (checkCollision(obstaculos, sphereCamara))
-                    {
-                        moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, newPosition.Length());
-                    }
-                    else
-                    {
-                        moveVector += new Vector3(0, 0, -targetDistance.Length() * eposilon);//hace un rebote nunca llega a collisionar
-                    }
+                    moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, newPosition.Length());
                 }
                 else
                 {
@@ -207,14 +192,7 @@ namespace TGC.Examples.Camara
                 {
                     targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed/8f) ;
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    if (checkCollision(obstaculos, sphereCamara))
-                    {
-                        moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
-                    }
-                    else
-                    {
-                        moveVector += new Vector3(targetDistance.Length() * eposilon, 0, 0);//hace un rebote nunca llega a collisionar
-                    }
+                    moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
                 }
                 else
                 {
@@ -230,15 +208,7 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    
-                    if (checkCollision(obstaculos, sphereCamara))
-                    {
-                        moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
-                    }
-                    else
-                    {
-                        moveVector += new Vector3(-targetDistance.Length() * eposilon, 0, 0);//hace un rebote nunca llega a collisionar
-                    }
+                    moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
                 }
                 else
                 {
@@ -363,8 +333,6 @@ namespace TGC.Examples.Camara
         }
         public void render(float elapsedTime, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos)
         {
-            //sphereCamara.setCenter( bounce(sphereCamara.Position, obstaculos));
-            
             sphereCamara.render();
         }
         //Si da true quiere decir que no estamos chocando con nada.
