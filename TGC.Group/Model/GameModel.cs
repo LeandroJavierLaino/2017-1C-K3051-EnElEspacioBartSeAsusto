@@ -747,7 +747,7 @@ namespace TGC.Group.Model
 			{
 				Text = "PAUSA",
 				Color = Color.Gray,
-				Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2)
+				Position = new Point(0, D3DDevice.Instance.Height / 3)
 			};
 			textoPausa.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
 			#endregion

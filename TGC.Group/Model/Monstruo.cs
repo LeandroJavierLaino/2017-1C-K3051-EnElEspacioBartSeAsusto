@@ -46,7 +46,16 @@ namespace TGC.Group.Model
         private List<Vector3> recorrido;
 		private int nextNode;
 
+		//rango de distancia en el que detecta al jugador independientemente de su posicion relativa al rango de vision
 		private float rangoInmediatoSq;
+
+		/*
+		 * valor real entre -1 y 1 que representa el rango de visión del monstruo
+		 * 1 significa un radio de 0 grados (sólo ve lo que tiene justo en frente, perfectamente alineado con el ángulo en que está encarado el monstruo).
+		 * 0 significa un radio de 180 grados
+		 * -1 significa un radio de 360 grados (ve en toda dirección)
+		 */
+		private float rangoVision;
 
         //Si la camara colisiona con un trigger el monstruo aparece en el spawnpoint de igual indice
         /*
@@ -110,6 +119,13 @@ namespace TGC.Group.Model
 			nextNode = 1;
 			chasingPlayer = false;
 
+			//1    -> 0
+			//0.5  -> 60
+			//0    -> 180
+			//-0.5 -> 300
+			//-1   -> 360
+			rangoVision = 0.2f;
+
 			target = recorrido[nextNode];
 			collisionManager = new MonsterCollider();
 
@@ -127,7 +143,7 @@ namespace TGC.Group.Model
             var movement = targetDirection * velocidad * ElapsedTime;
 
             //Si el movimiento es mayor que la distancia al objetivo lo reemplazamos por la misma para no pasarnos
-            if(movement.LengthSq() > targetDistance.LengthSq())
+            if(movement.LengthSq() >= targetDistance.LengthSq())
             {
                 movement = targetDistance;
 				ret = true;
@@ -161,7 +177,7 @@ namespace TGC.Group.Model
 			//chequear si el jugador está en el rango de visión
 			bool target_visible = Distance.LengthSq() < rangoInmediatoSq;
 
-			if (!target_visible && Vector2.Dot(LookAt, DistanceDir2D) >= 0f) {
+			if (!target_visible && Vector2.Dot(LookAt, DistanceDir2D) >= rangoVision) {
 				target_visible = true;
 				//chequear si nada se interpone entre el jugador y el monstruo
 				Core.Geometry.TgcRay ray = new Core.Geometry.TgcRay(Position, Distance);
@@ -187,11 +203,12 @@ namespace TGC.Group.Model
 				
 			}
 			//si estoy persiguiendo al jugador pero ya no lo veo y estoy cerca del ultimo punto donde lo vi
-			if (chasingPlayer && !target_visible && Core.Collision.TgcCollisionUtils.testPointSphere(new TgcBoundingSphere(sphere.Center,sphere.Radius+20), target))
+			if (chasingPlayer && !target_visible && Core.Collision.TgcCollisionUtils.testPointSphere(new TgcBoundingSphere(sphere.Center,sphere.Radius + 20), target))
 			{
 				//dejo de perseguir y regreso a mi recorrido
 				chasingPlayer = false;
 				Position = recorrido[nextNode];
+				target = recorrido[nextNode];
 			}
 
 
