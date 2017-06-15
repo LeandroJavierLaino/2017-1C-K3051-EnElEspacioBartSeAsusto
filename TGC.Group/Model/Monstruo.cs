@@ -15,6 +15,30 @@ namespace TGC.Group.Model
     {
         private const float velocidad = 90f;
 
+
+		//se usa para rotar el mesh lentamente hasta un objetivo determinado sin pasarse
+		private float Approach(float val, float tar, float amo) {
+			//distancia entre el valor y el target
+			float dist = tar - val;
+			//si el amount para aproximar es positivo (acercamiento) y es mayor que la distancia que se quiere aproximar se reemplaza por la distancia 
+			if (amo > 0f && FastMath.Abs(dist) < amo)
+			{
+				amo = dist;
+			}
+			else if (dist < 0f) amo *= -1f;
+			
+			return val + amo;
+		}
+
+		private float AngleDistance(float a, float b) {
+			//float c = b - a + FastMath.PI;
+			//float mod = c - FastMath.Floor(c / FastMath.PI_HALF) * FastMath.PI - FastMath.PI_HALF;
+			//return mod;
+			return FastMath.Atan2(FastMath.Sin(b - a), FastMath.Cos(b - a));
+		}
+
+		private float rotation_speed;
+
 		//Current target position
 		private Vector3 target;
 
@@ -118,6 +142,7 @@ namespace TGC.Group.Model
             this.recorrido = recorrido;
 			nextNode = 1;
 			chasingPlayer = false;
+			rotation_speed = 0.1f;
 
 			//1    -> 0
 			//0.5  -> 60
@@ -158,11 +183,24 @@ namespace TGC.Group.Model
             var originalRot = mesh.Rotation;
 
             var originalPos = Position;
-            
-            //Rotamos el mesh, se suma PI para que de la cara y no la espalda
-            mesh.Rotation = new Vector3(0, targetAngleH + FastMath.PI, 0);
+			if (chasingPlayer)
+			{
+				//Rotamos el mesh, se suma PI para que de la cara y no la espalda
+				mesh.Rotation = new Vector3(0, targetAngleH + FastMath.PI, 0);
+				move(movement, obstaculos);
+			}
+			else {
+				//si tamos tranca rotamos lentamente a la dirección a la que queremos ir
 
-			move(movement, obstaculos);
+				//sacamos la distancia entre angulos
+				float distancia = AngleDistance(mesh.Rotation.Y,targetAngleH + FastMath.PI);
+				mesh.Rotation = new Vector3(0f, Approach(mesh.Rotation.Y, mesh.Rotation.Y+distancia, rotation_speed),0f);
+
+				//si ya estamos como queremos nos movemos
+				if (FastMath.EpsilonEquals(AngleDistance(mesh.Rotation.Y, targetAngleH + FastMath.PI),0f)) {
+					move(movement, obstaculos);
+				}
+			}
 			return ret;
         }
         public void Update(Vector3 targetPos, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float ElapsedTime) {
