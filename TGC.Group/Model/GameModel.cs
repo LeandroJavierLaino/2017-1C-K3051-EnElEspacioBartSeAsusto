@@ -125,6 +125,7 @@ namespace TGC.Group.Model
 
         #endregion
         private TgcText2D textoDeLaMuerte;
+        private TgcText2D textoDeLaVictoria;
 
         private TgcMesh PuertaModelo { get; set; }
         private TgcMesh MonstruoModelo { get; set; }
@@ -740,10 +741,18 @@ namespace TGC.Group.Model
             textoDeLaMuerte.Color = Color.Red;
             textoDeLaMuerte.Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2);
             textoDeLaMuerte.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
-			#endregion
+            #endregion
 
-			#region Texto de Pausa
-			textoPausa = new TgcText2D()
+            #region Texto de Victoria
+            textoDeLaVictoria = new TgcText2D();
+            textoDeLaVictoria.Text = "YOU ESCAPED!";
+            textoDeLaVictoria.Color = Color.Green;
+            textoDeLaVictoria.Position = new Point(D3DDevice.Instance.Width / 12, D3DDevice.Instance.Height / 2);
+            textoDeLaVictoria.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
+            #endregion
+
+            #region Texto de Pausa
+            textoPausa = new TgcText2D()
 			{
 				Text = "PAUSA",
 				Color = Color.Gray,
@@ -998,7 +1007,9 @@ namespace TGC.Group.Model
             if (Input.keyPressed(Key.E) && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55) && botonCombustible.isGreen && botonElectricidad.isGreen && botonElectricidad2.isGreen && botonOxigeno.isGreen)
             {
                 botonEscapePod1.changeColor(Color.Green);
+                botonEscapePod1.isGreen = true;
                 botonEscapePod2.changeColor(Color.Green);
+                botonEscapePod2.isGreen = true;
                 soundBoton.play(false);
                 //aaaaand We WON!!!
             }
@@ -1186,8 +1197,16 @@ namespace TGC.Group.Model
             }
             #endregion
 
-            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;     
-            camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide);
+            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+
+            if (!botonEscapePod1.isGreen && !botonEscapePod2.isGreen)
+            {
+                camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide, false);
+            }
+            else
+            {
+                camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide, true);
+            }
 
             #region Logica Personaje
 
@@ -1456,7 +1475,9 @@ namespace TGC.Group.Model
                 textoDeLaMuerte.render();
                 Shader = TgcShaders.loadEffect(ShadersDir + "GrayShader.fx");
             }
-            
+
+            if (botonEscapePod1.isGreen || botonEscapePod2.isGreen) textoDeLaVictoria.render();
+
             playerPos.Position = Camara.Position;
 
             //Agrega efecto del Shader a los elementos del escenario
@@ -1661,8 +1682,8 @@ namespace TGC.Group.Model
 
             //lightMesh.render();
 
-            TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.render(ElapsedTime, objetosColisionables);
+            //TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            //camarita.render(ElapsedTime, objetosColisionables);
 
         }
         public void RenderPause() {
