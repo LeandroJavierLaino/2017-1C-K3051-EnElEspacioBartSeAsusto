@@ -270,7 +270,7 @@ namespace TGC.Group.Model
             //Fonts.AddFontFile(MediaDir + "\\Fonts\\murderous desire DEMO.otf");//esta fuente no funca en la maquina del laburo pero es la que va xD
             #endregion
 
-            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 125f, 100f, Input);
+            Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 100f, 100f, Input);
             var d3dDevice = D3DDevice.Instance.Device;
 
             #region Init Menu
@@ -1126,7 +1126,7 @@ namespace TGC.Group.Model
                 {
                     playerHide = true;
                     escapeVector = Camara.Position;
-                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(883, 40, 350), 125f, 100f, Input);
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(883, 40, 350), 100f, 100f, Input);
                 }
             }
             if (Input.keyDown(Key.E) && HideOne2ndFloor.isPlayerInCell(Camara.Position))
@@ -1135,7 +1135,7 @@ namespace TGC.Group.Model
                 {
                     playerHide = true;
                     escapeVector = Camara.Position;
-                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(436, 150, 904), 125f, 100f, Input);
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(436, 150, 904), 100f, 100f, Input);
                 }
             }
             if (Input.keyDown(Key.E) && HideTwo1stFloor.isPlayerInCell(Camara.Position))
@@ -1144,7 +1144,7 @@ namespace TGC.Group.Model
                 {
                     playerHide = true;
                     escapeVector = Camara.Position;
-                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(95, 40, 748), 125f, 100f, Input);
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(95, 40, 748), 100f, 100f, Input);
                 }
             }
             if (Input.keyDown(Key.E) && HideTwo2ndFloor.isPlayerInCell(Camara.Position))
@@ -1153,7 +1153,7 @@ namespace TGC.Group.Model
                 {
                     playerHide = true;
                     escapeVector = Camara.Position;
-                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(228, 150, 1650), 125f, 100f, Input);
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(228, 150, 1650), 100f, 100f, Input);
                 }
             }
             if (Input.keyDown(Key.E) && HideThree1stFloor.isPlayerInCell(Camara.Position))
@@ -1162,7 +1162,7 @@ namespace TGC.Group.Model
                 {
                     playerHide = true;
                     escapeVector = Camara.Position;
-                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(896, 40, 646), 125f, 100f, Input);
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(896, 40, 646), 100f, 100f, Input);
                 }
             }
             if (Input.keyDown(Key.E) && HideThree2ndFloor.isPlayerInCell(Camara.Position))
@@ -1171,7 +1171,7 @@ namespace TGC.Group.Model
                 {
                     playerHide = true;
                     escapeVector = Camara.Position;
-                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(94, 150, 418), 125f, 100f, Input);
+                    Camara = new Examples.Camara.TgcFpsCamera(new Vector3(94, 150, 418), 100f, 100f, Input);
                 }
             }
             //Condicion de salida del escondite
@@ -1180,26 +1180,14 @@ namespace TGC.Group.Model
                 if (Input.keyUp(Key.E))
                 {
                     playerHide = false;
-                    Camara = new Examples.Camara.TgcFpsCamera(escapeVector, 125f, 100f, Input);
+                    Camara = new Examples.Camara.TgcFpsCamera(escapeVector, 100f, 100f, Input);
                 }
                 
             }
             #endregion
 
-            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            //TODO: una lista de las ultimas posiciones que no tuvieron colision, ya que con una sola no sirve
-            Vector3 lastSecurePos = new Vector3();
-
-            if (camarita.checkCollision(objetosColisionables, camarita.sphereCamara)) lastSecurePos = camarita.Position;
-            
+            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;     
             camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide);
-
-            //Verificar la primera que no tenga colisiones
-            //foreach(var lastPos in securePositions){
-            //  if (!camarita.checkCollision(objetosColisionables, camarita.sphereCamara)) camarita = new Examples.Camara.TgcFpsCamera(lastSecurePos, 125f, 100f, Input);
-            //  else break;
-            //}
-            if (!camarita.checkCollision(objetosColisionables, camarita.sphereCamara)) camarita = new Examples.Camara.TgcFpsCamera(lastSecurePos, 125f, 100f, Input);
 
             #region Logica Personaje
 

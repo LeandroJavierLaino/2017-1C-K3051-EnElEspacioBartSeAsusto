@@ -39,9 +39,9 @@ namespace TGC.Examples.Camara
         private bool isMoving = false;
 
         private bool collitionActive = true;
-
+        private Vector3 lastSecurePos = new Vector3(0, 0, 0);
         //Manager de colisiones
-        private TGC.Examples.Collision.SphereCollision.SphereCollisionManager collisionManagerCamara;
+        private SphereCollisionManager collisionManagerCamara;
         private readonly List<TgcBoundingAxisAlignBox> objetosCandidatos = new List<TgcBoundingAxisAlignBox>();
 
         //Esfera para detectar colisiones 
@@ -86,10 +86,10 @@ namespace TGC.Examples.Camara
             cajaLoca.setPositionSize(new Vector3(x, y - 35f, z), new Vector3(5, 5, 5));
             Core.SceneLoader.TgcMesh laCajaLoca = cajaLoca.toMesh("laCajaLoca");
             sphereCamara = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(laCajaLoca);
-            sphereCamara.setValues(new Vector3(x, y - 35f, z), 15f);
+            sphereCamara.setValues(new Vector3(x, y - 40f, z), 15f);
             lockCam = true;
-            collisionManagerCamara = new TGC.Examples.Collision.SphereCollision.SphereCollisionManager();
-            collisionManagerCamara.SlideFactor = 1.5f;
+            collisionManagerCamara = new SphereCollisionManager();
+            collisionManagerCamara.SlideFactor = 1.3f;
             //collisionManagerCamara.toggleGravity();
         }
 
@@ -144,7 +144,8 @@ namespace TGC.Examples.Camara
             Cursor.Hide();
             var moveVector = new Vector3(0, 0, 0);
             Vector3 targetDistance = new Vector3(0, 0, 0);
-            sphereCamara.setCenter(new Vector3(Position.X, Position.Y -40f, Position.Z));
+            float epsilon = 0.05f;
+            sphereCamara.setCenter(new Vector3(Position.X, Position.Y - 40, Position.Z));
             
             isMoving = false;
 
@@ -156,12 +157,20 @@ namespace TGC.Examples.Camara
             //Forward
             if (Input.keyDown(Key.W) && vidaPorcentaje > 0)
             {
+                
                 targetDistance += (new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)) * MovementSpeed;
                 if (collitionActive)
                 {
-                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, -newPosition.Length());
-                }
+                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                        if (checkCollision(obstaculos, sphereCamara))
+                        {
+                            moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, -newPosition.Length());
+                        }
+                        else
+                        {
+                            moveVector += new Vector3(0, 0, targetDistance.Length() * epsilon);//hace un rebote nunca llega a collisionar
+                        }
+                    }
                 else
                 {
                     moveVector += new Vector3(0, 0, -1) * MovementSpeed;
@@ -176,7 +185,16 @@ namespace TGC.Examples.Camara
                 if (collitionActive)
                 {
                     newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, newPosition.Length());
+
+                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                        if (checkCollision(obstaculos, sphereCamara))
+                        {
+                            moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, newPosition.Length());
+                        }
+                        else
+                        {
+                            moveVector += new Vector3(0, 0, -targetDistance.Length() * epsilon);//hace un rebote nunca llega a collisionar
+                        }
                 }
                 else
                 {
@@ -186,14 +204,21 @@ namespace TGC.Examples.Camara
             }
 
             //Strafe right
-            if (Input.keyDown(Key.D) && vidaPorcentaje > 0)
+            if (Input.keyDown(Key.D) && !Input.keyDown(Key.W) && !Input.keyDown(Key.S) && vidaPorcentaje > 0)
             {
+                targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed);
                 if (collitionActive)
                 {
-                    targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed/8f) ;
-                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
-                }
+                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                        if (checkCollision(obstaculos, sphereCamara))
+                        {
+                            moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
+                        }
+                        else
+                        {
+                            moveVector += new Vector3(targetDistance.Length() * epsilon, 0, 0);//hace un rebote nunca llega a collisionar
+                        }
+                    }
                 else
                 {
                     moveVector += new Vector3(-1, 0, 0) * MovementSpeed;
@@ -202,14 +227,22 @@ namespace TGC.Examples.Camara
             }
 
             //Strafe left
-            if (Input.keyDown(Key.A) && vidaPorcentaje > 0 )
+            if (Input.keyDown(Key.A) && !Input.keyDown(Key.W) && !Input.keyDown(Key.S) && vidaPorcentaje > 0 )
             {
-                targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed / 8f);
+                targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed);
                 if (collitionActive)
                 {
-                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
-                }
+                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+
+                        if (checkCollision(obstaculos, sphereCamara))
+                        {
+                            moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
+                        }
+                        else
+                        {
+                            moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, 0);//hace un rebote nunca llega a collisionar
+                        }
+                    }
                 else
                 {
                     moveVector += new Vector3(1, 0, 0) * MovementSpeed;
@@ -302,7 +335,7 @@ namespace TGC.Examples.Camara
             }
 
             if (lockCam) Cursor.Position = mouseCenter;
-            
+
             //Calculamos la nueva posicion del ojo segun la rotacion actual de la camara.
             var cameraRotatedPositionEye = Vector3.TransformNormal(moveVector * elapsedTime, cameraRotation);
             positionEye += cameraRotatedPositionEye;
@@ -318,7 +351,7 @@ namespace TGC.Examples.Camara
             var cameraOriginalUpVector = DEFAULT_UP_VECTOR;
             var cameraRotatedUpVector = Vector3.TransformNormal(cameraOriginalUpVector, cameraRotation);
 
-            base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector); 
+            base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector);
         }
 
         /// <summary>
@@ -335,7 +368,12 @@ namespace TGC.Examples.Camara
         {
             sphereCamara.render();
         }
-        //Si da true quiere decir que no estamos chocando con nada.
+        /// <summary>
+        /// Verifica si colisiona con algo si da true es que no colisiona con nada
+        /// </summary>
+        /// <param name="obstaculos"></param>
+        /// <param name="characterSphere"></param>
+        /// <returns></returns>
         public bool checkCollision( List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, TgcBoundingSphere characterSphere)
         {
             List<TgcBoundingAxisAlignBox> objetosCandidatos = new List<TgcBoundingAxisAlignBox>();
