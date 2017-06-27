@@ -113,6 +113,7 @@ struct VS_OUTPUT_DIFFUSE_MAP
 	float4 Position : POSITION0;
 	float4 Color : COLOR;
 	float2 Texcoord : TEXCOORD0;
+	float4 WorldPos : TEXCOORD1;
 };
 
 //Vertex Shader
@@ -122,6 +123,9 @@ VS_OUTPUT_DIFFUSE_MAP vs_DiffuseMap(VS_INPUT_DIFFUSE_MAP input)
 
 	//Proyectar posicion
 	output.Position = mul(input.Position, matWorldViewProj);
+	
+	//Posicion del mundo
+	output.WorldPos = mul(input.Position, matWorld);
 
 	//Enviar color directamente
 	output.Color = input.Color;
@@ -137,14 +141,15 @@ struct PS_DIFFUSE_MAP
 {
 	float4 Color : COLOR;
 	float2 Texcoord : TEXCOORD0;
+	float4 WorldPos : TEXCOORD1;
 };
 
 //Pixel Shader
 float4 ps_DiffuseMap(PS_DIFFUSE_MAP input) : COLOR0
 {
 	//Modular color de la textura por color del mesh
-	input.Texcoord.y =+ sin(input.Texcoord.y+time);
-	//input.Texcoord.x =+ cos(input.Texcoord.x*time)*0.03;
+	if(fmod(input.WorldPos.y,10)<4)	input.Texcoord.y += sin(input.WorldPos.y/time);
+	else input.Texcoord.x += cos(input.WorldPos.z/time);
 	return tex2D(diffuseMap, input.Texcoord)*float4(0.2f,0.2f,0.2f,1.0f); 
 }
 
