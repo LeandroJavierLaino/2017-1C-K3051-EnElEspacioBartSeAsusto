@@ -176,7 +176,34 @@ namespace TGC.Examples.Camara
                         }
                         else
                         {
-                            if(!checkCollision(obstaculos,sphereCamara)) moveVector += new Vector3(0, 0, targetDistance.Length() * epsilon);//hace un rebote nunca llega a collisionar
+                            TgcBoundingSphere testSphere = new TgcBoundingSphere();
+                            testSphere = sphereCamaraHead;
+                            Vector3 originalCenter = sphereCamaraHead.Center;
+                            testSphere.setCenter(originalCenter + targetDistanceNoSpeed * 0.5f);
+                            //Prueba si choca de frente 
+                            if (!checkCollision(obstaculos, testSphere))
+                            {
+                                //Prueba si choca de lado
+                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                                testSphere.setCenter(originalCenter + targetDistanceNoSpeed);
+                                if (!checkCollision(obstaculos, testSphere)) moveVector += new Vector3(targetDistance.Length() * epsilon, 0, targetDistance.Length() * epsilon);
+                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                                testSphere.setCenter(originalCenter + targetDistanceNoSpeed);
+                                if (!checkCollision(obstaculos, testSphere)) moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, targetDistance.Length() * epsilon);
+                                else moveVector += new Vector3( 0, 0, targetDistance.Length() * epsilon);
+                            }
+                            //Prueba si choca de atras
+                            testSphere.setCenter(originalCenter - targetDistanceNoSpeed * 0.5f);
+                            if (!checkCollision(obstaculos,testSphere))
+                            {
+                                //Prueba si choca de lado
+                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                                testSphere.setCenter(originalCenter + targetDistanceNoSpeed);
+                                if (!checkCollision(obstaculos, testSphere)) moveVector += new Vector3(targetDistance.Length() * epsilon, 0, -targetDistance.Length() * epsilon);
+                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                                testSphere.setCenter(originalCenter + targetDistanceNoSpeed);
+                                if (!checkCollision(obstaculos, testSphere)) moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, -targetDistance.Length() * epsilon);
+                            }                            
                         }
                     }
                 else

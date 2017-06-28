@@ -126,6 +126,7 @@ namespace TGC.Group.Model
         #endregion
         private TgcText2D textoDeLaMuerte;
         private TgcText2D textoDeLaVictoria;
+        private TgcText2D pressEToHide;
 
         private TgcMesh PuertaModelo { get; set; }
         private TgcMesh MonstruoModelo { get; set; }
@@ -221,6 +222,7 @@ namespace TGC.Group.Model
         private HideCell HideOne2ndFloor;
         private HideCell HideTwo2ndFloor;
         private HideCell HideThree2ndFloor;
+        private List<HideCell> HideCells = new List<HideCell>();
 
         private float timer;
 
@@ -383,21 +385,27 @@ namespace TGC.Group.Model
             #region Hide & Seek Init
             HideOne1stFloor = new HideCell();
             HideOne1stFloor.setCell(new Vector2(90,90), new Vector3(850,50,320));
+            HideCells.Add(HideOne1stFloor);
 
             HideTwo1stFloor = new HideCell();
             HideTwo1stFloor.setCell(new Vector2(90, 90), new Vector3(130, 50, 775));
+            HideCells.Add(HideTwo1stFloor);
 
             HideThree1stFloor = new HideCell();
             HideThree1stFloor.setCell(new Vector2(90, 90), new Vector3(875, 50, 650));
+            HideCells.Add(HideThree1stFloor);
 
             HideOne2ndFloor = new HideCell();
             HideOne2ndFloor.setCell(new Vector2(90, 90), new Vector3(405, 160, 875));
+            HideCells.Add(HideOne2ndFloor);
 
             HideTwo2ndFloor = new HideCell();
             HideTwo2ndFloor.setCell(new Vector2(90, 90), new Vector3(253, 160, 1620));
+            HideCells.Add(HideTwo2ndFloor);
 
             HideThree2ndFloor = new HideCell();
             HideThree2ndFloor.setCell(new Vector2(90, 90), new Vector3(127, 160, 382));
+            HideCells.Add(HideThree2ndFloor);
             #endregion
 
             CurrentState = StateMenu;
@@ -751,6 +759,14 @@ namespace TGC.Group.Model
             textoDeLaVictoria.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
             #endregion
 
+            #region Press E to Hide
+            pressEToHide = new TgcText2D();
+            pressEToHide.Text = "Press 'E' to Hide";
+            pressEToHide.Color = Color.White;
+            pressEToHide.Position = new Point(D3DDevice.Instance.Width / 50, D3DDevice.Instance.Height / 2);
+            pressEToHide.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
+            #endregion
+
             #region Texto de Pausa
             textoPausa = new TgcText2D()
 			{
@@ -859,7 +875,8 @@ namespace TGC.Group.Model
 
         public void UpdateGame() {
 
-			((TGC.Examples.Camara.TgcFpsCamera)this.Camara).LockCam = true;
+            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            ((TGC.Examples.Camara.TgcFpsCamera)this.Camara).LockCam = true;
 			#region Update del HUD
 			vida.Position = new Vector2(20f, D3DDevice.Instance.Height - 40f);
             vida.Scaling = new Vector2(8f, 0.5f);
@@ -889,6 +906,7 @@ namespace TGC.Group.Model
             flashlightHand.Scaling = new Vector2(0.167f, 0.125f);
             monster.Position = new Vector2(D3DDevice.Instance.Width/4,D3DDevice.Instance.Height/4 - 150);
             monster.Scaling = new Vector2(0.65f,0.65f);
+            
             #endregion
 
             #region Logica Luces
@@ -1197,8 +1215,6 @@ namespace TGC.Group.Model
             }
             #endregion
 
-            var camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-
             if (!botonEscapePod1.isGreen && !botonEscapePod2.isGreen)
             {
                 camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide, false);
@@ -1446,6 +1462,12 @@ namespace TGC.Group.Model
             }
 
             drawer2D.EndDrawSprite();
+
+            //Imprime texto cuando esta en alguna de las celdas para esconderse
+            foreach (var hide in HideCells)
+            {
+                if (hide.isPlayerInCell(Camara.Position)) pressEToHide.render();
+            }
 
             //Sonido del monstruo y ubicacion del mismo
             sound3DMonster.Position = monstruo.Position;
@@ -1831,8 +1853,8 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("lightIntensity", 35f  / (ElapsedTime));
-                    mesh.Effect.SetValue("lightAttenuation", 20f);
+                    mesh.Effect.SetValue("lightIntensity", 25f  / (2*(ElapsedTime)));
+                    mesh.Effect.SetValue("lightAttenuation", 30f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
@@ -1848,8 +1870,8 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
-                    mesh.Effect.SetValue("lightIntensity", 12f / (ElapsedTime));
-                    mesh.Effect.SetValue("lightAttenuation", 10f);
+                    mesh.Effect.SetValue("lightIntensity", 10f / (2 * (ElapsedTime)));
+                    mesh.Effect.SetValue("lightAttenuation", 30f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
