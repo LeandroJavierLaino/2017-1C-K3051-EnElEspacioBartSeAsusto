@@ -87,7 +87,7 @@ namespace TGC.Examples.Camara
             cajaLoca.setPositionSize(new Vector3(x, y - 35f, z), new Vector3(5, 5, 5));
             Core.SceneLoader.TgcMesh laCajaLoca = cajaLoca.toMesh("laCajaLoca");
             sphereCamara = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(laCajaLoca);
-            sphereCamara.setValues(new Vector3(x, y - 40f, z), 15f);
+            sphereCamara.setValues(new Vector3(x, y - 40f, z), 15);
             sphereCamaraHead = new TgcBoundingSphere(new Vector3(x,y,z), 15);
             lockCam = true;
             collisionManagerCamara = new SphereCollisionManager();
@@ -155,161 +155,94 @@ namespace TGC.Examples.Camara
 
             if (playerHide == false )
             {
-            
-            #region Movimientos
 
-            //Forward
-            if (Input.keyDown(Key.W) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
-            {
-                targetDistance += (LookAt - Position);
-                targetDistance.Y = 0;
-                targetDistance.Normalize();
-                targetDistanceNoSpeed = targetDistance;
-                targetDistance *= MovementSpeed;
-                if (collitionActive)
+                #region Movimientos
+                               
+                #region Movimientos por Partes(Primero esfera luego camara)
+                //Forward
+                if (Input.keyDown(Key.W) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
                 {
+                    targetDistance += (LookAt - Position);
+                    targetDistance.Y = 0;
+                    targetDistance.Normalize();
+                    targetDistanceNoSpeed = targetDistance;
+                    targetDistance *= MovementSpeed;
+                    if (collitionActive)
+                    {
                         newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
                         collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
-                        if (checkCollision(obstaculos, sphereCamara) && checkCollision(obstaculos,sphereCamaraHead))
-                        {
-                            moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, -newPosition.Length());
-                        }
-                        else
-                        {
-                            TgcBoundingSphere testSphere = new TgcBoundingSphere();
-                            testSphere = sphereCamaraHead;
-                            Vector3 originalCenter = sphereCamaraHead.Center;
-                            testSphere.setCenter(originalCenter + targetDistanceNoSpeed * 0.5f);
-                            //Prueba si choca de frente 
-                            if (!checkCollision(obstaculos, testSphere))
-                            {
-                                //Prueba si choca de lado
-                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
-                                testSphere.setCenter(originalCenter + targetDistanceNoSpeed);
-                                if (!checkCollision(obstaculos, testSphere)) moveVector += new Vector3(targetDistance.Length() * epsilon, 0, targetDistance.Length() * epsilon);
-                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
-                                testSphere.setCenter(originalCenter + targetDistanceNoSpeed);
-                                if (!checkCollision(obstaculos, testSphere)) moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, targetDistance.Length() * epsilon);
-                                else moveVector += new Vector3( 0, 0, targetDistance.Length() * epsilon);
-                            }
-                            //Prueba si choca de atras
-                            testSphere.setCenter(originalCenter - targetDistanceNoSpeed * 0.5f);
-                            if (!checkCollision(obstaculos,testSphere))
-                            {
-                                //Prueba si choca de lado
-                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
-                                testSphere.setCenter(originalCenter + targetDistanceNoSpeed);
-                                if (!checkCollision(obstaculos, testSphere)) moveVector += new Vector3(targetDistance.Length() * epsilon, 0, -targetDistance.Length() * epsilon);
-                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
-                                testSphere.setCenter(originalCenter + targetDistanceNoSpeed);
-                                if (!checkCollision(obstaculos, testSphere)) moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, -targetDistance.Length() * epsilon);
-                            }                            
-                        }
-                    }
-                else
-                {
-                    moveVector += new Vector3(0, 0, -1) * MovementSpeed;
-                }
-                isMoving = true;
-            }
-
-            //Backward
-            if (Input.keyDown(Key.S) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
-            {
-                targetDistance -= (LookAt - Position);
-                targetDistance.Y = 0;
-                targetDistance.Normalize();
-                targetDistanceNoSpeed = targetDistance;
-                targetDistance *= MovementSpeed;
-                
-                if (collitionActive)
-                {
-                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
-                    if (checkCollision(obstaculos, sphereCamara) && checkCollision(obstaculos, sphereCamaraHead))
-                    {
-                        moveVector += new Vector3(0, newPosition.Y + elapsedTime * 15f, newPosition.Length());
                     }
                     else
                     {
-                        if (!checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(0, 0, -targetDistance.Length() * epsilon);//hace un rebote nunca llega a collisionar
+                        moveVector += new Vector3(0, 0, -1) * MovementSpeed;
                     }
+                    isMoving = true;
                 }
-                else
-                {
-                    moveVector += new Vector3(0, 0, 1) * MovementSpeed;
-                }
-                isMoving = true;
-            }
 
-            //Strafe right
-            if (Input.keyDown(Key.D) && !Input.keyDown(Key.W) && !Input.keyDown(Key.S) && vidaPorcentaje > 0 && !winCondition)
-            {
-                targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed);
-                if (collitionActive)
+                //Backward
+                if (Input.keyDown(Key.S) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
                 {
-                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                        if (checkCollision(obstaculos, sphereCamara))
-                        {
-                            moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
-                        }
-                        else
-                        {
-                            moveVector += new Vector3(targetDistance.Length() * epsilon, 0, 0);//hace un rebote nunca llega a collisionar
-                        }
-                    }
-                else
-                {
-                    moveVector += new Vector3(-1, 0, 0) * MovementSpeed;
-                }
-                isMoving = true;
-            }
+                    targetDistance -= (LookAt - Position);
+                    targetDistance.Y = 0;
+                    targetDistance.Normalize();
+                    targetDistanceNoSpeed = targetDistance;
+                    targetDistance *= MovementSpeed;
 
-            //Strafe left
-            if (Input.keyDown(Key.A) && !Input.keyDown(Key.W) && !Input.keyDown(Key.S) && vidaPorcentaje > 0 && !winCondition)
-            {
-                targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed);
-                if (collitionActive)
-                {
-                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-
-                        if (checkCollision(obstaculos, sphereCamara))
-                        {
-                            moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, 0);
-                        }
-                        else
-                        {
-                            moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, 0);//hace un rebote nunca llega a collisionar
-                        }
-                    }
-                else
-                {
-                    moveVector += new Vector3(1, 0, 0) * MovementSpeed;
-                }
-                isMoving = true;
-            }
-
-            //Forward + Strafe
-            if (Input.keyDown(Key.W) && Input.keyDown(Key.D) && vidaPorcentaje > 0 && !winCondition)
-            {
-                targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.QUARTER_PI));
-                targetDistance.Normalize();
-                targetDistanceNoSpeed = targetDistance;
-                targetDistance *= MovementSpeed;
-                if (collitionActive)
-                {
-                    newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                    collisionManagerCamara.moveCharacter(sphereCamaraHead,targetDistanceNoSpeed,obstaculos);
-                    if (checkCollision(obstaculos, sphereCamara) && checkCollision(obstaculos,sphereCamaraHead))
+                    if (collitionActive)
                     {
-                        moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, -newPosition.Length());
+                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                        collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
                     }
                     else
                     {
-                            if (!checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(targetDistance.Length()*epsilon, 0, targetDistance.Length() * epsilon);
+                        moveVector += new Vector3(0, 0, 1) * MovementSpeed;
+                    }
+                    isMoving = true;
+                }
+
+                //Strafe right
+                if (Input.keyDown(Key.D) && !Input.keyDown(Key.W) && !Input.keyDown(Key.S) && vidaPorcentaje > 0 && !winCondition)
+                {
+                    targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed);
+                    if (collitionActive)
+                    {
+                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                    }
+                    else
+                    {
+                        moveVector += new Vector3(-1, 0, 0) * MovementSpeed;
+                    }
+                    isMoving = true;
+                }
+
+                //Strafe left
+                if (Input.keyDown(Key.A) && !Input.keyDown(Key.W) && !Input.keyDown(Key.S) && vidaPorcentaje > 0 && !winCondition)
+                {
+                    targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.PI_HALF)) * (MovementSpeed);
+                    if (collitionActive)
+                    {
+                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                    }
+                    else
+                    {
+                        moveVector += new Vector3(1, 0, 0) * MovementSpeed;
+                    }
+                    isMoving = true;
+                }
+
+                //Forward + Strafe
+                if (Input.keyDown(Key.W) && Input.keyDown(Key.D) && vidaPorcentaje > 0 && !winCondition)
+                {
+                    targetDistance += Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.QUARTER_PI));
+                    targetDistance.Normalize();
+                    targetDistanceNoSpeed = targetDistance;
+                    targetDistance *= MovementSpeed;
+                    if (collitionActive)
+                    {
+                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                        collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
                     }
                 }
-            }
                 if (Input.keyDown(Key.W) && Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
                 {
                     targetDistance += -Vector3.TransformNormal((new Vector3(LookAt.X, 0, LookAt.Z) - new Vector3(Position.X, 0, Position.Z)), Matrix.RotationY(FastMath.QUARTER_PI));
@@ -320,14 +253,6 @@ namespace TGC.Examples.Camara
                     {
                         newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
                         collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
-                        if (checkCollision(obstaculos, sphereCamara) && checkCollision(obstaculos, sphereCamaraHead))
-                        {
-                            moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, -newPosition.Length());
-                        }
-                        else
-                        {
-                            if (!checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, targetDistance.Length() * epsilon);
-                        }
                     }
                 }
 
@@ -342,14 +267,6 @@ namespace TGC.Examples.Camara
                     {
                         newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
                         collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
-                        if (checkCollision(obstaculos, sphereCamara) && checkCollision(obstaculos, sphereCamaraHead))
-                        {
-                            moveVector += new Vector3(-newPosition.Length(), newPosition.Y + elapsedTime * 15f, newPosition.Length());
-                        }
-                        else
-                        {
-                            if (!checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(targetDistance.Length() * epsilon, 0, -targetDistance.Length() * epsilon);
-                        }
                     }
                 }
                 if (Input.keyDown(Key.S) && Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
@@ -362,19 +279,315 @@ namespace TGC.Examples.Camara
                     {
                         newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
                         collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
-                        if (checkCollision(obstaculos, sphereCamara) && checkCollision(obstaculos, sphereCamaraHead))
-                        {
-                            moveVector += new Vector3(newPosition.Length(), newPosition.Y + elapsedTime * 15f, newPosition.Length());
-                        }
-                        else
-                        {
-                            if (!checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, -targetDistance.Length() * epsilon);
-                        }
                     }
                 }
 
-                //Ajuste de posicion vertical
-                if (Position.Y <= 55)
+                Vector3 targetDistanceCam = new Vector3(0, 0, 0);
+                Vector3 cameraOnGround = Position;
+                cameraOnGround.Y = targetDistance.Y;
+                if (Input.keyDown(Key.W) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
+                {
+                    targetDistanceCam += newPosition - cameraOnGround;
+                    if(checkCollision(obstaculos,sphereCamara) && Input.keyDown(Key.LeftShift)) moveVector += new Vector3(0,newPosition.Y,-targetDistanceCam.Length()*0.3f);
+                    else
+                    {
+                        if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(0, newPosition.Y, -targetDistanceCam.Length() * 0.15f);
+                        else
+                        {
+                            TgcBoundingSphere testSphereHead = new TgcBoundingSphere();
+                            TgcBoundingSphere testSphereCamara = new TgcBoundingSphere();
+                            testSphereHead = sphereCamaraHead;
+                            testSphereCamara = sphereCamara;
+                            Vector3 originalCenterHead = sphereCamaraHead.Center;
+                            Vector3 originalCenterCamara = sphereCamara.Center;
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed * 0.5f);
+                            testSphereCamara.setCenter(originalCenterCamara * 0.5f);
+                            //Prueba si choca de frente 
+                            if (!checkCollision(obstaculos, testSphereHead) || !checkCollision(obstaculos,testSphereCamara))
+                            {
+                                //Prueba si choca de lado
+                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                                testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                                if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos,testSphereCamara))
+                                {
+                                    moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, targetDistanceCam.Length() * epsilon);
+                                    sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                    sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                                }
+                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                                testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                                if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                                {
+                                    moveVector += new Vector3(targetDistance.Length() * epsilon, newPosition.Y, targetDistanceCam.Length() * epsilon);
+                                    sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                    sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                                }
+                                else
+                                {
+                                    moveVector += new Vector3(0, newPosition.Y, targetDistance.Length() * epsilon);
+                                    sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                    sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                                }
+                            }
+                            //Prueba si choca de atras
+                            testSphereHead.setCenter(originalCenterHead - targetDistanceNoSpeed * 0.5f);
+                            if (!checkCollision(obstaculos, testSphereHead))
+                            {
+                                //Prueba si choca de lado
+                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                                testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                                if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                                {
+                                    moveVector += new Vector3(targetDistance.Length() * epsilon, newPosition.Y, -targetDistanceCam.Length() * epsilon);
+                                    sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                    sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                                }
+                                targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                                testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                                if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                                {
+                                    moveVector += new Vector3(-targetDistance.Length() * epsilon, newPosition.Y, -targetDistanceCam.Length() * epsilon);
+                                    sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                    sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                                }
+                                else
+                                {
+                                    moveVector += new Vector3(0, newPosition.Y, -targetDistanceCam.Length() * epsilon);
+                                    sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                    sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                                }
+                            }
+                        //TODO a partir de la cabeza hacer el rebote dependiendo de donde haya un objeto colisionando.
+                    }
+                    }
+                }
+                if (Input.keyDown(Key.S) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
+                {
+                    targetDistanceCam += newPosition - cameraOnGround;
+                    if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(0, 0, targetDistanceCam.Length() * 0.15f);
+                    else
+                    {
+                        TgcBoundingSphere testSphereHead = new TgcBoundingSphere();
+                        TgcBoundingSphere testSphereCamara = new TgcBoundingSphere();
+                        testSphereHead = sphereCamaraHead;
+                        testSphereCamara = sphereCamara;
+                        Vector3 originalCenterHead = sphereCamaraHead.Center;
+                        Vector3 originalCenterCamara = sphereCamara.Center;
+                        testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed * 0.5f);
+                        testSphereCamara.setCenter(originalCenterCamara * 0.5f);
+                        //Prueba si choca de frente 
+                        if (!checkCollision(obstaculos, testSphereHead) || !checkCollision(obstaculos, testSphereCamara))
+                        {
+                            //Prueba si choca de lado
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(-targetDistance.Length() * epsilon, newPosition.Y, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(targetDistance.Length() * epsilon, newPosition.Y, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                            else
+                            {
+                                moveVector += new Vector3(0, newPosition.Y, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                        }
+                        //Prueba si choca de atras
+                        testSphereHead.setCenter(originalCenterHead - targetDistanceNoSpeed * 0.5f);
+                        if (!checkCollision(obstaculos, testSphereHead))
+                        {
+                            //Prueba si choca de lado
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(targetDistance.Length() * epsilon, newPosition.Y, -targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(-targetDistance.Length() * epsilon, newPosition.Y, -targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                            else
+                            {
+                                moveVector += new Vector3(0, newPosition.Y, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                        }
+                        //TODO a partir de la cabeza hacer el rebote dependiendo de donde haya un objeto colisionando.
+                    }
+                }
+                if (!Input.keyDown(Key.S) && Input.keyDown(Key.D) && !Input.keyDown(Key.W) && vidaPorcentaje > 0 && !winCondition)
+                {
+                    targetDistanceCam += newPosition - cameraOnGround;
+                    if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3( -targetDistanceCam.Length()*0.15f, 0, 0);
+                    else
+                    {
+                        TgcBoundingSphere testSphereHead = new TgcBoundingSphere();
+                        TgcBoundingSphere testSphereCamara = new TgcBoundingSphere();
+                        testSphereHead = sphereCamaraHead;
+                        testSphereCamara = sphereCamara;
+                        Vector3 originalCenterHead = sphereCamaraHead.Center;
+                        Vector3 originalCenterCamara = sphereCamara.Center;
+                        testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed * 0.5f);
+                        testSphereCamara.setCenter(originalCenterCamara * 0.5f);
+                        //Prueba si choca de frente 
+                        if (!checkCollision(obstaculos, testSphereHead) || !checkCollision(obstaculos, testSphereCamara))
+                        {
+                            //Prueba si choca de lado
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(-targetDistance.Length() * epsilon, newPosition.Y, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(targetDistance.Length() * epsilon, newPosition.Y, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                            else
+                            {
+                                moveVector += new Vector3(0, newPosition.Y, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                        }
+                        //Prueba si choca de atras
+                        testSphereHead.setCenter(originalCenterHead - targetDistanceNoSpeed * 0.5f);
+                        if (!checkCollision(obstaculos, testSphereHead))
+                        {
+                            //Prueba si choca de lado
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(targetDistance.Length() * epsilon, newPosition.Y, -targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(-targetDistance.Length() * epsilon, newPosition.Y, -targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                            else
+                            {
+                                moveVector += new Vector3(0, newPosition.Y, -targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                        }
+                        //TODO a partir de la cabeza hacer el rebote dependiendo de donde haya un objeto colisionando.
+                    }
+                }
+                if (!Input.keyDown(Key.S) && !Input.keyDown(Key.W) && Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
+                {
+                    targetDistanceCam += newPosition - cameraOnGround;
+                    if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3( targetDistanceCam.Length() * 0.15f, 0, 0);
+                    else
+                    {
+                        TgcBoundingSphere testSphereHead = new TgcBoundingSphere();
+                        TgcBoundingSphere testSphereCamara = new TgcBoundingSphere();
+                        testSphereHead = sphereCamaraHead;
+                        testSphereCamara = sphereCamara;
+                        Vector3 originalCenterHead = sphereCamaraHead.Center;
+                        Vector3 originalCenterCamara = sphereCamara.Center;
+                        testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed * 0.5f);
+                        testSphereCamara.setCenter(originalCenterCamara * 0.5f);
+                        //Prueba si choca de frente 
+                        if (!checkCollision(obstaculos, testSphereHead) || !checkCollision(obstaculos, testSphereCamara))
+                        {
+                            //Prueba si choca de lado
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(targetDistance.Length() * epsilon, 0, targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                            else
+                            {
+                                moveVector += new Vector3(0, 0, targetDistance.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead - targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara - targetDistanceCam * epsilon);
+                            }
+                        }
+                        //Prueba si choca de atras
+                        testSphereHead.setCenter(originalCenterHead - targetDistanceNoSpeed * 0.5f);
+                        if (!checkCollision(obstaculos, testSphereHead))
+                        {
+                            //Prueba si choca de lado
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(FastMath.PI_HALF));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(targetDistance.Length() * epsilon, 0, -targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                            targetDistanceNoSpeed.TransformNormal(Matrix.RotationY(-FastMath.PI));
+                            testSphereHead.setCenter(originalCenterHead + targetDistanceNoSpeed);
+                            if (!checkCollision(obstaculos, testSphereHead) && checkCollision(obstaculos, testSphereCamara))
+                            {
+                                moveVector += new Vector3(-targetDistance.Length() * epsilon, 0, -targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                            else
+                            {
+                                moveVector += new Vector3(0, 0, -targetDistanceCam.Length() * epsilon);
+                                sphereCamaraHead.setCenter(originalCenterHead + targetDistanceCam * epsilon);
+                                sphereCamara.setCenter(originalCenterCamara + targetDistanceCam * epsilon);
+                            }
+                        }
+                        //TODO a partir de la cabeza hacer el rebote dependiendo de donde haya un objeto colisionando.
+                    }
+                }
+                #endregion
+
+            TgcBoundingSphere testSphereCamaraFall = new TgcBoundingSphere();
+            testSphereCamaraFall = sphereCamara;
+            testSphereCamaraFall.setCenter(new Vector3(testSphereCamaraFall.Center.X, testSphereCamaraFall.Center.Y-epsilon, testSphereCamaraFall.Center.Z));
+            if (!checkCollision(obstaculos, testSphereCamaraFall))
+            {
+                moveVector.Y += 1;
+            }
+            
+            if (Position.Y <= 55 )
             {
                 moveVector.Y = 56;
             }
@@ -390,7 +603,7 @@ namespace TGC.Examples.Camara
             if (!Input.keyDown(Key.W) || !Input.keyDown(Key.A) || !Input.keyDown(Key.D) || !Input.keyDown(Key.S) || !Input.keyDown(Key.Space))
             {
                 newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                moveVector += new Vector3(0, newPosition.Y*2.8f, 0);
+                moveVector += new Vector3(0, newPosition.Y*2.4f, 0);
             }
 
             //Jump
@@ -420,7 +633,7 @@ namespace TGC.Examples.Camara
                 //LockCam = !lockCam;
             }
 
-            if (Input.keyDown(Key.LeftShift) && staminaPorcentaje > 0)
+            if (Input.keyDown(Key.LeftShift) && Input.keyDown(Key.W) && staminaPorcentaje > 0)
             {
                 MovementSpeed = 200f;
             }
@@ -453,7 +666,7 @@ namespace TGC.Examples.Camara
                         updownRot += 1 * RotationSpeed;
                     }
                 }
-
+                
                 //Se actualiza matrix de rotacion, para no hacer este calculo cada vez y solo cuando en verdad es necesario.
                 cameraRotation = Matrix.RotationY(leftrightRot);
             }

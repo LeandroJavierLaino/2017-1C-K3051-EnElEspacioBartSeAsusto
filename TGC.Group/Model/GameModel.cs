@@ -1284,6 +1284,7 @@ namespace TGC.Group.Model
             soundLlanto4.throwSound(camarita.Position);
 
             #region Logica Monstruo
+            monstruo.Activo = true;
             //Para activar o desactivar al monstruo
             if (Input.keyPressed(Key.M))
             {
@@ -1704,8 +1705,8 @@ namespace TGC.Group.Model
 
             //lightMesh.render();
 
-            //TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            //camarita.render(ElapsedTime, objetosColisionables);
+            TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            camarita.render(ElapsedTime, objetosColisionables);
 
         }
         public void RenderPause() {
