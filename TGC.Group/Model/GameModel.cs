@@ -127,6 +127,7 @@ namespace TGC.Group.Model
         private TgcText2D textoDeLaMuerte;
         private TgcText2D textoDeLaVictoria;
         private TgcText2D pressEToHide;
+        private TgcText2D pressEToOpen;
 
         private TgcMesh PuertaModelo { get; set; }
         private TgcMesh MonstruoModelo { get; set; }
@@ -196,6 +197,7 @@ namespace TGC.Group.Model
         private Botiquin botiquin5;
         private Botiquin botiquin6;
         private List<TgcMesh> botiquines = new List<TgcMesh>();
+
         //Sound and Music
         private TgcMp3Player mp3Player;
         private TgcStaticSound soundBoton;
@@ -763,8 +765,16 @@ namespace TGC.Group.Model
             pressEToHide = new TgcText2D();
             pressEToHide.Text = "Press 'E' to Hide";
             pressEToHide.Color = Color.White;
-            pressEToHide.Position = new Point(D3DDevice.Instance.Width / 50, D3DDevice.Instance.Height / 2);
+            pressEToHide.Position = new Point(D3DDevice.Instance.Width / 55, D3DDevice.Instance.Height / 2);
             pressEToHide.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
+            #endregion
+
+            #region Press E to Open
+            pressEToOpen = new TgcText2D();
+            pressEToOpen.Text = "Press 'E' to Open";
+            pressEToOpen.Color = Color.White;
+            pressEToOpen.Position = new Point(D3DDevice.Instance.Width / 55, D3DDevice.Instance.Height / 2);
+            pressEToOpen.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
             #endregion
 
             #region Texto de Pausa
@@ -1704,6 +1714,14 @@ namespace TGC.Group.Model
             emitter.render(ElapsedTime);
 
             //lightMesh.render();
+
+            foreach (var puerta in puertasClass)
+            {
+                if (distance(puerta.getPosition(), Camara.Position) <= 55)
+                {
+                    pressEToOpen.render();
+                }
+            }
 
             TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
             camarita.render(ElapsedTime, objetosColisionables);
