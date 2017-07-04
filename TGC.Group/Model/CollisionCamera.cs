@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TGC.Core.BoundingVolumes;
 using TGC.Core.Collision;
 using TGC.Core.Geometry;
+using TGC.Core.Utils;
 
 namespace TGC.Group.Model
 {
@@ -154,9 +155,7 @@ namespace TGC.Group.Model
                     var movementRay = new TgcRay(originalSphereCenter, movementVector);
                     float brutePlaneDist;
                     Vector3 brutePlaneIntersectionPoint;
-                    if (
-                        !TgcCollisionUtils.intersectRayPlane(movementRay, bbFace.Plane, out brutePlaneDist,
-                            out brutePlaneIntersectionPoint))
+                    if (!TgcCollisionUtils.intersectRayPlane(movementRay, bbFace.Plane, out brutePlaneDist, out brutePlaneIntersectionPoint))
                     {
                         continue;
                     }
@@ -177,13 +176,13 @@ namespace TGC.Group.Model
                     if (TgcCollisionUtils.intersectRayPlane(planeNormalRay, bbFace.Plane, out pDist, out planeIntersectionPoint))
                     {
                         //Ver si el plano está embebido en la esfera
-                        if (pDist <= characterSphere.Radius)
+                        if (isEmbebbed( pDist, characterSphere.Radius))
                         {
                             embebbed = true;
                             
                             //TODO: REVISAR ESTO, caso embebido a analizar con más detalle
                             sphereIntersectionPoint = originalSphereCenter - pNormal * characterSphere.Radius;
-                            characterSphere.moveCenter(planeNormalRay.Direction);
+                            
                         }
                         //Esta fuera de la esfera
                         else
@@ -210,6 +209,7 @@ namespace TGC.Group.Model
                             {
                                 //TODO: REVISAR ESTO, nunca debería pasar
                                 //throw new Exception("El polígono está dentro de la esfera");
+                                characterSphere.moveCenter(-pNormal * SlideFactor);
                             }
 
                             polygonIntersectionPoint = planeIntersectionPoint;
@@ -304,6 +304,17 @@ namespace TGC.Group.Model
             var max = bbFace.Extremes[3];
 
             return p.X >= min.X && p.Y >= min.Y && p.Z >= min.Z && p.X <= max.X && p.Y <= max.Y && p.Z <= max.Z;
+        }
+
+        /// <summary>
+        /// Evalua si el bounding sphere quedo embebido en el poligono
+        /// </summary>
+        /// <param name="pDist"></param>
+        /// <param name="radius"></param>
+        /// <returns>True si quedo embebido</returns>
+        public bool isEmbebbed(float pDist, float radius)
+        {
+            return pDist <= radius;
         }
     }
 }

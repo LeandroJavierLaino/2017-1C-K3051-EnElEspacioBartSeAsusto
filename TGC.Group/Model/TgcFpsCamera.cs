@@ -45,9 +45,10 @@ namespace TGC.Examples.Camara
         private CollisionCamera collisionManagerCamara;
         private readonly List<TgcBoundingAxisAlignBox> objetosCandidatos = new List<TgcBoundingAxisAlignBox>();
 
-        //Esfera para detectar colisiones 
+        //Jerarquia de Bounding Volumes para colisiones 
         public Core.BoundingVolumes.TgcBoundingSphere sphereCamara { get; set; }
         public Core.BoundingVolumes.TgcBoundingSphere sphereCamaraHead { get; set; }
+        public TgcBoundingAxisAlignBox cajaHead { get; set; }
 
         private Core.Geometry.TgcBox cajaLoca = new Core.Geometry.TgcBox();
 
@@ -87,6 +88,7 @@ namespace TGC.Examples.Camara
             JumpSpeed = jumpSpeed;
             cajaLoca.setPositionSize(new Vector3(x, y - 35f, z), new Vector3(5, 5, 5));
             Core.SceneLoader.TgcMesh laCajaLoca = cajaLoca.toMesh("laCajaLoca");
+            cajaHead = new TgcBoundingAxisAlignBox(new Vector3(0,0,0),new Vector3(20,20,20),Position,new Vector3(1,1,1));
             sphereCamara = Core.BoundingVolumes.TgcBoundingSphere.computeFromMesh(laCajaLoca);
             sphereCamara.setValues(new Vector3(x, y - 40f, z), 15);
             sphereCamaraHead = new TgcBoundingSphere(new Vector3(x,y,z), 15);
@@ -139,6 +141,11 @@ namespace TGC.Examples.Camara
         ~TgcFpsCamera()
         {
             LockCam = false;
+        }
+
+        public TgcBoundingSphere getCollisionHead()
+        {
+            return sphereCamaraHead;
         }
 
         public void UpdateCamera(float elapsedTime, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, float vidaPorcentaje,float staminaPorcentaje, bool playerHide, bool winCondition)
@@ -313,6 +320,7 @@ namespace TGC.Examples.Camara
                     if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3( targetDistanceCam.Length() * 0.15f, 0, 0);
                     
                 }
+                
                 #endregion
             /*
             TgcBoundingSphere testSphereCamaraFall = new TgcBoundingSphere();
@@ -423,7 +431,8 @@ namespace TGC.Examples.Camara
            
             var cameraOriginalUpVector = DEFAULT_UP_VECTOR;
             var cameraRotatedUpVector = Vector3.TransformNormal(cameraOriginalUpVector, cameraRotation);
-
+            cajaHead.move(positionEye);
+            //sphereCamara.moveCenter(new Vector3(positionEye.X,positionEye.Y-40,positionEye.Z));
             base.SetCamera(positionEye, cameraFinalTarget, cameraRotatedUpVector);
         }
 
@@ -437,10 +446,17 @@ namespace TGC.Examples.Camara
             positionEye = position;
             this.directionView = directionView;
         }
+
+        public TgcBoundingAxisAlignBox getCajaHead()
+        {
+            return cajaHead;
+        }
+
         public void render(float elapsedTime, List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos)
         {
             sphereCamaraHead.render();
             sphereCamara.render();
+            cajaHead.render();
         }
         /// <summary>
         /// Verifica si colisiona con algo si da true es que no colisiona con nada

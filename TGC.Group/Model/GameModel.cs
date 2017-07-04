@@ -47,7 +47,7 @@ namespace TGC.Group.Model
         }
 
         private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionables = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
-
+        private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionablesCamara = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
         //Coleccion de fuentes privadas (se cargan desde archivos)
         private System.Drawing.Text.PrivateFontCollection Fonts;
 
@@ -128,6 +128,12 @@ namespace TGC.Group.Model
         private TgcText2D textoDeLaVictoria;
         private TgcText2D pressEToHide;
         private TgcText2D pressEToOpen;
+        private TgcText2D pressEToHeal;
+        private TgcText2D pressEForOxigen;
+        private TgcText2D pressEForPower;
+        private TgcText2D pressEForFuel;
+        private TgcText2D goBack;
+        private TgcText2D youCanEscape;
 
         private TgcMesh PuertaModelo { get; set; }
         private TgcMesh MonstruoModelo { get; set; }
@@ -702,6 +708,10 @@ namespace TGC.Group.Model
             {
                 objetosColisionables.Add(mesh.BoundingBox);
             }
+            TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            objetosColisionables.Add(camarita.getCajaHead());
+            objetosColisionablesCamara.AddRange(objetosColisionables);
+            objetosColisionablesCamara.Add(monstruo.mesh.BoundingBox);
             TgcScene.Meshes.Add(monstruo.mesh);
 
             #region Botiquines Init
@@ -777,6 +787,54 @@ namespace TGC.Group.Model
             pressEToOpen.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
             #endregion
 
+            #region Press E to Heal
+            pressEToHeal = new TgcText2D();
+            pressEToHeal.Text = "Press 'E' to Heal";
+            pressEToHeal.Color = Color.White;
+            pressEToHeal.Position = new Point(D3DDevice.Instance.Width / 55, D3DDevice.Instance.Height / 2);
+            pressEToHeal.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
+            #endregion
+
+            #region Oxigen
+            pressEForOxigen = new TgcText2D();
+            pressEForOxigen.Text = "Press 'E' for Oxigen";
+            pressEForOxigen.Color = Color.White;
+            pressEForOxigen.Position = new Point(D3DDevice.Instance.Width / 55, D3DDevice.Instance.Height / 2);
+            pressEForOxigen.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
+            #endregion
+
+            #region Power
+            pressEForPower = new TgcText2D();
+            pressEForPower.Text = "Press 'E' for Power";
+            pressEForPower.Color = Color.White;
+            pressEForPower.Position = new Point(D3DDevice.Instance.Width / 55, D3DDevice.Instance.Height / 2);
+            pressEForPower.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
+            #endregion
+
+            #region Fuel
+            pressEForFuel = new TgcText2D();
+            pressEForFuel.Text = "Press 'E' for Fuel";
+            pressEForFuel.Color = Color.White;
+            pressEForFuel.Position = new Point(D3DDevice.Instance.Width / 55, D3DDevice.Instance.Height / 2);
+            pressEForFuel.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
+            #endregion
+
+            #region Go Back
+            goBack = new TgcText2D();
+            goBack.Text = "You left some buttons behind, go back!";
+            goBack.Color = Color.White;
+            goBack.Position = new Point(D3DDevice.Instance.Width / 55, D3DDevice.Instance.Height / 2);
+            goBack.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
+            #endregion
+
+            #region You Can Escape
+            youCanEscape = new TgcText2D();
+            youCanEscape.Text = "Now you can escape!";
+            youCanEscape.Color = Color.White;
+            youCanEscape.Position = new Point(D3DDevice.Instance.Width / 55, D3DDevice.Instance.Height / 2);
+            youCanEscape.changeFont(new System.Drawing.Font("TimesNewRoman", 15));
+            #endregion
+
             #region Texto de Pausa
             textoPausa = new TgcText2D()
 			{
@@ -786,6 +844,7 @@ namespace TGC.Group.Model
 			};
 			textoPausa.changeFont(new System.Drawing.Font("TimesNewRoman", 55));
 			#endregion
+
 			#region Texto de ComoJugar
 			textoHowToPlay = new TgcText2D()
 			{
@@ -797,7 +856,8 @@ namespace TGC.Group.Model
 			};
 			textoHowToPlay.changeFont(new System.Drawing.Font("TimesNewRoman", 25));
 			#endregion
-			#region BotonesInit
+			
+            #region BotonesInit
 			botonEscapePod1 = new Boton();           
             botonEscapePod1.setMesh(loader.loadSceneFromFile(this.MediaDir + "\\boton-TgcScene.xml").Meshes[0]);
             botonEscapePod1.meshBoton.Position = new Vector3(440, 25, 30);
@@ -1227,11 +1287,11 @@ namespace TGC.Group.Model
 
             if (!botonEscapePod1.isGreen && !botonEscapePod2.isGreen)
             {
-                camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide, false);
+                camarita.UpdateCamera(ElapsedTime, objetosColisionablesCamara, vidaPorcentaje, staminaPorcentaje, playerHide, false);
             }
             else
             {
-                camarita.UpdateCamera(ElapsedTime, objetosColisionables, vidaPorcentaje, staminaPorcentaje, playerHide, true);
+                camarita.UpdateCamera(ElapsedTime, objetosColisionablesCamara, vidaPorcentaje, staminaPorcentaje, playerHide, true);
             }
 
             #region Logica Personaje
@@ -1306,7 +1366,7 @@ namespace TGC.Group.Model
             {
                 monstruo.Colisiones = !monstruo.Colisiones;
             }
-                        
+
             //Logica del monstruo
             monstruo.Update(Camara.Position, objetosColisionables, ElapsedTime);
             #endregion
@@ -1340,17 +1400,18 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Render()
         {
-            PreRender();
+            //PreRender();
             CurrentState.Render();
-            PostRender();
+            //PostRender();
         }
 		#endregion
 
 		public void RenderCamaraMenu()
-		{ 
-            //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
-			timer += ElapsedTime;
+		{
 
+            //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
+            timer += ElapsedTime;
+            
             //Carga y reproduccion de musica para el menu
             mp3Player.FileName = this.MediaDir + "Music\\Mastermind.mp3";
             if (mp3Player.getStatus() == TgcMp3Player.States.Open)
@@ -1374,7 +1435,7 @@ namespace TGC.Group.Model
 				mesh.Effect = Shader;
 				mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(mesh.RenderType);
 			}
-
+            
             List<TgcMesh> candidatos = new List<TgcMesh>();
 
             foreach(var mesh in TgcScene.Meshes)
@@ -1399,7 +1460,9 @@ namespace TGC.Group.Model
 		}
 
 		public void RenderGame() {
-            
+            BeginRenderScene();
+            ClearTextures();
+
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             timer += ElapsedTime;
 
@@ -1660,7 +1723,7 @@ namespace TGC.Group.Model
             monstruo.mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(monstruo.mesh.RenderType);
 
             monstruo.Render();
-
+            /*
             //Dibuja un texto por pantalla
             string hidden = "No";
             if (playerHide) { hidden = "Si"; } else { hidden = "No"; }
@@ -1676,7 +1739,7 @@ namespace TGC.Group.Model
                 + " M para Monstruo D:" + "\n"
                 + " N para activar/desactivar colisiones del Monstruo \n"
                 + " L activa colisiones de la camara"
-            , 0, 30, Color.OrangeRed);
+            , 0, 30, Color.OrangeRed);*/
 
             //Render con Frustum Culling
 
@@ -1702,8 +1765,8 @@ namespace TGC.Group.Model
             D3DDevice.Instance.EnableParticles();
             emitter.Enabled = true;
             emitter.CreationFrecuency = 0.2f;
-            emitter.MinSizeParticle = 106f;
-            emitter.MaxSizeParticle = 106f;
+            emitter.MinSizeParticle = 56f;
+            emitter.MaxSizeParticle = 60f;
             //Se ajusta la posicion del emisor a la posicion del monstruo
             //dado que el centro del mismo esta desplazado hay que ajustarlo
             emitter.Position = new Vector3(monstruo.Position.X + monstruo.Position.X * ElapsedTime - 35, monstruo.Position.Y + 25, monstruo.Position.Z + monstruo.Position.Z * ElapsedTime-9);
@@ -1723,25 +1786,81 @@ namespace TGC.Group.Model
                 }
             }
 
-            TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            camarita.render(ElapsedTime, objetosColisionables);
+            if ( distance(botiquin1.Position,Camara.Position)<=80 ||
+                distance(botiquin2.Position, Camara.Position) <= 80 ||
+                distance(botiquin3.Position, Camara.Position) <= 80 ||
+                distance(botiquin4.Position, Camara.Position) <= 80 ||
+                distance(botiquin5.Position, Camara.Position) <= 80 ||
+                distance(botiquin6.Position, Camara.Position) <= 80 ) pressEToHeal.render();
 
+            if (!botonElectricidad.isGreen && distance(Camara.Position, botonElectricidad.meshBoton.Position) < 55)
+            {
+                pressEForPower.render();
+            }
+
+            if ( !botonElectricidad.isGreen && distance(Camara.Position, botonElectricidad2.meshBoton.Position) < 55)
+            {
+                pressEForPower.render();
+            }
+
+            if ( !botonOxigeno.isGreen && distance(Camara.Position, botonOxigeno.meshBoton.Position) < 55)
+            {
+                pressEForOxigen.render();
+            }
+
+            if ( !botonCombustible.isGreen && distance(Camara.Position, botonCombustible.meshBoton.Position) < 55) pressEForFuel.render();
+
+            //Tiene que estar en verde todos los demas botones
+            if ( !botonEscapePod1.isGreen && !botonEscapePod2.isGreen && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55) && botonCombustible.isGreen && botonElectricidad.isGreen && botonElectricidad2.isGreen && botonOxigeno.isGreen) youCanEscape.render();
+
+            if ( ( !botonElectricidad.isGreen || !botonElectricidad2.isGreen || !botonOxigeno.isGreen || !botonCombustible.isGreen) && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55) ) goBack.render();
+
+            //TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            //camarita.render(ElapsedTime, objetosColisionables);
+
+            RenderAxis();
+            RenderFPS();
+            EndRenderScene();
+            D3DDevice.Instance.Device.Present();
         }
         public void RenderPause() {
+            BeginRenderScene();
+            ClearTextures();
+
             RenderGame();
             textoPausa.render();
-        }
-		public void RenderHowToPlay() {
 
-			RenderCamaraMenu();
+            RenderAxis();
+            RenderFPS();
+            EndRenderScene();
+            D3DDevice.Instance.Device.Present();
+        }
+
+		public void RenderHowToPlay() {
+            BeginRenderScene();
+            ClearTextures();
+
+            RenderCamaraMenu();
 			menuHowToPlay.Render(ElapsedTime, this.drawer2D);
 			textoHowToPlay.render();
 
-		}
+            RenderAxis();
+            RenderFPS();
+            EndRenderScene();
+            D3DDevice.Instance.Device.Present();
+        }
+
         public void RenderMenu() {
-			RenderCamaraMenu();
+            BeginRenderScene();
+            ClearTextures();
+
+            RenderCamaraMenu();
             menu.Render(ElapsedTime, this.drawer2D);
-		
+
+            RenderAxis();
+            RenderFPS();
+            EndRenderScene();
+            D3DDevice.Instance.Device.Present();
         }
 
         /// <summary>
