@@ -45,6 +45,21 @@ namespace TGC.Group.Model
             Name = Game.Default.Name;
             Description = Game.Default.Description;
         }
+        //Full Quad 
+        CustomVertex.PositionTextured[] screenQuadVertices =
+            {
+                new CustomVertex.PositionTextured(-1, 1, 1, 0, 0),
+                new CustomVertex.PositionTextured(1, 1, 1, 1, 0),
+                new CustomVertex.PositionTextured(-1, -1, 1, 0, 1),
+                new CustomVertex.PositionTextured(1, -1, 1, 1, 1)
+            };
+        //vertex buffer de los triangulos
+        VertexBuffer ScreenQuadVB = new VertexBuffer(typeof(CustomVertex.PositionTextured),
+                4, D3DDevice.Instance.Device, Usage.Dynamic | Usage.WriteOnly,
+            CustomVertex.PositionTextured.Format, Pool.Default);
+
+        private Surface g_pDepthStencil; // Depth-stencil buffer
+        private Texture g_pRenderTarget;
 
         private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionables = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
         private readonly List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox> objetosColisionablesCamara = new List<TGC.Core.BoundingVolumes.TgcBoundingAxisAlignBox>();
@@ -189,6 +204,7 @@ namespace TGC.Group.Model
         
         private Microsoft.DirectX.Direct3D.Effect Shader { get; set; }
         private Microsoft.DirectX.Direct3D.Effect ShaderBoton { get; set; }
+        private Microsoft.DirectX.Direct3D.Effect ShaderQuad { get; set; }
         private TgcBox lightMesh;
         private TgcBox playerPos;
 
@@ -623,45 +639,6 @@ namespace TGC.Group.Model
             }
 
             #endregion
-           
-            /*
-            #region TriggerMonstruoInit
-            //Se declaran y definen las zonas que al ser ingresadas activan al monstruo
-            var monsterTriggers = new List<TgcBoundingSphere>();
-            var monsterSpawnPoints = new List<Vector3>();
-            
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(442f, 40f, 251f), 50f));
-            monsterSpawnPoints.Add(new Vector3(942f, 30f, 250f));
-
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(420f, 40f, 691f), 50f));
-            monsterSpawnPoints.Add(new Vector3(70f, 30f, 690f));
-
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(644f, 40f, 412f), 50f));
-            monsterSpawnPoints.Add(new Vector3(944f, 30f, 406f));
-
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(923f, 40f, 731f), 50f));
-            monsterSpawnPoints.Add(new Vector3(570f, 30f, 743f));
-
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(770f, 40f, 1722f), 50f));
-            monsterSpawnPoints.Add(new Vector3(766f, 30f, 1335f));
-
-            //2do piso igual al primero
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(442f, 40f + 110f+ 110f, 251f), 50f));
-            monsterSpawnPoints.Add(new Vector3(942f, 30f + 110f, 250f));
-
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(420f, 40f + 110f, 691f), 50f));
-            monsterSpawnPoints.Add(new Vector3(70f, 30f + 110f, 690f));
-
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(644f, 40f + 110f, 412f), 50f));
-            monsterSpawnPoints.Add(new Vector3(944f, 30f + 110f, 406f));
-
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(923f, 40f + 110f, 731f), 50f));
-            monsterSpawnPoints.Add(new Vector3(570f, 30f + 110f, 743f));
-
-            monsterTriggers.Add(new TgcBoundingSphere(new Vector3(770f, 40f + 110f, 1722f), 50f));
-            monsterSpawnPoints.Add(new Vector3(766f, 30f + 110f, 1335f));
-            #endregion
-            */
 
             #region Recorrido Monstruo
             var recorrido = new List<Vector3> ();
@@ -923,6 +900,23 @@ namespace TGC.Group.Model
             esferaDeLinterna = new TgcBoundingSphere();
             esferaDeLinterna.setValues(lightMesh.Position,10f);
             #endregion
+
+            //Full Quad init
+            ScreenQuadVB.SetData(screenQuadVertices, 0, LockFlags.None);
+            ShaderQuad = TgcShaders.loadEffect(ShadersDir + "FullQuad.fx");
+
+            g_pDepthStencil = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
+                d3dDevice.PresentationParameters.BackBufferHeight,
+                DepthFormat.D24S8, MultiSampleType.None, 0, true);
+
+            g_pRenderTarget = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth
+                , d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget, Format.X8R8G8B8,
+                Pool.Default);
+
+            ShaderQuad.SetValue("g_RenderTarget", g_pRenderTarget);
+
+            ShaderQuad.SetValue("screen_dx", d3dDevice.PresentationParameters.BackBufferWidth);
+            ShaderQuad.SetValue("screen_dy", d3dDevice.PresentationParameters.BackBufferHeight);
 
             timer = 0;
 			UpdateGame();
@@ -1460,8 +1454,17 @@ namespace TGC.Group.Model
 		}
 
 		public void RenderGame() {
-            BeginRenderScene();
             ClearTextures();
+            var device = D3DDevice.Instance.Device;
+            var pOldRT = device.GetRenderTarget(0);
+            var pSurf = g_pRenderTarget.GetSurfaceLevel(0);
+            device.SetRenderTarget(0, pSurf);
+            var pOldDS = device.DepthStencilSurface;
+            device.DepthStencilSurface = g_pDepthStencil;
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            
+            //BeginRenderScene();
+            //ClearTextures();
 
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             timer += ElapsedTime;
@@ -1475,67 +1478,7 @@ namespace TGC.Group.Model
                 mp3Player.stop();
             }
 
-            drawer2D.BeginDrawSprite();
-            drawer2D.DrawSprite(vida);
-            drawer2D.DrawSprite(stamina);
-            drawer2D.DrawSprite(centerPoint);
-            if (glowstick.getEnergia() >= 1 && glowstick.getSelect())
-            {
-
-                drawer2D.DrawSprite(glowstickHUD1);
-                if (glowstick.getEnergia() >= 2)
-                {
-                    drawer2D.DrawSprite(glowstickHUD2);
-                }
-                if (glowstick.getEnergia() == 3)
-                {
-                    drawer2D.DrawSprite(glowstickHUD3);
-                }
-            }
-            if (glowstick.getSelect())
-            {
-                if (Input.keyDown(Key.W))
-                {
-                    glowstickHand.Position = new Vector2(glowstickHand.Position.X , glowstickHand.Position.Y + 30*FastMath.Sin(glowstickHand.Position.Y + (0.00005f / ElapsedTime)));
-                }
-                
-                drawer2D.DrawSprite(glowstickHand);
-            }
-            if (lighter.getSelect())
-            {
-                if (Input.keyDown(Key.W))
-                {
-                    lighterHand.Position = new Vector2(lighterHand.Position.X, lighterHand.Position.Y + 30 * FastMath.Sin(lighterHand.Position.Y + (0.00005f / ElapsedTime)));
-                }
-
-                drawer2D.DrawSprite(lighterHUD);
-                
-                drawer2D.DrawSprite(lighterHand);
-            }
-            if (lighter.getSelect() && lighter.getEnergia() > 0)
-            {
-                drawer2D.DrawSprite(lighterLiveHUD);
-            }
-            if (flashlight.getEnergia() > 0 && flashlight.getSelect())
-            {
-                
-                drawer2D.DrawSprite(flashlightLiveHUD);
-            }
-            if (flashlight.getSelect())
-            {
-                if (Input.keyDown(Key.W))
-                {
-                    flashlightHand.Position = new Vector2(flashlightHand.Position.X, flashlightHand.Position.Y + 30 * FastMath.Sin(glowstickHand.Position.Y + (0.00005f / ElapsedTime)));
-                }
-                drawer2D.DrawSprite(flashlightHUD);
-                drawer2D.DrawSprite(flashlightHand);
-            }
-            if ( soundLlanto1.isInArea(Camara.Position) || soundLlanto2.isInArea(Camara.Position) || soundLlanto3.isInArea(Camara.Position) || soundLlanto4.isInArea(Camara.Position))
-            {
-                drawer2D.DrawSprite(monster);
-            }
-
-            drawer2D.EndDrawSprite();
+            
 
             //Imprime texto cuando esta en alguna de las celdas para esconderse
             foreach (var hide in HideCells)
@@ -1555,13 +1498,6 @@ namespace TGC.Group.Model
             if (this.flashlight.getSelect() && vidaPorcentaje > 0)
             {
                 Shader = TgcShaders.Instance.TgcMeshSpotLightShader;
-            }
-
-            //Si nos quedamos sin energia en alguno de nuestros elementos de iluminacion se va a aplicar un shader de distorsion 
-            if ((glowstick.getSelect() && glowstick.getEnergia() <= 0) || (lighter.getSelect() && lighter.getEnergia() <= 0) || (flashlight.getSelect() && flashlight.getEnergia() <= 0))
-            {
-                Shader = TgcShaders.loadEffect(ShadersDir + "DistortionShader.fx");
-                Shader.SetValue("time", ElapsedTime);
             }
             
             //Si morimos aplicamos un Shader que pone todo en escala de grices
@@ -1596,6 +1532,7 @@ namespace TGC.Group.Model
                 mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(mesh.RenderType);
             }
 
+            device.BeginScene();
             //Renderizamos las puertas
             foreach (var mesh in puertas)
             {
@@ -1723,26 +1660,8 @@ namespace TGC.Group.Model
             monstruo.mesh.Technique = TgcShaders.Instance.getTgcMeshTechnique(monstruo.mesh.RenderType);
 
             monstruo.Render();
-            /*
-            //Dibuja un texto por pantalla
-            string hidden = "No";
-            if (playerHide) { hidden = "Si"; } else { hidden = "No"; }
-            TGC.Examples.Camara.TgcFpsCamera camaraPrint = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            DrawText.drawText("Use W,A,S,D para desplazarte, Espacio para subir, Control para bajar, Shift para ir mas rapido y el mouse para mover la camara: \n "
-                + "Position : " + TgcParserUtils.printVector3(Camara.Position) + "\n"
-                + " LookAt : " + TgcParserUtils.printVector3(Camara.LookAt) + "\n"
-                + " Light Position : " + TgcParserUtils.printVector3(lightMesh.Position) + "\n"
-                + " Monster Position : " + TgcParserUtils.printVector3(monstruo.Position) + "\n"
-                + " Camera Bounding Sphere : " + TgcParserUtils.printVector3(camaraPrint.sphereCamara.Position) + "\n"
-                + " Player Hidden : " + hidden + "\n"
-                + " Energia Encendedor : " + TgcParserUtils.printFloat(lighter.getEnergia()) + "\n"
-                + " M para Monstruo D:" + "\n"
-                + " N para activar/desactivar colisiones del Monstruo \n"
-                + " L activa colisiones de la camara"
-            , 0, 30, Color.OrangeRed);*/
 
             //Render con Frustum Culling
-
             List<TgcMesh> candidatos = new List<TgcMesh>();
 
             foreach (var mesh in TgcScene.Meshes)
@@ -1776,7 +1695,98 @@ namespace TGC.Group.Model
             emitter.Playing = true;
             emitter.render(ElapsedTime);
 
+            device.EndScene();
             //lightMesh.render();
+
+            //TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
+            //camarita.render(ElapsedTime, objetosColisionables);
+
+            pSurf.Dispose();
+
+            // restuaro el render target y el stencil
+            device.DepthStencilSurface = pOldDS;
+            device.SetRenderTarget(0, pOldRT);
+
+            // dibujo el quad pp dicho :
+            device.BeginScene();
+
+            ShaderQuad.Technique = "PostProcess";
+            if ((glowstick.getEnergia() == 0 && glowstick.getSelect()) || (System.Math.Truncate(lighter.getEnergia()) == 0 && lighter.getSelect()) || (System.Math.Truncate(flashlight.getEnergia()) == 0 && flashlight.getSelect() )) ShaderQuad.Technique = "Waves";
+            ShaderQuad.SetValue("time", ElapsedTime);
+            device.VertexFormat = CustomVertex.PositionTextured.Format;
+            device.SetStreamSource(0, ScreenQuadVB, 0);
+            ShaderQuad.SetValue("g_RenderTarget", g_pRenderTarget);
+
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            ShaderQuad.Begin(FX.None);
+            ShaderQuad.BeginPass(0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            ShaderQuad.EndPass();
+            ShaderQuad.End();
+
+            device.EndScene();
+
+            drawer2D.BeginDrawSprite();
+            drawer2D.DrawSprite(vida);
+            drawer2D.DrawSprite(stamina);
+            drawer2D.DrawSprite(centerPoint);
+            if (glowstick.getEnergia() >= 1 && glowstick.getSelect())
+            {
+
+                drawer2D.DrawSprite(glowstickHUD1);
+                if (glowstick.getEnergia() >= 2)
+                {
+                    drawer2D.DrawSprite(glowstickHUD2);
+                }
+                if (glowstick.getEnergia() == 3)
+                {
+                    drawer2D.DrawSprite(glowstickHUD3);
+                }
+            }
+            if (glowstick.getSelect())
+            {
+                if (Input.keyDown(Key.W))
+                {
+                    glowstickHand.Position = new Vector2(glowstickHand.Position.X, glowstickHand.Position.Y + 30 * FastMath.Sin(glowstickHand.Position.Y + (0.00005f / ElapsedTime)));
+                }
+
+                drawer2D.DrawSprite(glowstickHand);
+            }
+            if (lighter.getSelect())
+            {
+                if (Input.keyDown(Key.W))
+                {
+                    lighterHand.Position = new Vector2(lighterHand.Position.X, lighterHand.Position.Y + 30 * FastMath.Sin(lighterHand.Position.Y + (0.00005f / ElapsedTime)));
+                }
+
+                drawer2D.DrawSprite(lighterHUD);
+
+                drawer2D.DrawSprite(lighterHand);
+            }
+            if (lighter.getSelect() && lighter.getEnergia() > 0)
+            {
+                drawer2D.DrawSprite(lighterLiveHUD);
+            }
+            if (flashlight.getEnergia() > 0 && flashlight.getSelect())
+            {
+
+                drawer2D.DrawSprite(flashlightLiveHUD);
+            }
+            if (flashlight.getSelect())
+            {
+                if (Input.keyDown(Key.W))
+                {
+                    flashlightHand.Position = new Vector2(flashlightHand.Position.X, flashlightHand.Position.Y + 30 * FastMath.Sin(glowstickHand.Position.Y + (0.00005f / ElapsedTime)));
+                }
+                drawer2D.DrawSprite(flashlightHUD);
+                drawer2D.DrawSprite(flashlightHand);
+            }
+            if (soundLlanto1.isInArea(Camara.Position) || soundLlanto2.isInArea(Camara.Position) || soundLlanto3.isInArea(Camara.Position) || soundLlanto4.isInArea(Camara.Position))
+            {
+                drawer2D.DrawSprite(monster);
+            }
+
+            drawer2D.EndDrawSprite();
 
             foreach (var puerta in puertasClass)
             {
@@ -1786,42 +1796,41 @@ namespace TGC.Group.Model
                 }
             }
 
-            if ( distance(botiquin1.Position,Camara.Position)<=80 ||
+            if (distance(botiquin1.Position, Camara.Position) <= 80 ||
                 distance(botiquin2.Position, Camara.Position) <= 80 ||
                 distance(botiquin3.Position, Camara.Position) <= 80 ||
                 distance(botiquin4.Position, Camara.Position) <= 80 ||
                 distance(botiquin5.Position, Camara.Position) <= 80 ||
-                distance(botiquin6.Position, Camara.Position) <= 80 ) pressEToHeal.render();
+                distance(botiquin6.Position, Camara.Position) <= 80) pressEToHeal.render();
 
             if (!botonElectricidad.isGreen && distance(Camara.Position, botonElectricidad.meshBoton.Position) < 55)
             {
                 pressEForPower.render();
             }
 
-            if ( !botonElectricidad.isGreen && distance(Camara.Position, botonElectricidad2.meshBoton.Position) < 55)
+            if (!botonElectricidad.isGreen && distance(Camara.Position, botonElectricidad2.meshBoton.Position) < 55)
             {
                 pressEForPower.render();
             }
 
-            if ( !botonOxigeno.isGreen && distance(Camara.Position, botonOxigeno.meshBoton.Position) < 55)
+            if (!botonOxigeno.isGreen && distance(Camara.Position, botonOxigeno.meshBoton.Position) < 55)
             {
                 pressEForOxigen.render();
             }
 
-            if ( !botonCombustible.isGreen && distance(Camara.Position, botonCombustible.meshBoton.Position) < 55) pressEForFuel.render();
+            if (!botonCombustible.isGreen && distance(Camara.Position, botonCombustible.meshBoton.Position) < 55) pressEForFuel.render();
 
             //Tiene que estar en verde todos los demas botones
-            if ( !botonEscapePod1.isGreen && !botonEscapePod2.isGreen && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55) && botonCombustible.isGreen && botonElectricidad.isGreen && botonElectricidad2.isGreen && botonOxigeno.isGreen) youCanEscape.render();
+            if (!botonEscapePod1.isGreen && !botonEscapePod2.isGreen && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55) && botonCombustible.isGreen && botonElectricidad.isGreen && botonElectricidad2.isGreen && botonOxigeno.isGreen) youCanEscape.render();
 
-            if ( ( !botonElectricidad.isGreen || !botonElectricidad2.isGreen || !botonOxigeno.isGreen || !botonCombustible.isGreen) && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55) ) goBack.render();
+            if ((!botonElectricidad.isGreen || !botonElectricidad2.isGreen || !botonOxigeno.isGreen || !botonCombustible.isGreen) && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55)) goBack.render();
 
-            //TGC.Examples.Camara.TgcFpsCamera camarita = (TGC.Examples.Camara.TgcFpsCamera)Camara;
-            //camarita.render(ElapsedTime, objetosColisionables);
 
+            device.BeginScene();
             RenderAxis();
             RenderFPS();
-            EndRenderScene();
-            D3DDevice.Instance.Device.Present();
+            device.EndScene();
+            device.Present();
         }
         public void RenderPause() {
             BeginRenderScene();
@@ -1851,6 +1860,8 @@ namespace TGC.Group.Model
         }
 
         public void RenderMenu() {
+            var device = D3DDevice.Instance.Device;
+
             BeginRenderScene();
             ClearTextures();
 
@@ -1860,7 +1871,8 @@ namespace TGC.Group.Model
             RenderAxis();
             RenderFPS();
             EndRenderScene();
-            D3DDevice.Instance.Device.Present();
+
+            device.Present();
         }
 
         /// <summary>
@@ -1907,57 +1919,6 @@ namespace TGC.Group.Model
         public float distance(Vector3 a, Vector3 b)
         {
             return (FastMath.Sqrt(FastMath.Pow2(a.X - b.X) + FastMath.Pow2(a.Y - b.Y) + FastMath.Pow2(a.Z - b.Z)));
-        }
-
-        public Vector3 chocaLuz(TgcBox cajaDeLuz, Vector3 centroCamara, Vector3 targetPosition , List<TgcBoundingAxisAlignBox> colisionables)
-        {
-            Vector3 retorno = cajaDeLuz.Position;
-            TgcBox clon = cajaDeLuz;
-            clon.Position = targetPosition;
-            retorno = clon.Position;
-
-            List<TgcBoundingAxisAlignBox> candidates = new List<TgcBoundingAxisAlignBox>();
-
-            foreach (var colisionable in colisionables)
-            {
-                if (Core.Collision.TgcCollisionUtils.testAABBAABB(clon.BoundingBox, colisionable))
-                {
-                    candidates.Add(colisionable);
-                }
-            }
-
-            foreach (var colisionable in candidates)
-            {
-                var caras = colisionable.computeFaces();
-
-                foreach(var cara in caras)
-                {
-                    var pNormal = TgcCollisionUtils.getPlaneNormal(cara.Plane);
-
-                    var movementRay = new TgcRay(retorno, targetPosition);
-                    float brutePlaneDist;
-                    Vector3 brutePlaneIntersectionPoint;
-
-                    if (!TgcCollisionUtils.intersectRayPlane(movementRay, cara.Plane, out brutePlaneDist,out brutePlaneIntersectionPoint))
-                    {
-                        continue;
-                    }
-
-                    var radioCaja = cajaDeLuz.Size.X / 2; //"radio" de una caja =P
-                    var movementRadiusLengthSq = Vector3.Multiply(targetPosition, radioCaja).LengthSq();
-
-                    if (brutePlaneDist * brutePlaneDist > movementRadiusLengthSq)
-                    {
-                        continue;
-                    }
-                    
-                    
-                }
-              
-                break;
-            }
-
-            return retorno;
         }
 
         public void aplicaLuces(TgcMesh mesh)
@@ -2074,9 +2035,49 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("materialSpecularExp", 290f);
                 }
-                if (glowstick.getEnergia() == 0 && System.Math.Truncate(lighter.getEnergia()) == 0 && System.Math.Truncate(flashlight.getEnergia()) == 0)
+                if ((glowstick.getEnergia() == 0 && glowstick.getSelect())|| (System.Math.Truncate(lighter.getEnergia()) == 0 && lighter.getSelect()) )
                 {
-                    //TODO: poner las propiedades del shader que genera distorsiones D:
+                    //Cargar variables shader de la luz
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("lightIntensity", 10f);
+                    mesh.Effect.SetValue("lightAttenuation", 6f);
+
+                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("materialSpecularExp", 2000f);
+                }
+                if (System.Math.Truncate(flashlight.getEnergia()) == 0 && flashlight.getSelect())
+                {
+                    float a;
+                    float b;
+                    float c;
+
+                    a = (float)3000.01 * (Camara.LookAt - Camara.Position).X + Camara.Position.X;
+                    b = (float)3000.01 * (Camara.LookAt - Camara.Position).Y + Camara.Position.Y;
+                    c = (float)3000.01 * (Camara.LookAt - Camara.Position).Z + Camara.Position.Z;
+                    var direccion = new Vector3(a, b, c);
+                    direccion.Normalize();
+
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(lightMesh.Color));
+                    mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
+                    mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(direccion));
+                    mesh.Effect.SetValue("lightIntensity", 150f);
+                    mesh.Effect.SetValue("lightAttenuation", 95f);
+                    mesh.Effect.SetValue("spotLightAngleCos", 0.65f);
+                    mesh.Effect.SetValue("spotLightExponent", 10f);
+
+                    //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
+                    mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.Black));
+                    mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
+                    mesh.Effect.SetValue("materialSpecularExp", 290f);
                 }
             }
             

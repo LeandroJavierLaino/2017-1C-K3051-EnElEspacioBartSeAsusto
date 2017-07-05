@@ -158,7 +158,7 @@ namespace TGC.Examples.Camara
             float epsilon = 0.05f;
             sphereCamara.setCenter(new Vector3(Position.X, Position.Y - 40, Position.Z));
             sphereCamaraHead.setCenter(Position);
-            
+
             isMoving = false;
 
             if (playerHide == false )
@@ -175,10 +175,10 @@ namespace TGC.Examples.Camara
                     targetDistance.Normalize();
                     targetDistanceNoSpeed = targetDistance;
                     targetDistance *= MovementSpeed;
-                    if (collitionActive)
+                    if (collitionActive )
                     {
-                        newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
-                        collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
+                            newPosition = collisionManagerCamara.moveCharacter(sphereCamara, targetDistance, obstaculos);
+                            collisionManagerCamara.moveCharacter(sphereCamaraHead, targetDistanceNoSpeed, obstaculos);
                     }
                     else
                     {
@@ -300,13 +300,14 @@ namespace TGC.Examples.Camara
                     else
                     {
                         if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(0, newPosition.Y, -targetDistanceCam.Length() * 0.15f);
+                        else moveVector += new Vector3(0,0,targetDistance.Length()*epsilon);
                     }
                 }
                 if (Input.keyDown(Key.S) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
                 {
                     targetDistanceCam += newPosition - cameraOnGround;
                     if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(0, 0, targetDistanceCam.Length() * 0.15f);
-
+                    else moveVector += new Vector3(0, 0, -targetDistance.Length() * epsilon);
                 }
                 if (!Input.keyDown(Key.S) && Input.keyDown(Key.D) && !Input.keyDown(Key.W) && vidaPorcentaje > 0 && !winCondition)
                 {
@@ -488,5 +489,6 @@ namespace TGC.Examples.Camara
         {
             return radio - distancia(puntoDeColision,sphereCamara.Center);
         }
+
     }
 }
