@@ -296,29 +296,27 @@ namespace TGC.Examples.Camara
                 if (Input.keyDown(Key.W) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
                 {
                     targetDistanceCam += newPosition - cameraOnGround;
-                    if(checkCollision(obstaculos,sphereCamara) && Input.keyDown(Key.LeftShift)) moveVector += new Vector3(0,newPosition.Y,-targetDistanceCam.Length()*0.3f);
+                    if(Input.keyDown(Key.LeftShift)) moveVector += new Vector3(0,newPosition.Y,-targetDistanceCam.Length()*0.3f);
                     else
                     {
-                        if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(0, newPosition.Y, -targetDistanceCam.Length() * 0.15f);
-                        else moveVector += new Vector3(0,0,targetDistance.Length()*epsilon);
+                        moveVector += new Vector3(0, newPosition.Y, -targetDistanceCam.Length() * 0.15f);
                     }
                 }
                 if (Input.keyDown(Key.S) && !Input.keyDown(Key.D) && !Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
                 {
                     targetDistanceCam += newPosition - cameraOnGround;
-                    if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3(0, 0, targetDistanceCam.Length() * 0.15f);
-                    else moveVector += new Vector3(0, 0, -targetDistance.Length() * epsilon);
+                    moveVector += new Vector3(0, 0, targetDistanceCam.Length() * 0.15f);
                 }
                 if (!Input.keyDown(Key.S) && Input.keyDown(Key.D) && !Input.keyDown(Key.W) && vidaPorcentaje > 0 && !winCondition)
                 {
                     targetDistanceCam += newPosition - cameraOnGround;
-                    if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3( -targetDistanceCam.Length()*0.15f, 0, 0);
+                    moveVector += new Vector3( -targetDistanceCam.Length()*0.15f, 0, 0);
                     
                 }
                 if (!Input.keyDown(Key.S) && !Input.keyDown(Key.W) && Input.keyDown(Key.A) && vidaPorcentaje > 0 && !winCondition)
                 {
                     targetDistanceCam += newPosition - cameraOnGround;
-                    if (checkCollision(obstaculos, sphereCamara)) moveVector += new Vector3( targetDistanceCam.Length() * 0.15f, 0, 0);
+                    moveVector += new Vector3( targetDistanceCam.Length() * 0.15f, 0, 0);
                     
                 }
                 
@@ -459,35 +457,10 @@ namespace TGC.Examples.Camara
             sphereCamara.render();
             cajaHead.render();
         }
-        /// <summary>
-        /// Verifica si colisiona con algo si da true es que no colisiona con nada
-        /// </summary>
-        /// <param name="obstaculos"></param>
-        /// <param name="characterSphere"></param>
-        /// <returns></returns>
-        public bool checkCollision( List<Core.BoundingVolumes.TgcBoundingAxisAlignBox> obstaculos, TgcBoundingSphere characterSphere)
-        {
-            List<TgcBoundingAxisAlignBox> objetosCandidatos = new List<TgcBoundingAxisAlignBox>();
-            
-            foreach (var obstaculo in obstaculos)
-            {
-                if (TgcCollisionUtils.testSphereAABB(characterSphere, obstaculo))
-                {
-                    objetosCandidatos.Add(obstaculo);
-                }
-            }
-
-            return objetosCandidatos.Capacity == 0;
-        }
-
+ 
         public float distancia(Vector3 a,Vector3 b)
         {
             return (FastMath.Sqrt(FastMath.Pow2(a.X - b.X) + FastMath.Pow2(a.Y - b.Y) + FastMath.Pow2(a.Z - b.Z)));
-        }
-
-        public float desplazar(float radio, Vector3 puntoDeColision)
-        {
-            return radio - distancia(puntoDeColision,sphereCamara.Center);
         }
 
     }

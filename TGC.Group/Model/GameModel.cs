@@ -293,8 +293,8 @@ namespace TGC.Group.Model
 
             #region Fonts
             Fonts = new System.Drawing.Text.PrivateFontCollection();
-            Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
-            //Fonts.AddFontFile(MediaDir + "\\Fonts\\murderous desire DEMO.otf");//esta fuente no funca en la maquina del laburo pero es la que va xD
+            //Fonts.AddFontFile(MediaDir + "\\Fonts\\coldnightforalligators.ttf");
+            Fonts.AddFontFile(MediaDir + "\\Fonts\\murderous desire DEMO.otf");//esta fuente no funca en la maquina del laburo pero es la que va xD
             #endregion
 
             Camara = new Examples.Camara.TgcFpsCamera(new Vector3(463, 55.2f, 83), 100f, 100f, Input);
@@ -642,6 +642,7 @@ namespace TGC.Group.Model
 
             #region Recorrido Monstruo
             var recorrido = new List<Vector3> ();
+            //1er piso
             recorrido.Add(new Vector3(944, 30, 242 ));
             recorrido.Add(new Vector3(944, 30, 954 ));
             recorrido.Add(new Vector3(618, 30, 954 ));
@@ -658,9 +659,27 @@ namespace TGC.Group.Model
             recorrido.Add(new Vector3(424, 30, 471 ));
             recorrido.Add(new Vector3(39 , 30, 471 ));
             recorrido.Add(new Vector3(39 , 30, 242 ));
+            //2do piso
+            recorrido.Add(new Vector3(944, 140, 242));
+            recorrido.Add(new Vector3(944, 140, 954));
+            recorrido.Add(new Vector3(618, 140, 954));
+            recorrido.Add(new Vector3(618, 140, 1331));
+            recorrido.Add(new Vector3(771, 140, 1331));
+            recorrido.Add(new Vector3(771, 140, 1708));
+            recorrido.Add(new Vector3(171, 140, 1708));
+            recorrido.Add(new Vector3(171, 140, 1330));
+            recorrido.Add(new Vector3(261, 140, 1330));
+            recorrido.Add(new Vector3(258, 140, 962));
+            recorrido.Add(new Vector3(41, 140, 962));
+            recorrido.Add(new Vector3(41, 140, 691));
+            recorrido.Add(new Vector3(424, 140, 691));
+            recorrido.Add(new Vector3(424, 140, 471));
+            recorrido.Add(new Vector3(39, 140, 471));
+            recorrido.Add(new Vector3(39, 140, 242));
             #endregion
             monstruo = new Monstruo();
             monstruo.Init(MonstruoModelo.createMeshInstance("Monstruo"),/*new Vector3(0, 0, 0), monsterTriggers, monsterSpawnPoints,*/ recorrido);
+            monstruo.Activo = true;
 
             //Particula que acompaña al monstruo por todo el juego
             emitter = new ParticleEmitter(MediaDir + "Textures\\pisada.png", 40);
@@ -1348,7 +1367,7 @@ namespace TGC.Group.Model
             soundLlanto4.throwSound(camarita.Position);
 
             #region Logica Monstruo
-            monstruo.Activo = true;
+            
             //Para activar o desactivar al monstruo
             if (Input.keyPressed(Key.M))
             {
@@ -1477,15 +1496,7 @@ namespace TGC.Group.Model
             {
                 mp3Player.stop();
             }
-
             
-
-            //Imprime texto cuando esta en alguna de las celdas para esconderse
-            foreach (var hide in HideCells)
-            {
-                if (hide.isPlayerInCell(Camara.Position)) pressEToHide.render();
-            }
-
             //Sonido del monstruo y ubicacion del mismo
             sound3DMonster.Position = monstruo.Position;
             sound3DMonster.play(true);
@@ -1825,6 +1836,11 @@ namespace TGC.Group.Model
 
             if ((!botonElectricidad.isGreen || !botonElectricidad2.isGreen || !botonOxigeno.isGreen || !botonCombustible.isGreen) && (distance(Camara.Position, botonEscapePod1.meshBoton.Position) < 55 || distance(Camara.Position, botonEscapePod2.meshBoton.Position) < 55)) goBack.render();
 
+            //Imprime texto cuando esta en alguna de las celdas para esconderse
+            foreach (var hide in HideCells)
+            {
+                if (hide.isPlayerInCell(Camara.Position)) pressEToHide.render();
+            }
 
             device.BeginScene();
             RenderAxis();
@@ -2042,7 +2058,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightPosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("lightIntensity", 10f);
-                    mesh.Effect.SetValue("lightAttenuation", 6f);
+                    mesh.Effect.SetValue("lightAttenuation", 4f);
 
                     //Cargar variables de shader de Material. El Material en realidad deberia ser propio de cada mesh. Pero en este ejemplo se simplifica con uno comun para todos
                     mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
@@ -2068,7 +2084,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("eyePosition", TgcParserUtils.vector3ToFloat4Array(Camara.Position));
                     mesh.Effect.SetValue("spotLightDir", TgcParserUtils.vector3ToFloat3Array(direccion));
                     mesh.Effect.SetValue("lightIntensity", 150f);
-                    mesh.Effect.SetValue("lightAttenuation", 95f);
+                    mesh.Effect.SetValue("lightAttenuation", 15f);
                     mesh.Effect.SetValue("spotLightAngleCos", 0.65f);
                     mesh.Effect.SetValue("spotLightExponent", 10f);
 

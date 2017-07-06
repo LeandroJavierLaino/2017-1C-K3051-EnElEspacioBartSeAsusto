@@ -182,7 +182,6 @@ namespace TGC.Group.Model
                             
                             //TODO: REVISAR ESTO, caso embebido a analizar con más detalle
                             sphereIntersectionPoint = originalSphereCenter - pNormal * characterSphere.Radius;
-                            
                         }
                         //Esta fuera de la esfera
                         else
@@ -209,7 +208,7 @@ namespace TGC.Group.Model
                             {
                                 //TODO: REVISAR ESTO, nunca debería pasar
                                 //throw new Exception("El polígono está dentro de la esfera");
-                                characterSphere.moveCenter(-pNormal * SlideFactor);
+                                characterSphere.moveCenter(new Vector3(originalSphereCenter.X, 0, originalSphereCenter.Z)  - new Vector3( pNormal.X,0, pNormal.Z) * characterSphere.Radius);
                             }
 
                             polygonIntersectionPoint = planeIntersectionPoint;
